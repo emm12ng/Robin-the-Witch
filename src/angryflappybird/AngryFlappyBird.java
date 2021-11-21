@@ -35,6 +35,8 @@ public class AngryFlappyBird extends Application {
     // game components
     private Sprite blob;
     private ArrayList<Sprite> floors;
+    private ArrayList<Ghost> ghosts;
+    private ArrayList<Pumpkin> pumpkins;
     
     // game flags
     private boolean CLICKED, GAME_START, GAME_OVER;
@@ -43,6 +45,7 @@ public class AngryFlappyBird extends Application {
     private Group gameScene;	 // the left half of the scene
     private VBox gameControl;	 // the right half of the GUI (control)
     private GraphicsContext gc;		
+    
     
 	// the mandatory main method 
     public static void main(String[] args) {
@@ -99,6 +102,8 @@ public class AngryFlappyBird extends Application {
         GAME_OVER = false;
         GAME_START = false;
         floors = new ArrayList<>();
+        ghosts = new ArrayList<>();
+        pumpkins = new ArrayList<>();
         
     	if(firstEntry) {
     		// create two canvases
@@ -130,6 +135,20 @@ public class AngryFlappyBird extends Application {
         blob = new Sprite(DEF.BLOB_POS_X, DEF.BLOB_POS_Y,DEF.IMAGE.get("blob0"));
         blob.render(gc);
         
+        // initialize ghosts
+        for(int i=0; i<DEF.GHOST_COUNT; i++) {
+        	Ghost ghost = new Ghost(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1, 0, 0, DEF.IMAGE.get("ghost"));
+        	ghost.render(gc);
+        	ghosts.add(ghost);
+        }
+        
+     // initialize pumpkins
+        for(int i=0; i<DEF.PUMPKIN_COUNT; i++) {
+        	Pumpkin pumpkin = new Pumpkin(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1, 0, DEF.IMAGE.get("normalpumpkin"), "normal");
+        	pumpkin.render(gc);
+        	pumpkins.add(pumpkin);
+        }
+        
         // initialize timer
         startTime = System.nanoTime();
         timer = new MyTimer();
@@ -156,7 +175,14 @@ public class AngryFlappyBird extends Application {
     	    	 
     	    	 // step2: update blob
     	    	 moveBlob();
+    	    	 
     	    	 checkCollision();
+    	    	 
+    	    	 controlGhost();
+    	    	 
+    	    	 controlPumpkin();
+    	    	 
+    	    	 checkPumpkinCollect();
     	     }
     	 }
     	 
@@ -198,12 +224,122 @@ public class AngryFlappyBird extends Application {
 			blob.render(gc);
     	 }
     	 
+    	 public void controlGhost() {
+    		 Random rand = new Random();
+    		 int makeGhostInt = rand.nextInt(400);
+    		 boolean makeGhost = false;
+    		 if (makeGhostInt == 1) {
+    			 makeGhost = true;
+    		 }
+    		 int makeGhostInt2 = rand.nextInt(500);
+    		 boolean makeGhost2 = false;
+    		 if (makeGhostInt2 == 1) {
+    			 makeGhost2 = true;
+    		 }
+    		 if (makeGhost) {
+	    		 /**for (Sprite ghost:ghosts) {*/
+	    			 if (ghosts.get(0).getPositionX()>DEF.SCENE_WIDTH && makeGhost) {
+	        			 ghosts.get(0).setPositionXY(DEF.SCENE_WIDTH,  0-ghosts.get(0).getHeight());
+	        			 ghosts.get(0).setVelocity(-30, DEF.GHOST_VEL1);
+	        			 makeGhost = false;
+	        			 //break;
+	        		 }
+	    		 //}
+    		 }
+    		 if (makeGhost2) {
+	    		 /**for (Sprite ghost:ghosts) {*/
+	    			 if (ghosts.get(1).getPositionX()>DEF.SCENE_WIDTH && makeGhost2) {
+	        			 ghosts.get(1).setPositionXY(DEF.SCENE_WIDTH,  0-ghosts.get(1).getHeight());
+	        			 ghosts.get(1).setVelocity(-30, DEF.GHOST_VEL1);
+	        			 makeGhost2 = false;
+	        			 //break;
+	        		 }
+	    		 //}
+    		 }
+    		 for(Sprite ghost :ghosts) {
+    			 if (ghost.getPositionX()<0-ghost.getWidth() || ghost.getPositionY()<0-ghost.getHeight()) {
+        			 ghost.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
+        			 ghost.setVelocity(0, 0);
+    			 }
+    			 ghost.update(elapsedTime * DEF.NANOSEC_TO_SEC);
+        		 ghost.render(gc);
+    		 }
+    	 }
+    	 
+    	 public void controlPumpkin() {
+    		 Random rand = new Random();
+    		 int makePumpkinInt = rand.nextInt(300);
+    		 boolean makePumpkin = false;
+    		 if (makePumpkinInt == 1) {
+    			 makePumpkin = true;
+    		 }
+    		 if (makePumpkin) {
+    			 int makeGoldPumpkinInt = rand.nextInt(4);
+    			 boolean makeGoldPumpkin = false;
+        		 if (makeGoldPumpkinInt == 3) {
+        			 makeGoldPumpkin = true;
+        		 }
+	    		 //for (Pumpkin pumpkin:pumpkins) {
+	    			 if (pumpkins.get(0).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
+	        			 pumpkins.get(0).setPositionXY(DEF.SCENE_WIDTH, DEF.PUMPKIN_POS_Y);
+	        			 pumpkins.get(0).setVelocity(DEF.PUMPKIN_VEL, 0);
+	        			 if(makeGoldPumpkin) {
+	        				 pumpkins.get(0).makeGold();
+	        				 pumpkins.get(0).setImage(DEF.IMAGE.get("goldpumpkin"));
+	        			 }
+	        			 makePumpkin = false;
+	        			 //break;
+	        		 }
+	    		 //}
+    		 }
+    		 int makePumpkinInt2 = rand.nextInt(300);
+    		 boolean makePumpkin2 = false;
+    		 if (makePumpkinInt2 == 1) {
+    			 makePumpkin2 = true;
+    		 }
+    		 if (makePumpkin2) {
+    			 int makeGoldPumpkinInt2 = rand.nextInt(4);
+    			 boolean makeGoldPumpkin2 = false;
+        		 if (makeGoldPumpkinInt2 == 3) {
+        			 makeGoldPumpkin2 = true;
+        		 }
+	    		 //for (Pumpkin pumpkin:pumpkins) {
+	    			 if (pumpkins.get(1).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
+	        			 pumpkins.get(1).setPositionXY(DEF.SCENE_WIDTH, DEF.PUMPKIN_POS_Y);
+	        			 pumpkins.get(1).setVelocity(DEF.PUMPKIN_VEL, 0);
+	        			 if(makeGoldPumpkin2) {
+	        				 pumpkins.get(1).makeGold();
+	        				 pumpkins.get(1).setImage(DEF.IMAGE.get("goldpumpkin"));
+	        			 }
+	        			 makePumpkin2 = false;
+	        			 //break;
+	        		 }
+	    		 //}
+    		 }
+    		 for(Pumpkin pumpkin :pumpkins) {
+    			 if (pumpkin.getPositionX()<0-pumpkin.getWidth() || pumpkin.getPositionY()<0-pumpkin.getHeight()) {
+        			 pumpkin.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
+        			 pumpkin.setVelocity(0, 0);
+        			 pumpkin.makeNormal();
+    			 }
+    			 pumpkin.update(elapsedTime * DEF.NANOSEC_TO_SEC);
+        		 pumpkin.render(gc);
+    		 }
+    	 }
+    	 
     	 public void checkCollision() {
     		 
     		// check collision  
+    		// check if either floors were hit
 			for (Sprite floor: floors) {
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(floor);
 			}
+			
+			for (Sprite ghost: ghosts) {
+				GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost);
+			}
+			
+			
 			
 			// end the game when blob hit stuff
 			if (GAME_OVER) {
@@ -214,6 +350,31 @@ public class AngryFlappyBird extends Application {
 				timer.stop();
 			}
 			
+    	 }
+    	 
+    	 public void checkPumpkinCollect() {
+    		 
+    		 for (Pumpkin pumpkin:pumpkins) {
+    			 if (blob.intersectsSprite(pumpkin)) {
+    				 System.out.println("pumpkin collected");
+    				 if (pumpkin.getType().equals("normal")) {
+    					 System.out.println("increase points");
+    				 }
+    				 else {
+    					 System.out.println("autopilot");
+    				 }
+    				 pumpkin.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
+    				 pumpkin.makeNormal();
+    				 pumpkin.setVelocity(0, 0);
+    			 }
+    			 for (Ghost ghost:ghosts) {
+    				 if (ghost.intersectsSprite(pumpkin)) {
+    					 ghost.stealPumpkin();
+    					 pumpkin.isStolen(DEF.GHOST_VEL1);
+    				 }
+    			 }
+    		 }
+    		 
     	 }
     	 
 	     private void showHitEffect() {
