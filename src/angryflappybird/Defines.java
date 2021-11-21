@@ -53,6 +53,14 @@ public class Defines {
     final int FLOOR_HEIGHT = 100;
     final int FLOOR_COUNT = 2;
     
+ // coefficients related to the candles
+    final int UP_CANDLE_WIDTH = 60;
+    final int BOTTOM_CANDLE_WIDTH = 50;
+    final int LONG_CANDLE_HEIGHT = 170;
+    final int MIDDLE_CANDLE_HEIGHT = 150;
+    final int SHORT_CANDLE_HEIGHT = 120;
+    final int CANDLE_COUNT = 500;
+    
     // coefficients related to time
     final int SCENE_SHIFT_TIME = 5;
     final double SCENE_SHIFT_INCR = -0.4;
@@ -64,7 +72,7 @@ public class Defines {
     // coefficients related to media display
     final String STAGE_TITLE = "Angry Flappy Bird";
 	private final String IMAGE_DIR = "../resources/images/";
-    final String[] IMAGE_FILES = {"background","blob0", "blob1", "blob2", "blob3", "floor", "ghost", "goldpumpkin", "normalpumpkin"};
+    final String[] IMAGE_FILES = {"background","blob0", "blob1", "blob2", "blob3", "floor1", "ShortCandleUp", "MiddleCandleUp", "LongCandleUp", "ShortCandleBottom", "MiddleCandleBottom", "LongCandleBottom", "ghost", "goldpumpkin", "normalpumpkin"};
 
     final HashMap<String, ImageView> IMVIEW = new HashMap<String, ImageView>();
     final HashMap<String, Image> IMAGE = new HashMap<String, Image>();
@@ -84,13 +92,30 @@ public class Defines {
 			else if (i == 1 || i == 2 || i == 3 || i == 4){
 				img = new Image(pathImage(IMAGE_FILES[i]), BLOB_WIDTH, BLOB_HEIGHT, false, false);
 			}
-			else if (i == 6) {
+			else if (i == 6){
+				img = new Image(pathImage(IMAGE_FILES[i]), UP_CANDLE_WIDTH, SHORT_CANDLE_HEIGHT, false, false);
+			}
+			else if (i == 7){
+				img = new Image(pathImage(IMAGE_FILES[i]), UP_CANDLE_WIDTH, MIDDLE_CANDLE_HEIGHT, false, false);
+			}
+			else if (i == 8){
+				img = new Image(pathImage(IMAGE_FILES[i]), UP_CANDLE_WIDTH, LONG_CANDLE_HEIGHT, false, false);
+			}
+			else if (i == 9){
+				img = new Image(pathImage(IMAGE_FILES[i]), BOTTOM_CANDLE_WIDTH, SHORT_CANDLE_HEIGHT, false, false);
+			}
+			else if (i == 10){
+				img = new Image(pathImage(IMAGE_FILES[i]), BOTTOM_CANDLE_WIDTH, MIDDLE_CANDLE_HEIGHT, false, false);
+			}
+			else if (i == 11){
+				img = new Image(pathImage(IMAGE_FILES[i]), BOTTOM_CANDLE_WIDTH, LONG_CANDLE_HEIGHT, false, false);
+			} else if (i == 12) {
 				img = new Image(pathImage(IMAGE_FILES[i]), GHOST_WIDTH, GHOST_HEIGHT, false, false);
 			}
-			else if (i == 7) {
+			else if (i == 13) {
 				img = new Image(pathImage(IMAGE_FILES[i]), PUMPKIN_WIDTH, PUMPKIN_HEIGHT, false, false);
 			}
-			else if (i == 8) {
+			else if (i == 14) {
 				img = new Image(pathImage(IMAGE_FILES[i]), PUMPKIN_WIDTH, PUMPKIN_HEIGHT, false, false);
 			}
 			else {
@@ -124,5 +149,34 @@ public class Defines {
     	AudioClip soundEffect = new AudioClip(getClass().getResource(filepath).toExternalForm());
     	return soundEffect;
     }
+	
+	public String randomCandlePic() {
+		int max = 6;
+        int min = 1;
+        int range = max - min + 1;
+        int random = 7;
+        while (random > 6) {
+        	random = (int)(Math.random() * range) + min;
+        }
+        if (random == 1) {
+        	return ("ShortCandleUp");
+        }
+        else if (random == 2) {
+        	return ("MiddleCandleUp");
+        }
+        else if (random == 3) {
+        	return ("LongCandleUp");
+        }
+        else if (random == 4) {
+        	return ("ShortCandleBottom");
+        }
+        else if (random == 5) {
+        	return ("MiddleCandleBottom");
+        }
+        else if (random == 6) {
+        	return ("LongCandleBottom");
+        }
+        return "MiddleCandleUp";
+	}
 	
 }
