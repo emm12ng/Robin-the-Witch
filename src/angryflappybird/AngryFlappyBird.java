@@ -16,12 +16,15 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+
 
 //The Application layer
 public class AngryFlappyBird extends Application {
@@ -48,12 +51,19 @@ public class AngryFlappyBird extends Application {
     // scene graphs
     private Group gameScene;	 // the left half of the scene
     private VBox gameControl;	 // the right half of the GUI (control)
+
     private GraphicsContext gc;	
     private GraphicsContext bgc;
     private GraphicsContext cgc;	
     
     Sprite candle;
     
+	// canvas for background
+    
+    
+    //the status of the auto-pliot mode
+    private boolean auto = false;
+
     
 	// the mandatory main method 
     public static void main(String[] args) {
@@ -86,13 +96,45 @@ public class AngryFlappyBird extends Application {
     // the getContent method sets the Scene layer
     private void resetGameControl() {
         
-        DEF.startButton.setOnMouseClicked(this::mouseClickHandler);
+    	
+        //modifying feature
+    	//use keyboard input to fire the button
+    	
+        DEF.startButton.setOnKeyPressed(event -> {
+            if (event.getCode().equals(KeyCode.SPACE)) {
+            	 DEF.startButton.fire();
+            }
+        }
+        );
+        
+        DEF.startButton.setOnAction(event -> {
+            if (GAME_OVER) {
+                resetGameScene(false);
+                
+            }
+        	else if (GAME_START){
+                clickTime = System.nanoTime();   
+                
+            }
+        	GAME_START = true;
+            CLICKED = true; 
+            
+        	}
+        );
+        
+        
+       
+        
+        //DEF.startButton.setOnMouseClicked(this::mouseClickHandler);
+        
         
         gameControl = new VBox();
         gameControl.getChildren().addAll(DEF.startButton);
+      
     }
     
-    private void mouseClickHandler(MouseEvent e) {
+    /*
+    private void mouseClickHandler() {
     	if (GAME_OVER) {
             resetGameScene(false);
         }
@@ -102,7 +144,7 @@ public class AngryFlappyBird extends Application {
     	GAME_START = true;
         CLICKED = true;
     }
-    
+    */
     private void resetGameScene(boolean firstEntry) {
     	
     	// reset variables
@@ -148,6 +190,7 @@ public class AngryFlappyBird extends Application {
     		floors.add(floor);
     	}
     	
+
     	/*
     	// initialize candle
     	int posY;
@@ -203,10 +246,9 @@ public class AngryFlappyBird extends Application {
     	}
     	
         
-        // initialize blob
-        blob = new Sprite(DEF.BLOB_POS_X, DEF.BLOB_POS_Y,DEF.IMAGE.get("blob0"));
-        blob.render(bgc);
-        
+		//initialize blob
+		blob = new Sprite(DEF.BLOB_POS_X, DEF.BLOB_POS_Y,DEF.IMAGE.get("1-0"));
+		blob.render(gc);
         // initialize ghosts
         for(int i=0; i<DEF.GHOST_COUNT; i++) {
         	Ghost ghost = new Ghost(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1, 0, 0, DEF.IMAGE.get("ghost"));
@@ -220,6 +262,12 @@ public class AngryFlappyBird extends Application {
         	pumpkin.render(gc);
         	pumpkins.add(pumpkin);
         }
+
+    	
+    	
+        
+        
+
         
         // initialize timer
         startTime = System.nanoTime();
@@ -290,29 +338,12 @@ public class AngryFlappyBird extends Application {
     	 
     	 // step2: update blob
     	 private void moveBlob() {
+    		 if (auto == false) {
+    			 regularFly();}
     		 
-			long diffTime = System.nanoTime() - clickTime;
-			
-			// blob flies upward with animation
-			if (CLICKED && diffTime <= DEF.BLOB_DROP_TIME) {
-				
-				int imageIndex = Math.floorDiv(counter++, DEF.BLOB_IMG_PERIOD);
-				imageIndex = Math.floorMod(imageIndex, DEF.BLOB_IMG_LEN);
-				blob.setImage(DEF.IMAGE.get("blob"+String.valueOf(imageIndex)));
-				blob.setVelocity(0, DEF.BLOB_FLY_VEL);
-				//bgc.rotate(-0.1);  //For Rotation
-				//bgc.rotate(0.1);
-			}
-			// blob drops after a period of time without button click
-			else {
-			    blob.setVelocity(0, DEF.BLOB_DROP_VEL); 
-			    CLICKED = false;
-			}
-
-			// render blob on GUI
-			blob.update(elapsedTime * DEF.NANOSEC_TO_SEC);
-			blob.render(bgc);
     	 }
+    	 
+    	
     	 
     	 public void controlGhost() {
     		 Random rand = new Random();
@@ -415,6 +446,37 @@ public class AngryFlappyBird extends Application {
     			 pumpkin.update(elapsedTime * DEF.NANOSEC_TO_SEC);
         		 pumpkin.render(gc);
     		 }
+
+    	 }
+    	 
+    	 public void regularFly() {
+    		 long diffTime = System.nanoTime() - clickTime;
+    		 
+     		
+     		// blob flies upward with animation
+     		if (CLICKED && diffTime <= DEF.BLOB_DROP_TIME) {
+     			
+     			int imageIndex = Math.floorDiv(counter++, DEF.BLOB_IMG_PERIOD);
+     			imageIndex = Math.floorMod(imageIndex, DEF.BLOB_IMG_LEN);
+     			blob.setImage(DEF.IMAGE.get("1-"+String.valueOf(imageIndex)));
+     			
+     			//blob.setImage(DEF.IMAGE.get("blob"+String.valueOf(ranNum)));
+     			
+     			blob.setVelocity(0, DEF.BLOB_FLY_VEL);
+     		}
+     		
+     		// blob drops after a period of time without button click
+     		else {
+     		    blob.setVelocity(0, DEF.BLOB_DROP_VEL); 
+     		    if (diffTime> 562000000) {
+     		    blob.setImage(DEF.IMAGE.get("1-f"));}
+     		    CLICKED = false;
+     		}
+
+     		// render blob on GUI
+     		blob.update(elapsedTime * DEF.NANOSEC_TO_SEC);
+     		blob.render(gc);
+
     	 }
     	 
     	 public void checkCollision() {
@@ -487,6 +549,10 @@ public class AngryFlappyBird extends Application {
 	     }
     	 
     } // End of MyTimer class
+    
+    
+    
+
 
 } // End of AngryFlappyBird Class
 

@@ -11,6 +11,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 
+
 public class Defines {
     
 	// dimension of the GUI application
@@ -26,8 +27,8 @@ public class Defines {
     final int BLOB_POS_Y = 200;
     final int BLOB_DROP_TIME = 300000000;  	// the elapsed time threshold before the blob starts dropping
     final int BLOB_DROP_VEL = 300;    		// the blob drop velocity
-    final int BLOB_FLY_VEL = -40;
-    final int BLOB_IMG_LEN = 4;
+    final int BLOB_FLY_VEL = -40;			// the blob flying velocity
+    final int BLOB_IMG_LEN = 10;
     final int BLOB_IMG_PERIOD = 5;
     
     // coefficients related to the ghost
@@ -72,13 +73,17 @@ public class Defines {
     // coefficients related to media display
     final String STAGE_TITLE = "Angry Flappy Bird";
 	private final String IMAGE_DIR = "../resources/images/";
-    final String[] IMAGE_FILES = {"background","blob0", "blob1", "blob2", "blob3", "floor1", "ShortCandleUp", "MiddleCandleUp", "LongCandleUp", "ShortCandleBottom", "MiddleCandleBottom", "LongCandleBottom", "ghost", "goldpumpkin", "normalpumpkin"};
+
+    final String[] IMAGE_FILES = {"background","blob0", "blob1", "blob2", "blob3", "floor1", "ShortCandleUp", "MiddleCandleUp", "LongCandleUp", "ShortCandleBottom", "MiddleCandleBottom", "LongCandleBottom", "ghost", "goldpumpkin", "normalpumpkin","1-0", "1-1", "1-2", "1-3","1-4","1-5","1-6","1-7","1-8","1-9","1-f"};
+
 
     final HashMap<String, ImageView> IMVIEW = new HashMap<String, ImageView>();
     final HashMap<String, Image> IMAGE = new HashMap<String, Image>();
     
     //nodes on the scene graph
     Button startButton;
+  
+    
     
     // constructor
 	Defines() {
@@ -86,12 +91,18 @@ public class Defines {
 		// initialize images
 		for(int i=0; i<IMAGE_FILES.length; i++) {
 			Image img;
+			
+			
+		
 			if (i == 5) {
 				img = new Image(pathImage(IMAGE_FILES[i]), FLOOR_WIDTH, FLOOR_HEIGHT, false, false);
 			}
 			else if (i == 1 || i == 2 || i == 3 || i == 4){
 				img = new Image(pathImage(IMAGE_FILES[i]), BLOB_WIDTH, BLOB_HEIGHT, false, false);
 			}
+			
+			
+			
 			else if (i == 6){
 				img = new Image(pathImage(IMAGE_FILES[i]), UP_CANDLE_WIDTH, SHORT_CANDLE_HEIGHT, false, false);
 			}
@@ -118,6 +129,11 @@ public class Defines {
 			else if (i == 14) {
 				img = new Image(pathImage(IMAGE_FILES[i]), PUMPKIN_WIDTH, PUMPKIN_HEIGHT, false, false);
 			}
+			else if (i>=15 && i <=25){
+				System.out.println(IMAGE_FILES[i]);
+				img = new Image(pathImage(IMAGE_FILES[i]), BLOB_WIDTH, BLOB_HEIGHT, false, false);
+				
+			}
 			else {
 				img = new Image(pathImage(IMAGE_FILES[i]), SCENE_WIDTH, SCENE_HEIGHT, false, false);
 			}
@@ -132,6 +148,7 @@ public class Defines {
 		
 		// initialize scene nodes
 		startButton = new Button("Go!");
+		
 	}
 	
 	public String pathImage(String filepath) {
@@ -145,6 +162,7 @@ public class Defines {
     	return IMAGE.get(filepath);
     }
 	
+
 	public AudioClip getSound(String filepath) {
     	AudioClip soundEffect = new AudioClip(getClass().getResource(filepath).toExternalForm());
     	return soundEffect;
@@ -179,4 +197,7 @@ public class Defines {
         return "MiddleCandleUp";
 	}
 	
+
+
+
 }
