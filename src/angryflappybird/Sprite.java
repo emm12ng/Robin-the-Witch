@@ -69,6 +69,10 @@ public class Sprite {
     public double getWidth() {
         return width;
     }
+    
+    public double getHeight() {
+        return height;
+    }
 
     public void render(GraphicsContext gc) {
         gc.drawImage(image, positionX, positionY);
