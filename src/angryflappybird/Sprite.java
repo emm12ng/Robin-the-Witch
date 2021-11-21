@@ -69,6 +69,10 @@ public class Sprite {
     public double getWidth() {
         return width;
     }
+    
+    public double getHeight() {
+        return height;
+    }
 
     public void render(GraphicsContext gc) {
         gc.drawImage(image, positionX, positionY);
@@ -81,6 +85,16 @@ public class Sprite {
     public boolean intersectsSprite(Sprite s) {
         return s.getBoundary().intersects(this.getBoundary());
     }
+    
+    /*
+    public Rectangle2D getCandleBoundary() {
+        return new Rectangle2D((positionX-15), (positionY-15), (width/2), height);
+    }
+    
+    public boolean intersectsCandleSprite(Sprite s) {
+        return s.getBoundary().intersects(this.getCandleBoundary());
+    }
+    */
 
     public void update(double time) {
         positionX += velocityX * time;

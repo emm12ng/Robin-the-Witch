@@ -35,6 +35,7 @@ public class AngryFlappyBird extends Application {
     // game components
     private Sprite blob;
     private ArrayList<Sprite> floors;
+    private ArrayList<Sprite> candles;
     
     // game flags
     private boolean CLICKED, GAME_START, GAME_OVER;
@@ -42,7 +43,11 @@ public class AngryFlappyBird extends Application {
     // scene graphs
     private Group gameScene;	 // the left half of the scene
     private VBox gameControl;	 // the right half of the GUI (control)
-    private GraphicsContext gc;		
+    private GraphicsContext gc;	
+    private GraphicsContext bgc;
+    private GraphicsContext cgc;	
+    
+    Sprite candle;
     
 	// the mandatory main method 
     public static void main(String[] args) {
@@ -99,18 +104,25 @@ public class AngryFlappyBird extends Application {
         GAME_OVER = false;
         GAME_START = false;
         floors = new ArrayList<>();
+        candles = new ArrayList<>();
         
     	if(firstEntry) {
     		// create two canvases
             Canvas canvas = new Canvas(DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
             gc = canvas.getGraphicsContext2D();
 
+            Canvas bcanvas = new Canvas(DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
+            bgc = bcanvas.getGraphicsContext2D();
+            
+            Canvas ccanvas = new Canvas(DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
+            cgc = canvas.getGraphicsContext2D();
+            
             // create a background
             ImageView background = DEF.IMVIEW.get("background");
             
             // create the game scene
             gameScene = new Group();
-            gameScene.getChildren().addAll(background, canvas);
+            gameScene.getChildren().addAll(background, canvas, bcanvas, ccanvas);
     	}
     	
     	// initialize floor
@@ -119,16 +131,71 @@ public class AngryFlappyBird extends Application {
     		int posX = i * DEF.FLOOR_WIDTH;
     		int posY = DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT;
     		
-    		Sprite floor = new Sprite(posX, posY, DEF.IMAGE.get("floor"));
+    		Sprite floor = new Sprite(posX, posY, DEF.IMAGE.get("floor1"));
     		floor.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
     		floor.render(gc);
     		
     		floors.add(floor);
     	}
+    	
+    	/*
+    	// initialize candle
+    	int posY;
+    	Sprite candle;
+    	for(int i=0; i<DEF.CANDLE_COUNT; i++) {
+    		
+    		int posX = i * DEF.CANDLE_WIDTH;
+    		if ((i % 2 == 0) || (i % 3 == 0)) {
+    			posY = DEF.CANDLE_HEIGHT;
+    		} else {
+    			posY = DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT - DEF.CANDLE_HEIGHT;
+    		}
+    		if (i % 7 == 0) {
+    			candle = new Sprite(posX, posY, DEF.IMAGE.get("LongCandleBottom"));
+    		}
+    		
+    		
+    		candle.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+    		candle.render(gc);
+    		
+    		candles.add(candle);
+    	}
+    	*/
+    	
+    	// initialize candle
+    	
+    	
+    	for(int i=0; i<DEF.CANDLE_COUNT; i++) {
+    		
+    		int posA = i * DEF.UP_CANDLE_WIDTH;
+    		int posB = 0;
+			Sprite candle = new Sprite(posA, posB, DEF.IMAGE.get(DEF.randomCandlePic()));
+    		
+    		if (candle.getWidth() == 60) {
+    			candle.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+    		}
+    		else if (candle.getWidth() == 50) {
+    			if (candle.getHeight() == DEF.SHORT_CANDLE_HEIGHT) {
+    				posB = DEF.SCENE_HEIGHT - (195);
+    			}
+    			else if (candle.getHeight() == DEF.MIDDLE_CANDLE_HEIGHT) {
+    				posB = DEF.SCENE_HEIGHT - (225);
+    			}
+    			else {
+    				posB = DEF.SCENE_HEIGHT - (245);
+    			}
+    			candle.setPositionXY(posA, posB);
+    			candle.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+    		}
+    		candle.render(cgc);
+    		
+    		candles.add(candle);
+    	}
+    	
         
         // initialize blob
         blob = new Sprite(DEF.BLOB_POS_X, DEF.BLOB_POS_Y,DEF.IMAGE.get("blob0"));
-        blob.render(gc);
+        blob.render(bgc);
         
         // initialize timer
         startTime = System.nanoTime();
@@ -149,10 +216,13 @@ public class AngryFlappyBird extends Application {
     	     
     	     // clear current scene
     	     gc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
+    	     bgc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
 
     	     if (GAME_START) {
     	    	 // step1: update floor
     	    	 moveFloor();
+    	    	 
+    	    	 moveCandle();
     	    	 
     	    	 // step2: update blob
     	    	 moveBlob();
@@ -174,6 +244,19 @@ public class AngryFlappyBird extends Application {
     		}
     	 }
     	 
+    	 private void moveCandle() {
+     		
+     		for(int i=0; i<DEF.CANDLE_COUNT; i++) {
+     			if (candles.get(i).getPositionX() <= -DEF.CANDLE_COUNT) {
+    				double nextX = candles.get((i+1)%DEF.CANDLE_COUNT).getPositionX() + DEF.UP_CANDLE_WIDTH;
+    	        	double nextY = DEF.SHORT_CANDLE_HEIGHT;
+    	        	candles.get(i).setPositionXY(nextX, nextY);
+     			}
+     			candles.get(i).render(cgc);
+     			candles.get(i).update(DEF.SCENE_SHIFT_TIME);
+     		}
+     	 }
+    	 
     	 // step2: update blob
     	 private void moveBlob() {
     		 
@@ -186,6 +269,7 @@ public class AngryFlappyBird extends Application {
 				imageIndex = Math.floorMod(imageIndex, DEF.BLOB_IMG_LEN);
 				blob.setImage(DEF.IMAGE.get("blob"+String.valueOf(imageIndex)));
 				blob.setVelocity(0, DEF.BLOB_FLY_VEL);
+				//bgc.rotate(0.05);  For Rotation
 			}
 			// blob drops after a period of time without button click
 			else {
@@ -195,14 +279,19 @@ public class AngryFlappyBird extends Application {
 
 			// render blob on GUI
 			blob.update(elapsedTime * DEF.NANOSEC_TO_SEC);
-			blob.render(gc);
+			blob.render(bgc);
     	 }
     	 
     	 public void checkCollision() {
     		 
-    		// check collision  
+    		// check collision to floor
 			for (Sprite floor: floors) {
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(floor);
+			}
+			
+			// check collision to candles
+			for (Sprite candle: candles) {
+				GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
 			}
 			
 			// end the game when blob hit stuff

@@ -34,6 +34,14 @@ public class Defines {
     final int FLOOR_HEIGHT = 100;
     final int FLOOR_COUNT = 2;
     
+    // coefficients related to the candles
+    final int UP_CANDLE_WIDTH = 60;
+    final int BOTTOM_CANDLE_WIDTH = 50;
+    final int LONG_CANDLE_HEIGHT = 170;
+    final int MIDDLE_CANDLE_HEIGHT = 150;
+    final int SHORT_CANDLE_HEIGHT = 120;
+    final int CANDLE_COUNT = 500;
+    
     // coefficients related to time
     final int SCENE_SHIFT_TIME = 5;
     final double SCENE_SHIFT_INCR = -0.4;
@@ -45,7 +53,7 @@ public class Defines {
     // coefficients related to media display
     final String STAGE_TITLE = "Angry Flappy Bird";
 	private final String IMAGE_DIR = "../resources/images/";
-    final String[] IMAGE_FILES = {"background","blob0", "blob1", "blob2", "blob3", "floor"};
+    final String[] IMAGE_FILES = {"background","blob0", "blob1", "blob2", "blob3", "floor1", "ShortCandleUp", "MiddleCandleUp", "LongCandleUp", "ShortCandleBottom", "MiddleCandleBottom", "LongCandleBottom"};
 
     final HashMap<String, ImageView> IMVIEW = new HashMap<String, ImageView>();
     final HashMap<String, Image> IMAGE = new HashMap<String, Image>();
@@ -64,6 +72,24 @@ public class Defines {
 			}
 			else if (i == 1 || i == 2 || i == 3 || i == 4){
 				img = new Image(pathImage(IMAGE_FILES[i]), BLOB_WIDTH, BLOB_HEIGHT, false, false);
+			}
+			else if (i == 6){
+				img = new Image(pathImage(IMAGE_FILES[i]), UP_CANDLE_WIDTH, SHORT_CANDLE_HEIGHT, false, false);
+			}
+			else if (i == 7){
+				img = new Image(pathImage(IMAGE_FILES[i]), UP_CANDLE_WIDTH, MIDDLE_CANDLE_HEIGHT, false, false);
+			}
+			else if (i == 8){
+				img = new Image(pathImage(IMAGE_FILES[i]), UP_CANDLE_WIDTH, LONG_CANDLE_HEIGHT, false, false);
+			}
+			else if (i == 9){
+				img = new Image(pathImage(IMAGE_FILES[i]), BOTTOM_CANDLE_WIDTH, SHORT_CANDLE_HEIGHT, false, false);
+			}
+			else if (i == 10){
+				img = new Image(pathImage(IMAGE_FILES[i]), BOTTOM_CANDLE_WIDTH, MIDDLE_CANDLE_HEIGHT, false, false);
+			}
+			else if (i == 11){
+				img = new Image(pathImage(IMAGE_FILES[i]), BOTTOM_CANDLE_WIDTH, LONG_CANDLE_HEIGHT, false, false);
 			}
 			else {
 				img = new Image(pathImage(IMAGE_FILES[i]), SCENE_WIDTH, SCENE_HEIGHT, false, false);
@@ -90,4 +116,33 @@ public class Defines {
     	IMAGE.put(filepath, new Image(pathImage(filepath), width, height, false, false));
     	return IMAGE.get(filepath);
     }
+	
+	public String randomCandlePic() {
+		int max = 6;
+        int min = 1;
+        int range = max - min + 1;
+        int random = 7;
+        while (random > 6) {
+        	random = (int)(Math.random() * range) + min;
+        }
+        if (random == 1) {
+        	return ("ShortCandleUp");
+        }
+        else if (random == 2) {
+        	return ("MiddleCandleUp");
+        }
+        else if (random == 3) {
+        	return ("LongCandleUp");
+        }
+        else if (random == 4) {
+        	return ("ShortCandleBottom");
+        }
+        else if (random == 5) {
+        	return ("MiddleCandleBottom");
+        }
+        else if (random == 6) {
+        	return ("LongCandleBottom");
+        }
+        return "MiddleCandleUp";
+	}
 }
