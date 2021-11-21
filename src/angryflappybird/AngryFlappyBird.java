@@ -269,7 +269,8 @@ public class AngryFlappyBird extends Application {
 				imageIndex = Math.floorMod(imageIndex, DEF.BLOB_IMG_LEN);
 				blob.setImage(DEF.IMAGE.get("blob"+String.valueOf(imageIndex)));
 				blob.setVelocity(0, DEF.BLOB_FLY_VEL);
-				//bgc.rotate(0.05);  For Rotation
+				//bgc.rotate(-0.1);  //For Rotation
+				//bgc.rotate(0.1);
 			}
 			// blob drops after a period of time without button click
 			else {
