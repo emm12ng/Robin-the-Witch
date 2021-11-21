@@ -5,6 +5,7 @@ import java.util.HashMap;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.media.AudioClip;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -29,6 +30,24 @@ public class Defines {
     final int BLOB_IMG_LEN = 4;
     final int BLOB_IMG_PERIOD = 5;
     
+    // coefficients related to the ghost
+    final int GHOST_POS_Y = 0;
+    final int GHOST_POS_X = SCENE_WIDTH;
+    final int GHOST_VEL1 = 30;
+    final int GHOST_VEL2 = 60;
+    final int GHOST_VEL3 = 90;
+    final int GHOST_WIDTH = 70;
+    final int GHOST_HEIGHT = 90;
+    final int GHOST_COUNT = 2;
+    
+    // coefficients related to the pumpkin
+    final int PUMPKIN_POS_X = SCENE_WIDTH;
+    final int PUMPKIN_POS_Y = 150; // depend on pipe
+    final int PUMPKIN_VEL = -30; // depend on pipe
+    final int PUMPKIN_WIDTH = 70;
+    final int PUMPKIN_HEIGHT = 70;
+    final int PUMPKIN_COUNT = 2;
+    
     // coefficients related to the floors
     final int FLOOR_WIDTH = 400;
     final int FLOOR_HEIGHT = 100;
@@ -45,7 +64,7 @@ public class Defines {
     // coefficients related to media display
     final String STAGE_TITLE = "Angry Flappy Bird";
 	private final String IMAGE_DIR = "../resources/images/";
-    final String[] IMAGE_FILES = {"background","blob0", "blob1", "blob2", "blob3", "floor"};
+    final String[] IMAGE_FILES = {"background","blob0", "blob1", "blob2", "blob3", "floor", "ghost", "goldpumpkin", "normalpumpkin"};
 
     final HashMap<String, ImageView> IMVIEW = new HashMap<String, ImageView>();
     final HashMap<String, Image> IMAGE = new HashMap<String, Image>();
@@ -65,6 +84,15 @@ public class Defines {
 			else if (i == 1 || i == 2 || i == 3 || i == 4){
 				img = new Image(pathImage(IMAGE_FILES[i]), BLOB_WIDTH, BLOB_HEIGHT, false, false);
 			}
+			else if (i == 6) {
+				img = new Image(pathImage(IMAGE_FILES[i]), GHOST_WIDTH, GHOST_HEIGHT, false, false);
+			}
+			else if (i == 7) {
+				img = new Image(pathImage(IMAGE_FILES[i]), PUMPKIN_WIDTH, PUMPKIN_HEIGHT, false, false);
+			}
+			else if (i == 8) {
+				img = new Image(pathImage(IMAGE_FILES[i]), PUMPKIN_WIDTH, PUMPKIN_HEIGHT, false, false);
+			}
 			else {
 				img = new Image(pathImage(IMAGE_FILES[i]), SCENE_WIDTH, SCENE_HEIGHT, false, false);
 			}
@@ -83,6 +111,7 @@ public class Defines {
 	
 	public String pathImage(String filepath) {
     	String fullpath = getClass().getResource(IMAGE_DIR+filepath+".png").toExternalForm();
+    	System.out.println(filepath);
     	return fullpath;
     }
 	
@@ -90,4 +119,10 @@ public class Defines {
     	IMAGE.put(filepath, new Image(pathImage(filepath), width, height, false, false));
     	return IMAGE.get(filepath);
     }
+	
+	public AudioClip getSound(String filepath) {
+    	AudioClip soundEffect = new AudioClip(getClass().getResource(filepath).toExternalForm());
+    	return soundEffect;
+    }
+	
 }
