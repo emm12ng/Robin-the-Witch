@@ -79,7 +79,7 @@ public class Sprite {
     }
 
     public Rectangle2D getBoundary() {
-        return new Rectangle2D(positionX, positionY, width, height);
+        return new Rectangle2D(positionX -13, positionY, width-25, height);
     }
 
     public boolean intersectsSprite(Sprite s) {
@@ -87,8 +87,18 @@ public class Sprite {
     }
     
     /*
+    public Rectangle2D getBlobBoundary() {
+        return new Rectangle2D(positionX, positionY, width, height);
+    }
+
+    public boolean intersectsBlobSprite(Sprite s) {
+        return s.getBoundary().intersects(this.getBoundary());
+    }
+    */
+    
+    /*
     public Rectangle2D getCandleBoundary() {
-        return new Rectangle2D((positionX-15), (positionY-15), (width/2), height);
+        return new Rectangle2D(20, positionY, 10, height);
     }
     
     public boolean intersectsCandleSprite(Sprite s) {
