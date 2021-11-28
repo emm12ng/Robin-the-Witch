@@ -16,13 +16,19 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.util.ArrayList;
 import java.util.Random;
+
+import com.sun.media.jfxmedia.AudioClip;
+
+import java.awt.geom.Rectangle2D;
+import java.io.File;
 
 
 
@@ -56,9 +62,16 @@ public class AngryFlappyBird extends Application {
     private GraphicsContext bgc;
     private GraphicsContext cgc;	
     
-    Sprite candle;
     
-	// canvas for background
+	//Sound for Witch Laugh
+    
+    //AudioClip witchLaugh = new AudioClip(getClass().getResource("../resources/sounds/witchLaugh").toExternalForm());
+    //Media witchLaugh = new Media(getClass().getResource("../resources/sounds/witchLaugh.mp3").toExternalForm());
+    //MediaPlayer mediaPlayer = new MediaPlayer(witchLaugh);
+    
+    
+    
+    // canvas for background
     
     
     //the status of the auto-pliot mode
@@ -69,6 +82,8 @@ public class AngryFlappyBird extends Application {
     public static void main(String[] args) {
         launch(args);
     }
+    
+    
        
     // the start method sets the Stage layer
     @Override
@@ -145,6 +160,41 @@ public class AngryFlappyBird extends Application {
         CLICKED = true;
     }
     */
+    
+    /*
+    private ImageView changeBackground() {
+		 ImageView background;
+		 if (startTime > 5) {
+			 System.out.print("Scene Change");
+			 background = DEF.IMVIEW.get("background1");
+			 return background;
+		 }
+		 background = DEF.IMVIEW.get("background");
+		 return background;
+	 }
+	 */
+    
+    public void initializeCandle(Sprite candle, Integer posA, Integer posB) {
+		 if (candle.getWidth() == 60) {
+			candle.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+		}
+		else if (candle.getWidth() == 50) {
+			if (candle.getHeight() == DEF.SHORT_CANDLE_HEIGHT) {
+				posB = DEF.SCENE_HEIGHT - (185);
+			}
+			else if (candle.getHeight() == DEF.MIDDLE_CANDLE_HEIGHT) {
+				posB = DEF.SCENE_HEIGHT - (215);
+			}
+			else {
+				posB = DEF.SCENE_HEIGHT - (235);
+			}
+			candle.setPositionXY(posA, posB);
+			candle.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+		}
+		candle.render(gc);
+		candles.add(candle);
+	 }
+    
     private void resetGameScene(boolean firstEntry) {
     	
     	// reset variables
@@ -171,6 +221,10 @@ public class AngryFlappyBird extends Application {
             
             // create a background
             ImageView background = DEF.IMVIEW.get("background");
+            //ImageView background = changeBackground();
+            
+            //MediaPlayer backgroundMusic = DEF.backgroundMusicMP;
+            
             
             // create the game scene
             gameScene = new Group();
@@ -217,13 +271,48 @@ public class AngryFlappyBird extends Application {
     	
     	// initialize candle
     	
-    	
+    	ArrayList<Sprite> candleDuos = new ArrayList<>();
+    	ArrayList<Sprite> candleButtom = new ArrayList<>();
     	for(int i=0; i<DEF.CANDLE_COUNT; i++) {
     		
-    		int posA = i * DEF.UP_CANDLE_WIDTH;
-    		int posB = 0;
-			Sprite candle = new Sprite(posA, posB, DEF.IMAGE.get(DEF.randomCandlePic()));
+    		int posX = i * (DEF.UP_CANDLE_WIDTH + 18);
+    		int posY = 0;
     		
+    		
+			Sprite candleA = new Sprite(posX, posY, DEF.IMAGE.get(DEF.randomUpCandlePic()));
+			Sprite candleB = new Sprite(posX, posY, DEF.IMAGE.get(DEF.randomBottomCandlePic()));
+			initializeCandle(candleA, posX, posY);
+			initializeCandle(candleB, posX, posY);
+			
+			/*
+			candleDuos.add(candleA);
+			//candleDuos.add(candleB);
+			candleButtom.add(candleB);
+    		for (int j=0;j<candleButtom.size();j++) {
+    			if (candleButtom.get(j).getWidth() == 60) {
+        			//candleDuos.get(j).setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+        			candleButtom.get(j).setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+        			
+        		}
+        		else if (candleButtom.get(j).getWidth() == 50) {
+        			if (candleButtom.get(j).getHeight() == DEF.SHORT_CANDLE_HEIGHT) {
+        				posB = DEF.SCENE_HEIGHT - (195);
+        			}
+        			else if (candleButtom.get(j).getHeight() == DEF.MIDDLE_CANDLE_HEIGHT) {
+        				posB = DEF.SCENE_HEIGHT - (225);
+        			}
+        			else {
+        				posB = DEF.SCENE_HEIGHT - (245);
+        			}
+        			candleButtom.get(j).setPositionXY(posA, posB);
+        			candleButtom.get(j).setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+        		}
+        		candleButtom.get(j).render(cgc);
+        		
+        		candles.add(candleButtom.get(j));
+    		}
+    		*/
+    		/*
     		if (candle.getWidth() == 60) {
     			candle.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
     		}
@@ -241,8 +330,10 @@ public class AngryFlappyBird extends Application {
     			candle.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
     		}
     		candle.render(cgc);
+   
     		
     		candles.add(candle);
+    		*/
     	}
     	
         
@@ -289,6 +380,7 @@ public class AngryFlappyBird extends Application {
     	     // clear current scene
     	     gc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
     	     bgc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
+    	     cgc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
 
     	     if (GAME_START) {
     	    	 // step1: update floor
@@ -301,13 +393,29 @@ public class AngryFlappyBird extends Application {
     	    	 
     	    	 checkCollision();
     	    	 
+    	    	 
+    	    	 
     	    	 controlGhost();
     	    	 
-    	    	 controlPumpkin();
+    	    	 //controlPumpkin();
+    	    	 pumpkinOverCandle();
     	    	 
     	    	 checkPumpkinCollect();
+    	    	 
+    	    	 //changeBackground();
+    	    	 
+    	    	 //Play background music
+    	    	 //while (GAME_OVER == false) {
+    	    	 DEF.backgroundMusicMP.setVolume(1);
+    	    	 DEF.backgroundMusicMP.setAutoPlay(true);
+    	    	 
+    	    	 
+    	    	 //}
+    	    	 //DEF.backgroundMusicMP.stop()
     	     }
     	 }
+    	 
+    	 
     	 
     	 // step1: update floor
     	 private void moveFloor() {
@@ -323,16 +431,37 @@ public class AngryFlappyBird extends Application {
     		}
     	 }
     	 
+    	 
+    	 double nextX;
+  		 double nextY;
+    	 //update candles
     	 private void moveCandle() {
      		
      		for(int i=0; i<DEF.CANDLE_COUNT; i++) {
      			if (candles.get(i).getPositionX() <= -DEF.CANDLE_COUNT) {
-    				double nextX = candles.get((i+1)%DEF.CANDLE_COUNT).getPositionX() + DEF.UP_CANDLE_WIDTH;
-    	        	double nextY = DEF.SHORT_CANDLE_HEIGHT;
+     				if (candles.get(i).getWidth() == 60) {
+     					nextX = candles.get((i+ (DEF.CANDLE_COUNT - 1))%DEF.CANDLE_COUNT).getPositionX() + 40;
+     					nextY = 0;
+     	    		}
+     	    		else if (candles.get(i).getWidth() == 50) {
+     	    			nextX = candles.get((i+ (DEF.CANDLE_COUNT - 1))%DEF.CANDLE_COUNT).getPositionX() + 40;
+     	    			if (candles.get(i).getHeight() == DEF.SHORT_CANDLE_HEIGHT) {
+     	    				nextY = DEF.SCENE_HEIGHT - (185);
+     	    			}
+     	    			else if (candles.get(i).getHeight() == DEF.MIDDLE_CANDLE_HEIGHT) {
+     	    				nextY = DEF.SCENE_HEIGHT - (215);
+     	    			}
+     	    			else {
+     	    				nextY = DEF.SCENE_HEIGHT - (235);
+     	    			}
+        	        	//nextY = candles.get((i+1)%DEF.CANDLE_COUNT).getPositionY();
+     	    		}
+     				
     	        	candles.get(i).setPositionXY(nextX, nextY);
      			}
-     			candles.get(i).render(cgc);
-     			candles.get(i).update(DEF.SCENE_SHIFT_TIME);
+     			
+     			candles.get(i).render(gc);
+     			candles.get(i).update(DEF.SCENE_SHIFT_TIME + 3);
      		}
      	 }
     	 
@@ -343,6 +472,52 @@ public class AngryFlappyBird extends Application {
     		 
     	 }
     	 
+    	 
+    	 public void pumpkinOverCandle() {
+    		 Random rand = new Random();
+    		 //int randomCandle = rand.nextInt(10);
+    		 int totalPumpkin = 20;
+    		 while (totalPumpkin > -1) {
+    			 int randomCandle = rand.nextInt(DEF.CANDLE_COUNT);
+    			 Sprite pickedCandle = candles.get(randomCandle);
+    			 //System.out.print(pickedCandle.getWidth());
+    			 if (pickedCandle.getWidth() == 50) {
+    				 if (pickedCandle.getHeight() == DEF.SHORT_CANDLE_HEIGHT) {
+    					 controlPumpkin(pickedCandle.getPositionX(), DEF.SCENE_HEIGHT - (225));
+    	    				//posB = DEF.SCENE_HEIGHT - (195);
+	    			 }
+	    			 else if (pickedCandle.getHeight() == DEF.MIDDLE_CANDLE_HEIGHT) {
+    	    			controlPumpkin(pickedCandle.getPositionX(), DEF.SCENE_HEIGHT - (255));
+    	    				//posB = DEF.SCENE_HEIGHT - (225);
+	    			 }
+	    			 else {
+	    				 controlPumpkin(pickedCandle.getPositionX(), DEF.SCENE_HEIGHT - (275));
+    	    				//posB = DEF.SCENE_HEIGHT - (245);
+	    			 }
+    				 //controlPumpkin(pickedCandle.getPositionX(), ((200 )));
+    				 totalPumpkin = totalPumpkin - 1;
+    			 }
+    			 
+    			 /*
+    			 if (pickedCandle.getWidth() == DEF.UP_CANDLE_WIDTH) {
+    				 controlPumpkin(pickedCandle.getPositionX(), pickedCandle.getPositionY() + 100);
+    			 } else {
+    			 */
+    			 /*
+    				 if (pickedCandle.getHeight() == DEF.SHORT_CANDLE_HEIGHT) {
+    					 controlPumpkin(pickedCandle.getPositionX(), pickedCandle.getPositionY() + 100 + pickedCandle.getHeight());
+  	    			}
+  	    			else if (pickedCandle.getHeight() == DEF.MIDDLE_CANDLE_HEIGHT) {
+  	    				controlPumpkin(pickedCandle.getPositionX(), pickedCandle.getPositionY() + 100 + pickedCandle.getHeight());
+  	    			}
+  	    			else {
+  	    				controlPumpkin(pickedCandle.getPositionX(), pickedCandle.getPositionY() + 100 + pickedCandle.getHeight());
+  	    			}
+    			 */
+    			 
+    			 //totalPumpkin = totalPumpkin - 1;
+    		 }
+    	 }
     	
     	 
     	 public void controlGhost() {
@@ -362,6 +537,8 @@ public class AngryFlappyBird extends Application {
 	    			 if (ghosts.get(0).getPositionX()>DEF.SCENE_WIDTH && makeGhost) {
 	        			 ghosts.get(0).setPositionXY(DEF.SCENE_WIDTH,  0-ghosts.get(0).getHeight());
 	        			 ghosts.get(0).setVelocity(-30, DEF.GHOST_VEL1);
+	        			 DEF.ghostSoundMP.setVolume(200);
+	        			 DEF.ghostSoundMP.play();
 	        			 makeGhost = false;
 	        			 //break;
 	        		 }
@@ -372,6 +549,8 @@ public class AngryFlappyBird extends Application {
 	    			 if (ghosts.get(1).getPositionX()>DEF.SCENE_WIDTH && makeGhost2) {
 	        			 ghosts.get(1).setPositionXY(DEF.SCENE_WIDTH,  0-ghosts.get(1).getHeight());
 	        			 ghosts.get(1).setVelocity(-30, DEF.GHOST_VEL1);
+	        			 DEF.ghostSoundMP.setVolume(200);
+	        			 DEF.ghostSoundMP.play();
 	        			 makeGhost2 = false;
 	        			 //break;
 	        		 }
@@ -381,13 +560,14 @@ public class AngryFlappyBird extends Application {
     			 if (ghost.getPositionX()<0-ghost.getWidth() || ghost.getPositionY()<0-ghost.getHeight()) {
         			 ghost.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
         			 ghost.setVelocity(0, 0);
+        			 
     			 }
     			 ghost.update(elapsedTime * DEF.NANOSEC_TO_SEC);
         		 ghost.render(gc);
     		 }
     	 }
     	 
-    	 public void controlPumpkin() {
+    	 public void controlPumpkin(double posX, double posY) {
     		 Random rand = new Random();
     		 int makePumpkinInt = rand.nextInt(300);
     		 boolean makePumpkin = false;
@@ -402,7 +582,7 @@ public class AngryFlappyBird extends Application {
         		 }
 	    		 //for (Pumpkin pumpkin:pumpkins) {
 	    			 if (pumpkins.get(0).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
-	        			 pumpkins.get(0).setPositionXY(DEF.SCENE_WIDTH, DEF.PUMPKIN_POS_Y);
+	        			 pumpkins.get(0).setPositionXY(posX, posY);
 	        			 pumpkins.get(0).setVelocity(DEF.PUMPKIN_VEL, 0);
 	        			 if(makeGoldPumpkin) {
 	        				 pumpkins.get(0).makeGold();
@@ -426,7 +606,7 @@ public class AngryFlappyBird extends Application {
         		 }
 	    		 //for (Pumpkin pumpkin:pumpkins) {
 	    			 if (pumpkins.get(1).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
-	        			 pumpkins.get(1).setPositionXY(DEF.SCENE_WIDTH, DEF.PUMPKIN_POS_Y);
+	        			 pumpkins.get(1).setPositionXY(posX, posY);
 	        			 pumpkins.get(1).setVelocity(DEF.PUMPKIN_VEL, 0);
 	        			 if(makeGoldPumpkin2) {
 	        				 pumpkins.get(1).makeGold();
@@ -439,8 +619,8 @@ public class AngryFlappyBird extends Application {
     		 }
     		 for(Pumpkin pumpkin :pumpkins) {
     			 if (pumpkin.getPositionX()<0-pumpkin.getWidth() || pumpkin.getPositionY()<0-pumpkin.getHeight()) {
-        			 pumpkin.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
-        			 pumpkin.setVelocity(0, 0);
+        			 pumpkin.setPositionXY(posX, posY);
+        			 pumpkin.setVelocity(DEF.PUMPKIN_VEL, 0);
         			 pumpkin.makeNormal();
     			 }
     			 pumpkin.update(elapsedTime * DEF.NANOSEC_TO_SEC);
@@ -479,6 +659,9 @@ public class AngryFlappyBird extends Application {
 
     	 }
     	 
+    	 
+    	 
+    	 
     	 public void checkCollision() {
     		 
 
@@ -499,12 +682,21 @@ public class AngryFlappyBird extends Application {
 
 			// check collision to candles
 			for (Sprite candle: candles) {
+				/*
+				javafx.geometry.Rectangle2D a;
+				a = candle.getCandleBoundary();
+				System.out.print(a.getMaxX());
+				System.out.print(a.getMaxY());
+				System.out.print(a.getMinX());
+				System.out.print(a.getMinY());
+				*/
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
 			}
 			
 			// end the game when blob hit stuff
 			if (GAME_OVER) {
 				showHitEffect(); 
+				//DEF.backgroundMusicMP.stop();
 				for (Sprite floor: floors) {
 					floor.setVelocity(0, 0);
 				}
@@ -517,6 +709,7 @@ public class AngryFlappyBird extends Application {
     		 
     		 for (Pumpkin pumpkin:pumpkins) {
     			 if (blob.intersectsSprite(pumpkin)) {
+    				 DEF.witchLaughMP.play();
     				 System.out.println("pumpkin collected");
     				 if (pumpkin.getType().equals("normal")) {
     					 System.out.println("increase points");
