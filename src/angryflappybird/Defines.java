@@ -3,6 +3,9 @@ package angryflappybird;
 import java.util.HashMap;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.RadioButton;
+import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.media.AudioClip;
@@ -97,7 +100,14 @@ public class Defines {
     //nodes on the scene graph
     Button startButton;
   
+    RadioButton easy;
+    RadioButton medium;
+    RadioButton hard;
+    RadioButton survival;
     
+    ToggleGroup difficultyLevels;
+    
+    RadioButton selectedDifficulty;
     
     // constructor
 	Defines() {
@@ -163,6 +173,18 @@ public class Defines {
 		// initialize scene nodes
 		startButton = new Button("Go!");
 		
+		easy = new RadioButton("Easy");
+		medium = new RadioButton("Medium");
+		hard = new RadioButton("Hard");
+		survival = new RadioButton("Survival");
+		
+		difficultyLevels  = new ToggleGroup();
+		easy.setToggleGroup(difficultyLevels);
+		medium.setToggleGroup(difficultyLevels);
+		hard.setToggleGroup(difficultyLevels);
+		survival.setToggleGroup(difficultyLevels);
+		
+		//selectedDifficulty = (RadioButton) difficultyLevels.getSelectedToggle();
 	}
 	
 	public String pathImage(String filepath) {

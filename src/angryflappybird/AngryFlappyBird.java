@@ -10,6 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Button;
+import javafx.scene.control.RadioButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -111,6 +112,22 @@ public class AngryFlappyBird extends Application {
     // the getContent method sets the Scene layer
     private void resetGameControl() {
         
+    	//RadioButton selectedDifficulty = (RadioButton) DEF.difficultyLevels.getSelectedToggle();
+		//selectedDifficulty.setOnAction(event -> {
+    		if (DEF.easy.isSelected()) {
+	     	   System.out.print("Difficulty Level: Easy");
+	        }
+	        else if (DEF.medium.isSelected()) {
+	     	   System.out.print("Difficulty Level: Medium");
+	        }
+	        else if (DEF.hard.isSelected()) {
+	     	   System.out.print("Difficulty Level: Hard");
+	        }
+	        else if (DEF.survival.isSelected()){
+	     	   System.out.print("Difficulty Level: Survival");
+	        }
+ 	
+	    	
     	
         //modifying feature
     	//use keyboard input to fire the button
@@ -137,14 +154,13 @@ public class AngryFlappyBird extends Application {
         	}
         );
         
-        
        
         
         //DEF.startButton.setOnMouseClicked(this::mouseClickHandler);
         
         
         gameControl = new VBox();
-        gameControl.getChildren().addAll(DEF.startButton);
+        gameControl.getChildren().addAll(DEF.startButton, DEF.easy, DEF.medium, DEF.hard, DEF.survival);
       
     }
     
@@ -175,6 +191,18 @@ public class AngryFlappyBird extends Application {
 		 return background;
 	 }
 	 */
+    
+    
+    //Control background music
+    public void controlBackgroundMusic() {
+    	MediaPlayer bgMusic = DEF.backgroundMusicMP;
+    	bgMusic.setVolume(1);
+   	 	bgMusic.play();
+   	 	while (GAME_START || GAME_OVER == false) {
+   	 	bgMusic.play();
+   	 	}
+   	 	bgMusic.stop();
+    }
     
     //Put the candles to the appropriate positions
     public void initializeCandle(Sprite candle, Integer posA, Integer posB) {
@@ -399,8 +427,11 @@ public class AngryFlappyBird extends Application {
     	    	 //changeBackground();
     	    	 
     	    	 //Play background music
-    	    	 DEF.backgroundMusicMP.setVolume(1);
-    	    	 DEF.backgroundMusicMP.setAutoPlay(true);
+    	    	 //controlBackgroundMusic();
+    	    	 
+    	    	 
+				DEF.backgroundMusicMP.setVolume(1);
+				DEF.backgroundMusicMP.setAutoPlay(true);
     	    	 //while (GAME_OVER == false) {
 					//DEF.backgroundMusicMP.setVolume(1);
 					//DEF.backgroundMusicMP.setAutoPlay(true);
@@ -694,7 +725,7 @@ public class AngryFlappyBird extends Application {
 			// end the game when blob hit stuff
 			if (GAME_OVER) {
 				showHitEffect(); 
-				//DEF.backgroundMusicMP.stop();
+				DEF.backgroundMusicMP.stop();
 				for (Sprite floor: floors) {
 					floor.setVelocity(0, 0);
 				}
@@ -707,7 +738,7 @@ public class AngryFlappyBird extends Application {
     		 
     		 for (Pumpkin pumpkin:pumpkins) {
     			 if (blob.intersectsSprite(pumpkin)) {
-    				 DEF.witchLaughMP.play();
+    				 DEF.witchLaughMP.setAutoPlay(true);
     				 System.out.println("pumpkin collected");
     				 if (pumpkin.getType().equals("normal")) {
     					 System.out.println("increase points");
