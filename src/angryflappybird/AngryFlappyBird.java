@@ -245,7 +245,7 @@ public class AngryFlappyBird extends Application {
     		int posX = i * DEF.FLOOR_WIDTH;
     		int posY = DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT;
     		
-    		Sprite floor = new Sprite(posX, posY, DEF.IMAGE.get("floor1"));
+    		Sprite floor = new Sprite(posX, posY, DEF.IMAGE.get("floor2"));
     		floor.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
     		floor.render(gc);
     		
