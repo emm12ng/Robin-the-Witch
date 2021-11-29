@@ -228,7 +228,7 @@ public class AngryFlappyBird extends Application {
             cgc = canvas.getGraphicsContext2D();
             
             // create a background
-            ImageView background = DEF.IMVIEW.get("background");
+            ImageView background = DEF.IMVIEW.get("backgroundLight");
             //ImageView background = changeBackground();
             
             //MediaPlayer backgroundMusic = DEF.backgroundMusicMP;
@@ -245,7 +245,7 @@ public class AngryFlappyBird extends Application {
     		int posX = i * DEF.FLOOR_WIDTH;
     		int posY = DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT;
     		
-    		Sprite floor = new Sprite(posX, posY, DEF.IMAGE.get("floor2"));
+    		Sprite floor = new Sprite(posX, posY, DEF.IMAGE.get("floor1"));
     		floor.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
     		floor.render(gc);
     		
@@ -541,7 +541,7 @@ public class AngryFlappyBird extends Application {
 	    			 if (ghosts.get(0).getPositionX()>DEF.SCENE_WIDTH && makeGhost) {
 	        			 ghosts.get(0).setPositionXY(DEF.SCENE_WIDTH,  0-ghosts.get(0).getHeight());
 	        			 ghosts.get(0).setVelocity(-30, DEF.GHOST_VEL1);
-	        			 DEF.ghostSoundMP.setVolume(200);
+	        			 DEF.ghostSoundMP.setVolume(300);
 	        			 DEF.ghostSoundMP.play();
 	        			 makeGhost = false;
 	        			 //break;

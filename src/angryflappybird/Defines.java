@@ -88,7 +88,7 @@ public class Defines {
     final String STAGE_TITLE = "Angry Flappy Bird";
 	private final String IMAGE_DIR = "../resources/images/";
 
-    final String[] IMAGE_FILES = {"background","blob0", "blob1", "blob2", "blob3", "floor1", "ShortCandleUp", "MiddleCandleUp", "LongCandleUp", "ShortCandleBottom", "MiddleCandleBottom", "LongCandleBottom", "ghost", "goldpumpkin", "normalpumpkin","1-0", "1-1", "1-2", "1-3","1-4","1-5","1-6","1-7","1-8","1-9","1-f"};
+    final String[] IMAGE_FILES = {"backgroundLight","blob0", "blob1", "blob2", "blob3", "floor1", "ShortCandleUp", "MiddleCandleUp", "LongCandleUp", "ShortCandleBottom", "MiddleCandleBottom", "LongCandleBottom", "ghost", "goldpumpkin", "normalpumpkin","1-0", "1-1", "1-2", "1-3","1-4","1-5","1-6","1-7","1-8","1-9","1-f"};
 
 
     final HashMap<String, ImageView> IMVIEW = new HashMap<String, ImageView>();
