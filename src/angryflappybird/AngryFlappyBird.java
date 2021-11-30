@@ -28,6 +28,7 @@ import java.util.Random;
 
 import com.sun.media.jfxmedia.AudioClip;
 
+import java.awt.TextArea;
 import java.awt.geom.Rectangle2D;
 import java.io.File;
 
@@ -58,6 +59,7 @@ public class AngryFlappyBird extends Application {
     // scene graphs
     private Group gameScene;	 // the left half of the scene
     private VBox gameControl;	 // the right half of the GUI (control)
+    private VBox difficultyControl;
 
     private GraphicsContext gc;	
     private GraphicsContext bgc;
@@ -112,22 +114,19 @@ public class AngryFlappyBird extends Application {
     // the getContent method sets the Scene layer
     private void resetGameControl() {
         
-    	//RadioButton selectedDifficulty = (RadioButton) DEF.difficultyLevels.getSelectedToggle();
-		//selectedDifficulty.setOnAction(event -> {
-    		if (DEF.easy.isSelected()) {
-	     	   System.out.print("Difficulty Level: Easy");
-	        }
-	        else if (DEF.medium.isSelected()) {
-	     	   System.out.print("Difficulty Level: Medium");
-	        }
-	        else if (DEF.hard.isSelected()) {
-	     	   System.out.print("Difficulty Level: Hard");
-	        }
-	        else if (DEF.survival.isSelected()){
-	     	   System.out.print("Difficulty Level: Survival");
-	        }
- 	
-	    	
+    	//Picking difficulty level by mouse clicking 
+    	DEF.easy.setOnMouseClicked(event -> {
+    		System.out.print("Difficulty Level: Easy");
+    	});
+    	DEF.medium.setOnMouseClicked(event -> {
+    		System.out.print("Difficulty Level: Medium");
+    	});
+    	DEF.hard.setOnMouseClicked(event -> {
+    		System.out.print("Difficulty Level: Hard");
+    	});
+    	DEF.survival.setOnMouseClicked(event -> {
+    		System.out.print("Difficulty Level: Survival");
+    	});
     	
         //modifying feature
     	//use keyboard input to fire the button
@@ -160,8 +159,11 @@ public class AngryFlappyBird extends Application {
         
         
         gameControl = new VBox();
-        gameControl.getChildren().addAll(DEF.startButton, DEF.easy, DEF.medium, DEF.hard, DEF.survival);
-      
+        gameControl.getChildren().addAll( DEF.easy, DEF.medium, DEF.hard, DEF.survival, DEF.startButton);
+        
+
+        
+        
     }
     
     /*

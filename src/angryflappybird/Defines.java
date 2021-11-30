@@ -1,7 +1,10 @@
 package angryflappybird;
 
+import java.awt.TextArea;
+import java.awt.TextField;
 import java.util.HashMap;
 
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.RadioButton;
@@ -107,7 +110,7 @@ public class Defines {
     
     ToggleGroup difficultyLevels;
     
-    RadioButton selectedDifficulty;
+    TextArea informLevels;
     
     // constructor
 	Defines() {
@@ -173,6 +176,7 @@ public class Defines {
 		// initialize scene nodes
 		startButton = new Button("Go!");
 		
+		
 		easy = new RadioButton("Easy");
 		medium = new RadioButton("Medium");
 		hard = new RadioButton("Hard");
@@ -183,6 +187,8 @@ public class Defines {
 		medium.setToggleGroup(difficultyLevels);
 		hard.setToggleGroup(difficultyLevels);
 		survival.setToggleGroup(difficultyLevels);
+		
+		informLevels = new TextArea();
 		
 		//selectedDifficulty = (RadioButton) difficultyLevels.getSelectedToggle();
 	}
