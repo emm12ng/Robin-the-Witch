@@ -90,6 +90,7 @@ public class Defines {
     Media backgroundMusic = new Media(getClass().getResource("../resources/sounds/backgroundMusic.mp3").toExternalForm());
     MediaPlayer backgroundMusicMP = new MediaPlayer(backgroundMusic);
     
+    
     // coefficients related to media display
     final String STAGE_TITLE = "Angry Flappy Bird";
 	private final String IMAGE_DIR = "../resources/images/";
@@ -104,7 +105,7 @@ public class Defines {
     Button startButton;
   
     RadioButton easy;
-    RadioButton medium;
+    RadioButton intermediate;
     RadioButton hard;
     RadioButton survival;
     
@@ -178,13 +179,13 @@ public class Defines {
 		
 		
 		easy = new RadioButton("Easy");
-		medium = new RadioButton("Medium");
+		intermediate = new RadioButton("Intermediate");
 		hard = new RadioButton("Hard");
 		survival = new RadioButton("Survival");
 		
 		difficultyLevels  = new ToggleGroup();
 		easy.setToggleGroup(difficultyLevels);
-		medium.setToggleGroup(difficultyLevels);
+		intermediate.setToggleGroup(difficultyLevels);
 		hard.setToggleGroup(difficultyLevels);
 		survival.setToggleGroup(difficultyLevels);
 		
