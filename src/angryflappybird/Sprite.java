@@ -90,4 +90,8 @@ public class Sprite {
         positionX += velocityX * time;
         positionY += velocityY * time;
     }
+    public String getType() {
+		return "normal";
+    	
+    }
 }

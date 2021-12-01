@@ -52,14 +52,16 @@ public class AngryFlappyBird extends Application {
     private Group gameScene;	 // the left half of the scene
     private VBox gameControl;	 // the right half of the GUI (control)
 
+    
+    // canvas for background
     private GraphicsContext gc;	
     private GraphicsContext bgc;
     private GraphicsContext cgc;	
     
     Sprite candle;
     
-	// canvas for background
-    
+	
+    private ArrayList<Integer> autoHeight;
     
     //the status of the auto-pliot mode
     private boolean auto = false;
@@ -214,9 +216,58 @@ public class AngryFlappyBird extends Application {
     		candles.add(candle);
     	}
     	*/
+    	int posA;
+    	int posB;
+    	int posC =  DEF.SCENE_HEIGHT - (60);
+    	int random;
     	
     	// initialize candle
-    	
+    	for(int i=0; i<DEF.CANDLE_COUNT; i++) {
+    		random = (int)(Math.random() * 280) + 100; // 100~380
+    		
+    		//autoHeight.add(random);
+	    		
+	    	posA =i* 300+400;
+			posB = -(random+80); //70 is the difficulty
+			Sprite candleDown = new Sprite(posA, posB,DEF.IMAGE.get("CandlesLong"));
+			
+			Sprite candleUp = new Sprite(posA, posB, DEF.IMAGE.get("CandlesLongUp"));
+			
+			Sprite candleBot = new Sprite(posA-15, posC, DEF.IMAGE.get("CandleBottom"));
+			
+			candleUp.setPositionXY(posA, posB);
+			candleUp.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+			
+			posB = DEF.SCENE_HEIGHT - (random); 
+			candleDown.setPositionXY(posA, posB);
+			candleDown.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+			
+			candleBot.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+			
+			if (random %4 == 0) {
+				Pumpkin pumpkin = new Pumpkin(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1, 0, DEF.IMAGE.get("normalpumpkin"), "normal");
+	        	pumpkin.render(gc);
+	        	pumpkins.add(pumpkin);
+	        	
+				
+			}
+			else {
+				candleDown.render(cgc);
+			}
+			
+			candleDown.render(cgc);
+			candleUp.render(cgc);
+			candleBot.render(cgc);
+			
+			candles.add(candleUp);
+			candles.add(candleDown);
+			candles.add(candleBot);
+			
+    	}
+		
+		
+		
+    	/*
     	
     	for(int i=0; i<DEF.CANDLE_COUNT; i++) {
     		
@@ -244,11 +295,11 @@ public class AngryFlappyBird extends Application {
     		
     		candles.add(candle);
     	}
-    	
-        
+    	*/
+    	       
 		//initialize blob
 		blob = new Sprite(DEF.BLOB_POS_X, DEF.BLOB_POS_Y,DEF.IMAGE.get("1-0"));
-		blob.render(gc);
+		blob.render(bgc);
         // initialize ghosts
         for(int i=0; i<DEF.GHOST_COUNT; i++) {
         	Ghost ghost = new Ghost(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1, 0, 0, DEF.IMAGE.get("ghost"));
@@ -257,11 +308,11 @@ public class AngryFlappyBird extends Application {
         }
         
      // initialize pumpkins
-        for(int i=0; i<DEF.PUMPKIN_COUNT; i++) {
-        	Pumpkin pumpkin = new Pumpkin(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1, 0, DEF.IMAGE.get("normalpumpkin"), "normal");
-        	pumpkin.render(gc);
-        	pumpkins.add(pumpkin);
-        }
+       // for(int i=0; i<DEF.PUMPKIN_COUNT; i++) {
+        //	Pumpkin pumpkin = new Pumpkin(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1, 0, DEF.IMAGE.get("normalpumpkin"), "normal");
+        //	pumpkin.render(gc);
+        //	pumpkins.add(pumpkin);
+        //}
 
     	
     	
@@ -297,7 +348,10 @@ public class AngryFlappyBird extends Application {
     	    	 moveCandle();
     	    	 
     	    	 // step2: update blob
-    	    	 moveBlob();
+    	    	 
+    	    	 if (auto == false) {
+    	    	 moveBlob();}
+    	    	 else if (auto ==true) {autoFly();}
     	    	 
     	    	 checkCollision();
     	    	 
@@ -306,8 +360,11 @@ public class AngryFlappyBird extends Application {
     	    	 controlPumpkin();
     	    	 
     	    	 checkPumpkinCollect();
+    	    	 
+    	    	 
+    	    	 }
     	     }
-    	 }
+    	 
     	 
     	 // step1: update floor
     	 private void moveFloor() {
@@ -338,8 +395,8 @@ public class AngryFlappyBird extends Application {
     	 
     	 // step2: update blob
     	 private void moveBlob() {
-    		 if (auto == false) {
-    			 regularFly();}
+    		 regularFly();
+    		
     		 
     	 }
     	 
@@ -404,7 +461,7 @@ public class AngryFlappyBird extends Application {
 	    			 if (pumpkins.get(0).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
 	        			 pumpkins.get(0).setPositionXY(DEF.SCENE_WIDTH, DEF.PUMPKIN_POS_Y);
 	        			 pumpkins.get(0).setVelocity(DEF.PUMPKIN_VEL, 0);
-	        			 if(makeGoldPumpkin) {
+	        			 if(makeGoldPumpkin || true) {
 	        				 pumpkins.get(0).makeGold();
 	        				 pumpkins.get(0).setImage(DEF.IMAGE.get("goldpumpkin"));
 	        			 }
@@ -449,6 +506,23 @@ public class AngryFlappyBird extends Application {
 
     	 }
     	 
+    	 public void autoFly() {
+    		 long difftime  = System.nanoTime();
+    		 
+    		 if (System.nanoTime() - difftime >= 6000000 && auto ==true ) {
+    			int imageIndex = Math.floorDiv(counter++, DEF.BLOB_IMG_PERIOD);
+      			imageIndex = Math.floorMod(imageIndex, DEF.BLOB_IMG_LEN);
+      			blob.setImage(DEF.IMAGE.get("1-"+String.valueOf(imageIndex)));
+      			blob.setVelocity(0, DEF.BLOB_FLY_VEL);
+    		 }
+    		 else {
+    			 auto = false;}
+    		 
+    		 blob.update(elapsedTime * DEF.NANOSEC_TO_SEC);
+      		 blob.render(bgc);
+    	 }
+    	 
+    	 
     	 public void regularFly() {
     		 long diffTime = System.nanoTime() - clickTime;
     		 
@@ -475,7 +549,7 @@ public class AngryFlappyBird extends Application {
 
      		// render blob on GUI
      		blob.update(elapsedTime * DEF.NANOSEC_TO_SEC);
-     		blob.render(gc);
+     		blob.render(bgc);
 
     	 }
     	 
@@ -522,6 +596,7 @@ public class AngryFlappyBird extends Application {
     					 System.out.println("increase points");
     				 }
     				 else {
+    					 
     					 System.out.println("autopilot");
     				 }
     				 pumpkin.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
@@ -549,7 +624,7 @@ public class AngryFlappyBird extends Application {
 	     }
     	 
     } // End of MyTimer class
-    
+   
     
     
 

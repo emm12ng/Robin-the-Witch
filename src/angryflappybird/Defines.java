@@ -1,6 +1,8 @@
 package angryflappybird;
 
+
 import java.util.HashMap;
+import java.util.List;
 
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
@@ -21,13 +23,13 @@ public class Defines {
     final int SCENE_WIDTH = 400;
 
     // coefficients related to the blob
-    final int BLOB_WIDTH = 70;
-    final int BLOB_HEIGHT = 70;
+    final int BLOB_WIDTH = 60;
+    final int BLOB_HEIGHT = 60;
     final int BLOB_POS_X = 70;
     final int BLOB_POS_Y = 200;
     final int BLOB_DROP_TIME = 300000000;  	// the elapsed time threshold before the blob starts dropping
     final int BLOB_DROP_VEL = 300;    		// the blob drop velocity
-    final int BLOB_FLY_VEL = -40;			// the blob flying velocity
+    final int BLOB_FLY_VEL = -80;			// the blob flying velocity
     final int BLOB_IMG_LEN = 10;
     final int BLOB_IMG_PERIOD = 5;
     
@@ -62,6 +64,11 @@ public class Defines {
     final int SHORT_CANDLE_HEIGHT = 120;
     final int CANDLE_COUNT = 500;
     
+    final int CANDLE_KUAN = 40;
+    final int CANDLE_CHANG = 555;
+    final int CANDLE_HOLDER_SQUARE = 60;
+    
+    
     // coefficients related to time
     final int SCENE_SHIFT_TIME = 5;
     final double SCENE_SHIFT_INCR = -0.4;
@@ -74,7 +81,10 @@ public class Defines {
     final String STAGE_TITLE = "Angry Flappy Bird";
 	private final String IMAGE_DIR = "../resources/images/";
 
-    final String[] IMAGE_FILES = {"background","blob0", "blob1", "blob2", "blob3", "floor1", "ShortCandleUp", "MiddleCandleUp", "LongCandleUp", "ShortCandleBottom", "MiddleCandleBottom", "LongCandleBottom", "ghost", "goldpumpkin", "normalpumpkin","1-0", "1-1", "1-2", "1-3","1-4","1-5","1-6","1-7","1-8","1-9","1-f"};
+    final String[] IMAGE_FILES = {"background","blob0", "blob1", "blob2", "blob3", "floor1", "ShortCandleUp", "MiddleCandleUp", 
+    		"LongCandleUp", "ShortCandleBottom", "MiddleCandleBottom", "LongCandleBottom", "ghost", "goldpumpkin", 
+    		"normalpumpkin","1-0", "1-1", "1-2", "1-3","1-4","1-5","1-6","1-7","1-8","1-9","1-f",
+    		"CandlesLong","CandlesLongUp","CandleBottom"};
 
 
     final HashMap<String, ImageView> IMVIEW = new HashMap<String, ImageView>();
@@ -134,6 +144,13 @@ public class Defines {
 				img = new Image(pathImage(IMAGE_FILES[i]), BLOB_WIDTH, BLOB_HEIGHT, false, false);
 				
 			}
+			else if (i == 26 || i == 27) {
+				img = new Image(pathImage(IMAGE_FILES[i]), 24, 500, false, false);
+				
+			}
+			else if (i == 28) {
+				img = new Image(pathImage(IMAGE_FILES[i]), CANDLE_HOLDER_SQUARE,CANDLE_HOLDER_SQUARE, false, false);
+			}
 			else {
 				img = new Image(pathImage(IMAGE_FILES[i]), SCENE_WIDTH, SCENE_HEIGHT, false, false);
 			}
@@ -168,10 +185,13 @@ public class Defines {
     	return soundEffect;
     }
 	
+	
+
+	
 	public String randomCandlePic() {
 		int max = 6;
         int min = 1;
-        int range = max - min + 1;
+        int range = max - min + 1; //6
         int random = 7;
         while (random > 6) {
         	random = (int)(Math.random() * range) + min;
