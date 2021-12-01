@@ -62,6 +62,8 @@ public class AngryFlappyBird extends Application {
     private Text livesText;
     
     private boolean candleCollision = false;
+    private boolean floorCollision = false;
+    private boolean ghostCollision = false;
     private boolean decreaseScore = false;
 
 
@@ -70,6 +72,7 @@ public class AngryFlappyBird extends Application {
 
 
     private boolean PUMPKIN_COLLECTED = false;
+    private boolean NORMAL_PUMPKIN_COLLECTED = false;
 
     // scene graphs
     private Group gameScene;	 // the left half of the scene
@@ -168,11 +171,6 @@ public class AngryFlappyBird extends Application {
         	}
         );
 
-
-
-        //DEF.startButton.setOnMouseClicked(this::mouseClickHandler);
-
-
         gameControl = new VBox();
         gameControl.getChildren().addAll( DEF.easy, DEF.intermediate, DEF.hard, DEF.survival, DEF.startButton);
 
@@ -181,33 +179,7 @@ public class AngryFlappyBird extends Application {
 
     }
 
-    /*
-    private void mouseClickHandler() {
-    	if (GAME_OVER) {
-            resetGameScene(false);
-        }
-    	else if (GAME_START){
-            clickTime = System.nanoTime();
-        }
-    	GAME_START = true;
-        CLICKED = true;
-    }
-    */
 
-
-    //Change the background with time
-    /*
-    private ImageView changeBackground() {
-		 ImageView background;
-		 if (startTime > 5) {
-			 System.out.print("Scene Change");
-			 background = DEF.IMVIEW.get("background1");
-			 return background;
-		 }
-		 background = DEF.IMVIEW.get("background");
-		 return background;
-	 }
-	 */
 
 
     //Control background music
@@ -401,17 +373,7 @@ public class AngryFlappyBird extends Application {
     	    	 //change background
     	    	 //changeBackground();
 
-    	    	 //Play background music
-    	    	 //controlBackgroundMusic();
 
-
-				//DEF.backgroundMusicMP.setVolume(1);
-				//DEF.backgroundMusicMP.setAutoPlay(true);
-    	    	 //while (GAME_OVER == false) {
-					//DEF.backgroundMusicMP.setVolume(1);
-					//DEF.backgroundMusicMP.setAutoPlay(true);
-    	    	 //}
-    	    	 //DEF.backgroundMusicMP.stop()
     	     }
     	 }
 
@@ -508,25 +470,6 @@ public class AngryFlappyBird extends Application {
     				 //controlPumpkin(pickedCandle.getPositionX(), ((200 )));
     				 totalPumpkin = totalPumpkin - 1;
     			 }
-
-    			 /*
-    			 if (pickedCandle.getWidth() == DEF.UP_CANDLE_WIDTH) {
-    				 controlPumpkin(pickedCandle.getPositionX(), pickedCandle.getPositionY() + 100);
-    			 } else {
-    			 */
-    			 /*
-    				 if (pickedCandle.getHeight() == DEF.SHORT_CANDLE_HEIGHT) {
-    					 controlPumpkin(pickedCandle.getPositionX(), pickedCandle.getPositionY() + 100 + pickedCandle.getHeight());
-  	    			}
-  	    			else if (pickedCandle.getHeight() == DEF.MIDDLE_CANDLE_HEIGHT) {
-  	    				controlPumpkin(pickedCandle.getPositionX(), pickedCandle.getPositionY() + 100 + pickedCandle.getHeight());
-  	    			}
-  	    			else {
-  	    				controlPumpkin(pickedCandle.getPositionX(), pickedCandle.getPositionY() + 100 + pickedCandle.getHeight());
-  	    			}
-    			 */
-
-    			 //totalPumpkin = totalPumpkin - 1;
     		 }
     	}
 
@@ -683,32 +626,36 @@ public class AngryFlappyBird extends Application {
     		// check collision to floor
 			for (Sprite floor: floors) {
 				if (blob.intersectsSprite(floor)) {
-					lives = 3;
-					score = 0;
+					//lives = 3;
+					//score = 0;
+					floorCollision = true;
 				}
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(floor);
+			}
+			if (floorCollision) {
+				lives = 3;
+				score = 0;
+				floorCollision = false;
 			}
 
 
 			for (Sprite ghost: ghosts) {
 				if (blob.intersectsSprite(ghost)) {
-					lives = 3;
-					score = 0;
+					//lives = 3;
+					//score = 0;
+					ghostCollision = true;
 				}
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost);
+			}
+			if (ghostCollision) {
+				lives = 3;
+				score = 0;
+				ghostCollision = false;
 			}
 
 
 			// check collision to candles
 			for (Sprite candle: candles) {
-				/*
-				javafx.geometry.Rectangle2D a;
-				a = candle.getCandleBoundary();
-				System.out.print(a.getMaxX());
-				System.out.print(a.getMaxY());
-				System.out.print(a.getMinX());
-				System.out.print(a.getMinY());
-				*/
 				if (blob.intersectsSprite(candle)) {
 					//lives = lives - 1;
 					candleCollision = true;
@@ -739,7 +686,7 @@ public class AngryFlappyBird extends Application {
     				 PUMPKIN_COLLECTED = true;
     				 System.out.println("pumpkin collected");
     				 if (pumpkin.getType().equals("normal")) {
-    					 score = score + 5;
+        				 NORMAL_PUMPKIN_COLLECTED = true;
     				 }
     				 else {
     					 System.out.println("autopilot");
@@ -766,7 +713,9 @@ public class AngryFlappyBird extends Application {
     			 DEF.witchLaughMP.stop();
     			 DEF.witchLaughMP.play();
     			 PUMPKIN_COLLECTED = false;
-
+    			 if (NORMAL_PUMPKIN_COLLECTED) {
+        			 score = score + 5;
+    			 }
     		 }
 
     		 //!!! If game stops for any reason stop the laugh!!!
