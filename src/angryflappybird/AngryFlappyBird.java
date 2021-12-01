@@ -320,7 +320,7 @@ public class AngryFlappyBird extends Application {
         
      // initialize pumpkins
         for(int i=0; i<DEF.PUMPKIN_COUNT; i++) {
-        	Pumpkin pumpkin = new Pumpkin(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1, 0, DEF.IMAGE.get("normalpumpkin"), "normal");
+        	Pumpkin pumpkin = new Pumpkin(DEF.SCENE_WIDTH+2 + DEF.GHOST_WIDTH, DEF.SCENE_HEIGHT+1, 0, DEF.IMAGE.get("normalpumpkin"), "normal");
         	pumpkin.render(gc);
         	pumpkins.add(pumpkin);
         }
@@ -693,13 +693,12 @@ public class AngryFlappyBird extends Application {
     					 //DEF.witchLaughMP.play();
     				 }
     				 //DEF.witchLaughMP.setCycleCount(DEF.witchLaughMP.getCycleCount() + 1);
-    				 pumpkin.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
+    				 pumpkin.setPositionXY(DEF.SCENE_WIDTH+2 + DEF.GHOST_WIDTH, DEF.SCENE_HEIGHT+1);
     				 pumpkin.makeNormal();
     				 pumpkin.setVelocity(0, 0);
     			 }
     			 for (Ghost ghost:ghosts) {
     				 if (ghost.intersectsSprite(pumpkin)) {
-    					 ghost.stealPumpkin();
     					 pumpkin.isStolen(DEF.GHOST_VEL1);
     					 decreaseScore = true;
     				 }
