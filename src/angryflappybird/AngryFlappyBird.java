@@ -19,6 +19,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import com.sun.media.jfxmedia.AudioClip;
+
 
 import java.awt.TextArea;
 import java.awt.geom.Rectangle2D;
@@ -51,6 +54,15 @@ public class AngryFlappyBird extends Application {
     private ArrayList<Pumpkin> pumpkins;
 
     private ArrayList<Sprite> candles;
+    
+    private int score;
+    private int lives;
+    
+    private Text scoreText;
+    private Text livesText;
+    
+    private boolean candleCollision = false;
+    private boolean decreaseScore = false;
 
 
     // game flags
@@ -67,6 +79,7 @@ public class AngryFlappyBird extends Application {
     private GraphicsContext gc;
     private GraphicsContext bgc;
     private GraphicsContext cgc;
+    private GraphicsContext tgc;
 
 
 	
@@ -249,6 +262,13 @@ public class AngryFlappyBird extends Application {
         candles = new ArrayList<>();
 
     	if(firstEntry) {
+    		
+    		lives = 3;
+            score = 0;
+            
+            scoreText = new Text();
+            livesText = new Text();
+            
     		// create two canvases
             Canvas canvas = new Canvas(DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
             gc = canvas.getGraphicsContext2D();
@@ -258,6 +278,9 @@ public class AngryFlappyBird extends Application {
 
             Canvas ccanvas = new Canvas(DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
             cgc = canvas.getGraphicsContext2D();
+            
+            Canvas tcanvas = new Canvas(DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
+            tgc = canvas.getGraphicsContext2D();
 
             // create a background
             ImageView background = DEF.IMVIEW.get("backgroundLight");
@@ -268,8 +291,23 @@ public class AngryFlappyBird extends Application {
 
             // create the game scene
             gameScene = new Group();
-            gameScene.getChildren().addAll(background, canvas, bcanvas, ccanvas);
+            gameScene.getChildren().addAll(background, canvas, bcanvas, ccanvas, tcanvas,  scoreText, livesText);
     	}
+    	
+    	scoreText.setX(20);
+    	scoreText.setY(60);
+    	livesText.setX(DEF.SCENE_WIDTH - 120);
+    	livesText.setY(DEF.SCENE_HEIGHT - 20);
+    	
+    	scoreText.setFont(Font.font("Verdana", 50));
+    	livesText.setFont(Font.font("Verdana", 20));
+    	scoreText.setFill(Color.WHITE);
+    	livesText.setFill(Color.RED);
+    	
+    	tgc.setLineWidth(3.0);
+        tgc.setFill(Color.WHITE);
+    	tgc.fillText(String.valueOf(score), 20, 60);
+    	tgc.fillText(lives + " lives left", DEF.SCENE_WIDTH - 120, DEF.SCENE_HEIGHT - 20);
 
     	// initialize floor
     	for(int i=0; i<DEF.FLOOR_COUNT; i++) {
@@ -356,6 +394,9 @@ public class AngryFlappyBird extends Application {
     	    	 pumpkinOverCandle();
     	    	 //check pumpkin collection
     	    	 checkPumpkinCollect();
+    	    	 
+    	    	 scoreText.setText(String.valueOf(score));
+    	    	 livesText.setText(lives + " lives left");
 
     	    	 //change background
     	    	 //changeBackground();
@@ -641,11 +682,19 @@ public class AngryFlappyBird extends Application {
     		// check if either floors were hit
     		// check collision to floor
 			for (Sprite floor: floors) {
+				if (blob.intersectsSprite(floor)) {
+					lives = 3;
+					score = 0;
+				}
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(floor);
 			}
 
 
 			for (Sprite ghost: ghosts) {
+				if (blob.intersectsSprite(ghost)) {
+					lives = 3;
+					score = 0;
+				}
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost);
 			}
 
@@ -660,7 +709,15 @@ public class AngryFlappyBird extends Application {
 				System.out.print(a.getMinX());
 				System.out.print(a.getMinY());
 				*/
+				if (blob.intersectsSprite(candle)) {
+					//lives = lives - 1;
+					candleCollision = true;
+				}
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
+			}
+			if (candleCollision) {
+				lives = lives - 1;
+				candleCollision = false;
 			}
 
 			// end the game when blob hit stuff
@@ -682,8 +739,7 @@ public class AngryFlappyBird extends Application {
     				 PUMPKIN_COLLECTED = true;
     				 System.out.println("pumpkin collected");
     				 if (pumpkin.getType().equals("normal")) {
-    					 System.out.println("increase points");
-    					 //DEF.witchLaughMP.play();
+    					 score = score + 5;
     				 }
     				 else {
     					 System.out.println("autopilot");
@@ -698,9 +754,14 @@ public class AngryFlappyBird extends Application {
     				 if (ghost.intersectsSprite(pumpkin)) {
     					 ghost.stealPumpkin();
     					 pumpkin.isStolen(DEF.GHOST_VEL1);
+    					 decreaseScore = true;
     				 }
     			 }
     		 }
+    		 if (decreaseScore) {
+				 score = score - 3;
+				 decreaseScore = false;
+			 }
     		 if (PUMPKIN_COLLECTED) {
     			 DEF.witchLaughMP.stop();
     			 DEF.witchLaughMP.play();
