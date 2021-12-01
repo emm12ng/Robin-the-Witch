@@ -34,7 +34,7 @@ public class Defines {
     // coefficients related to the ghost
     final int GHOST_POS_Y = 0;
     final int GHOST_POS_X = SCENE_WIDTH;
-    final int GHOST_VEL1 = 30;
+    final int GHOST_VEL1 = 40;
     final int GHOST_VEL2 = 60;
     final int GHOST_VEL3 = 90;
     final int GHOST_WIDTH = 70;
