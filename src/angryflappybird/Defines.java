@@ -90,13 +90,11 @@ public class Defines {
     Media backgroundMusic = new Media(getClass().getResource("../resources/sounds/backgroundMusic.mp3").toExternalForm());
     MediaPlayer backgroundMusicMP = new MediaPlayer(backgroundMusic);
     
-
+    
     // coefficients related to media display
     final String STAGE_TITLE = "Angry Flappy Bird";
 	private final String IMAGE_DIR = "../resources/images/";
 
-
-    
     final String[] IMAGE_FILES = {"backgroundLight","blob0", "blob1", "blob2", "blob3", "floor1", "ShortCandleUp", "MiddleCandleUp", "LongCandleUp", "ShortCandleBottom", "MiddleCandleBottom", "LongCandleBottom", "ghost", "goldpumpkin", "normalpumpkin","1-0", "1-1", "1-2", "1-3","1-4","1-5","1-6","1-7","1-8","1-9","1-f"};
 
 
@@ -106,7 +104,6 @@ public class Defines {
     //nodes on the scene graph
     Button startButton;
   
-
     RadioButton easy;
     RadioButton intermediate;
     RadioButton hard;
@@ -115,7 +112,6 @@ public class Defines {
     ToggleGroup difficultyLevels;
     
     TextArea informLevels;
-
     
     // constructor
 	Defines() {
@@ -181,7 +177,6 @@ public class Defines {
 		// initialize scene nodes
 		startButton = new Button("Go!");
 		
-
 		
 		easy = new RadioButton("Easy");
 		intermediate = new RadioButton("Intermediate");
@@ -197,7 +192,6 @@ public class Defines {
 		informLevels = new TextArea();
 		
 		//selectedDifficulty = (RadioButton) difficultyLevels.getSelectedToggle();
-
 	}
 	
 	public String pathImage(String filepath) {
