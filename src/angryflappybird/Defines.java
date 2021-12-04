@@ -47,9 +47,9 @@ public class Defines {
     final int PUMPKIN_POS_X = SCENE_WIDTH;
     final int PUMPKIN_POS_Y = 150; // depend on pipe
     final int PUMPKIN_VEL = -30; // depend on pipe
-    final int PUMPKIN_WIDTH = 70;
-    final int PUMPKIN_HEIGHT = 70;
-    final int PUMPKIN_COUNT = 2;
+    final int PUMPKIN_WIDTH = 100;
+    final int PUMPKIN_HEIGHT = 100;
+    final int PUMPKIN_COUNT = 10;
     
     // coefficients related to the floors
     final int FLOOR_WIDTH = 400;
@@ -64,9 +64,12 @@ public class Defines {
     final int SHORT_CANDLE_HEIGHT = 120;
     final int CANDLE_COUNT = 500;
     
-    final int CANDLE_KUAN = 40;
-    final int CANDLE_CHANG = 555;
+    final int CANDLES_SPLIT = 300;
+    final int CANDLES_START = 400;
     final int CANDLE_HOLDER_SQUARE = 60;
+    
+   // coefficient related to text and score
+    final int LIFE_NO = 3;
     
     
     // coefficients related to time

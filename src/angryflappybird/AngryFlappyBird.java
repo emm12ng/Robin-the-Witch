@@ -16,7 +16,8 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -40,13 +41,24 @@ public class AngryFlappyBird extends Application {
     private ArrayList<Sprite> floors;
 
     private ArrayList<Ghost> ghosts;
-    private ArrayList<Pumpkin> pumpkins;
+    private ArrayList<Sprite> pumpkins;
 
     private ArrayList<Sprite> candles;
+    
+   
+    
+    //score and life
+    
+    private int score;
+    private int lives = 3;
+    
+    private Text scoreText;
+    private Text livesText;
+    private Text gameOverSlogen;
 
     
     // game flags
-    private boolean CLICKED, GAME_START, GAME_OVER;
+    private boolean CLICKED, GAME_START, GAME_OVER,LIVELOSS;
     
     // scene graphs
     private Group gameScene;	 // the left half of the scene
@@ -56,7 +68,8 @@ public class AngryFlappyBird extends Application {
     // canvas for background
     private GraphicsContext gc;	
     private GraphicsContext bgc;
-    private GraphicsContext cgc;	
+    private GraphicsContext cgc;
+    private GraphicsContext tgc;
     
     Sprite candle;
     
@@ -111,9 +124,18 @@ public class AngryFlappyBird extends Application {
         
         DEF.startButton.setOnAction(event -> {
             if (GAME_OVER) {
-                resetGameScene(false);
+            	gc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
+       	     bgc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
+       	     cgc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
+       	  gameOverSlogen.setText("GAMEOVER");
                 
             }
+            else if (LIVELOSS) {
+            	
+            	resetGameScene(false);
+            	
+            		
+            	}
         	else if (GAME_START){
                 clickTime = System.nanoTime();   
                 
@@ -135,31 +157,25 @@ public class AngryFlappyBird extends Application {
       
     }
     
-    /*
-    private void mouseClickHandler() {
-    	if (GAME_OVER) {
-            resetGameScene(false);
-        }
-    	else if (GAME_START){
-            clickTime = System.nanoTime();   
-        }
-    	GAME_START = true;
-        CLICKED = true;
-    }
-    */
+   
     private void resetGameScene(boolean firstEntry) {
     	
     	// reset variables
         CLICKED = false;
         GAME_OVER = false;
         GAME_START = false;
+
+        LIVELOSS = false;
         floors = new ArrayList<>();
 
         ghosts = new ArrayList<>();
         pumpkins = new ArrayList<>();
 
         candles = new ArrayList<>();
-
+        
+        
+        
+        
     	if(firstEntry) {
     		// create two canvases
             Canvas canvas = new Canvas(DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
@@ -171,13 +187,53 @@ public class AngryFlappyBird extends Application {
             Canvas ccanvas = new Canvas(DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
             cgc = canvas.getGraphicsContext2D();
             
+            Canvas tcanvas = new Canvas(DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
+            tgc = canvas.getGraphicsContext2D();
+            
             // create a background
             ImageView background = DEF.IMVIEW.get("background");
             
+            
+            //create score and live display
+            
+            
+            
+            scoreText = new Text();
+            livesText = new Text();
+            gameOverSlogen = new Text();
+            
             // create the game scene
             gameScene = new Group();
-            gameScene.getChildren().addAll(background, canvas, bcanvas, ccanvas);
+            gameScene.getChildren().addAll(background, canvas, bcanvas, ccanvas,tcanvas,  scoreText, livesText,gameOverSlogen);
     	}
+    	
+    	//initialize live and score
+    	
+    	
+        
+    	scoreText.setX(20);
+    	scoreText.setY(60);
+    	livesText.setX(DEF.SCENE_WIDTH - 120);
+    	livesText.setY(DEF.SCENE_HEIGHT - 20);
+    	
+    	gameOverSlogen.setX(60);
+    	gameOverSlogen.setY(200);
+    	gameOverSlogen.setFont(Font.font("Verdana", 50));
+    	gameOverSlogen.setFill(Color.WHITE);
+    	
+    	
+    	scoreText.setFont(Font.font("Verdana", 50));
+    	livesText.setFont(Font.font("Verdana", 20));
+    	scoreText.setFill(Color.WHITE);
+    	livesText.setFill(Color.RED);
+    	/*
+    	tgc.setLineWidth(3.0);
+        tgc.setFill(Color.WHITE);
+    	tgc.fillText(String.valueOf(score), 20, 60);
+    	
+    	tgc.fillText(String.valueOf(lives) + " lives left", DEF.SCENE_WIDTH - 120, DEF.SCENE_HEIGHT - 20);
+    	
+    	*/
     	
     	// initialize floor
     	for(int i=0; i<DEF.FLOOR_COUNT; i++) {
@@ -216,6 +272,8 @@ public class AngryFlappyBird extends Application {
     		candles.add(candle);
     	}
     	*/
+    	
+    	
     	int posA;
     	int posB;
     	int posC =  DEF.SCENE_HEIGHT - (60);
@@ -223,17 +281,21 @@ public class AngryFlappyBird extends Application {
     	
     	// initialize candle
     	for(int i=0; i<DEF.CANDLE_COUNT; i++) {
-    		random = (int)(Math.random() * 280) + 100; // 100~380
+    		random = (int)(Math.random() * 200) + 100; // 100~380
     		
     		//autoHeight.add(random);
 	    		
-	    	posA =i* 300+400;
+	    	posA =i* DEF.CANDLES_SPLIT+DEF.CANDLES_START;
 			posB = -(random+80); //70 is the difficulty
 			Sprite candleDown = new Sprite(posA, posB,DEF.IMAGE.get("CandlesLong"));
 			
 			Sprite candleUp = new Sprite(posA, posB, DEF.IMAGE.get("CandlesLongUp"));
 			
-			Sprite candleBot = new Sprite(posA-15, posC, DEF.IMAGE.get("CandleBottom"));
+			Sprite candleBot = new Sprite(posA-16, posC, DEF.IMAGE.get("CandleBottom"));
+			
+			Sprite normalPumpkin = new Sprite(posA-36, posC-100, DEF.IMAGE.get("normalpumpkin"));
+			
+			Sprite goldPumpkin = new Sprite(posA-36, posC-100, DEF.IMAGE.get("goldpumpkin"));
 			
 			candleUp.setPositionXY(posA, posB);
 			candleUp.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
@@ -243,25 +305,35 @@ public class AngryFlappyBird extends Application {
 			candleDown.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
 			
 			candleBot.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+		
 			
-			if (random %4 == 0) {
-				Pumpkin pumpkin = new Pumpkin(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1, 0, DEF.IMAGE.get("normalpumpkin"), "normal");
-	        	pumpkin.render(gc);
-	        	pumpkins.add(pumpkin);
-	        	
+			
+			if (random %3 == 0 && random %6 !=0) {
+				normalPumpkin.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+				normalPumpkin.render(cgc);
+				
+				pumpkins.add(normalPumpkin);
 				
 			}
+			else if  (random %6 ==0)
+			{	goldPumpkin.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+				goldPumpkin.render(cgc);
+				pumpkins.add(goldPumpkin);}
 			else {
 				candleDown.render(cgc);
+				candles.add(candleDown);
 			}
 			
-			candleDown.render(cgc);
 			candleUp.render(cgc);
 			candleBot.render(cgc);
 			
 			candles.add(candleUp);
-			candles.add(candleDown);
+			
+			
 			candles.add(candleBot);
+			
+			
+
 			
     	}
 		
@@ -300,6 +372,8 @@ public class AngryFlappyBird extends Application {
 		//initialize blob
 		blob = new Sprite(DEF.BLOB_POS_X, DEF.BLOB_POS_Y,DEF.IMAGE.get("1-0"));
 		blob.render(bgc);
+		
+		
         // initialize ghosts
         for(int i=0; i<DEF.GHOST_COUNT; i++) {
         	Ghost ghost = new Ghost(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1, 0, 0, DEF.IMAGE.get("ghost"));
@@ -340,6 +414,8 @@ public class AngryFlappyBird extends Application {
     	     // clear current scene
     	     gc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
     	     bgc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
+    	     cgc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
+    	     tgc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
 
     	     if (GAME_START) {
     	    	 // step1: update floor
@@ -347,19 +423,28 @@ public class AngryFlappyBird extends Application {
     	    	 
     	    	 moveCandle();
     	    	 
+    	    	 movePumpkin();
+    	    	 
+    	    	 checkScore();
+    	    	 
     	    	 // step2: update blob
     	    	 
-    	    	 if (auto == false) {
-    	    	 moveBlob();}
-    	    	 else if (auto ==true) {autoFly();}
+    	    	 
+    	    	 moveBlob();
+    	    	 
+    	    	 
     	    	 
     	    	 checkCollision();
     	    	 
-    	    	 controlGhost();
+    	    	 //controlGhost();
     	    	 
-    	    	 controlPumpkin();
+    	    	 //controlPumpkin();
     	    	 
     	    	 checkPumpkinCollect();
+    	    	 
+    	    	 displayLives();
+    	    	 
+    	    	 
     	    	 
     	    	 
     	    	 }
@@ -379,7 +464,7 @@ public class AngryFlappyBird extends Application {
     			floors.get(i).update(DEF.SCENE_SHIFT_TIME);
     		}
     	 }
-    	 
+    	 // update candles
     	 private void moveCandle() {
      		
      		for(int i=0; i<DEF.CANDLE_COUNT; i++) {
@@ -393,119 +478,58 @@ public class AngryFlappyBird extends Application {
      		}
      	 }
     	 
+    	 //update pumpkin
+    	
+    	 private void movePumpkin() {
+      		
+      		for(int i=0; i<DEF.PUMPKIN_COUNT; i++) {
+      			
+      			pumpkins.get(i).render(cgc);
+      			pumpkins.get(i).update(DEF.SCENE_SHIFT_TIME);
+      		}
+      	 }
+    	 
+    	 //check score
+    	 public  void checkScore() {
+    		 
+    		 for (int i =1; i < DEF.CANDLE_COUNT; i += 3) {
+    			 if (candles.get(i).getPositionX() ==DEF.BLOB_POS_X ) {
+    				 score ++;
+    				 
+    			 }
+    			 
+    		 }
+    		 
+    	
+    		 
+    		 
+    		 
+    	 }
+    	 // update live
+    	 public void displayLives() {
+    		 scoreText.setText(String.valueOf(score));
+	    	 livesText.setText(lives + " lives left");
+    	 }
+    	 //check lives
+    	 public void  checkLives() {
+    		 for (Sprite candle: candles) {
+ 				if  (lives != 0 && blob.intersectsSprite(candle)) {
+ 					LIVELOSS = false;
+ 					}
+ 			}
+    	 }
+    	 
+    	 
+    	 
     	 // step2: update blob
     	 private void moveBlob() {
     		 regularFly();
-    		
-    		 
+ 
     	 }
     	 
     	
     	 
-    	 public void controlGhost() {
-    		 Random rand = new Random();
-    		 int makeGhostInt = rand.nextInt(400);
-    		 boolean makeGhost = false;
-    		 if (makeGhostInt == 1) {
-    			 makeGhost = true;
-    		 }
-    		 int makeGhostInt2 = rand.nextInt(500);
-    		 boolean makeGhost2 = false;
-    		 if (makeGhostInt2 == 1) {
-    			 makeGhost2 = true;
-    		 }
-    		 if (makeGhost) {
-	    		 /**for (Sprite ghost:ghosts) {*/
-	    			 if (ghosts.get(0).getPositionX()>DEF.SCENE_WIDTH && makeGhost) {
-	        			 ghosts.get(0).setPositionXY(DEF.SCENE_WIDTH,  0-ghosts.get(0).getHeight());
-	        			 ghosts.get(0).setVelocity(-30, DEF.GHOST_VEL1);
-	        			 makeGhost = false;
-	        			 //break;
-	        		 }
-	    		 //}
-    		 }
-    		 if (makeGhost2) {
-	    		 /**for (Sprite ghost:ghosts) {*/
-	    			 if (ghosts.get(1).getPositionX()>DEF.SCENE_WIDTH && makeGhost2) {
-	        			 ghosts.get(1).setPositionXY(DEF.SCENE_WIDTH,  0-ghosts.get(1).getHeight());
-	        			 ghosts.get(1).setVelocity(-30, DEF.GHOST_VEL1);
-	        			 makeGhost2 = false;
-	        			 //break;
-	        		 }
-	    		 //}
-    		 }
-    		 for(Sprite ghost :ghosts) {
-    			 if (ghost.getPositionX()<0-ghost.getWidth() || ghost.getPositionY()<0-ghost.getHeight()) {
-        			 ghost.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
-        			 ghost.setVelocity(0, 0);
-    			 }
-    			 ghost.update(elapsedTime * DEF.NANOSEC_TO_SEC);
-        		 ghost.render(gc);
-    		 }
-    	 }
-    	 
-    	 public void controlPumpkin() {
-    		 Random rand = new Random();
-    		 int makePumpkinInt = rand.nextInt(300);
-    		 boolean makePumpkin = false;
-    		 if (makePumpkinInt == 1) {
-    			 makePumpkin = true;
-    		 }
-    		 if (makePumpkin) {
-    			 int makeGoldPumpkinInt = rand.nextInt(4);
-    			 boolean makeGoldPumpkin = false;
-        		 if (makeGoldPumpkinInt == 3) {
-        			 makeGoldPumpkin = true;
-        		 }
-	    		 //for (Pumpkin pumpkin:pumpkins) {
-	    			 if (pumpkins.get(0).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
-	        			 pumpkins.get(0).setPositionXY(DEF.SCENE_WIDTH, DEF.PUMPKIN_POS_Y);
-	        			 pumpkins.get(0).setVelocity(DEF.PUMPKIN_VEL, 0);
-	        			 if(makeGoldPumpkin || true) {
-	        				 pumpkins.get(0).makeGold();
-	        				 pumpkins.get(0).setImage(DEF.IMAGE.get("goldpumpkin"));
-	        			 }
-	        			 makePumpkin = false;
-	        			 //break;
-	        		 }
-	    		 //}
-    		 }
-    		 int makePumpkinInt2 = rand.nextInt(300);
-    		 boolean makePumpkin2 = false;
-    		 if (makePumpkinInt2 == 1) {
-    			 makePumpkin2 = true;
-    		 }
-    		 if (makePumpkin2) {
-    			 int makeGoldPumpkinInt2 = rand.nextInt(4);
-    			 boolean makeGoldPumpkin2 = false;
-        		 if (makeGoldPumpkinInt2 == 3) {
-        			 makeGoldPumpkin2 = true;
-        		 }
-	    		 //for (Pumpkin pumpkin:pumpkins) {
-	    			 if (pumpkins.get(1).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
-	        			 pumpkins.get(1).setPositionXY(DEF.SCENE_WIDTH, DEF.PUMPKIN_POS_Y);
-	        			 pumpkins.get(1).setVelocity(DEF.PUMPKIN_VEL, 0);
-	        			 if(makeGoldPumpkin2) {
-	        				 pumpkins.get(1).makeGold();
-	        				 pumpkins.get(1).setImage(DEF.IMAGE.get("goldpumpkin"));
-	        			 }
-	        			 makePumpkin2 = false;
-	        			 //break;
-	        		 }
-	    		 //}
-    		 }
-    		 for(Pumpkin pumpkin :pumpkins) {
-    			 if (pumpkin.getPositionX()<0-pumpkin.getWidth() || pumpkin.getPositionY()<0-pumpkin.getHeight()) {
-        			 pumpkin.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
-        			 pumpkin.setVelocity(0, 0);
-        			 pumpkin.makeNormal();
-    			 }
-    			 pumpkin.update(elapsedTime * DEF.NANOSEC_TO_SEC);
-        		 pumpkin.render(gc);
-    		 }
-
-    	 }
-    	 
+    	
     	 public void autoFly() {
     		 long difftime  = System.nanoTime();
     		 
@@ -568,49 +592,81 @@ public class AngryFlappyBird extends Application {
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost);
 			}
 			
-			
-			
-
 			// check collision to candles
 			for (Sprite candle: candles) {
-				GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
+				if (lives != 0) {
+				LIVELOSS = LIVELOSS || blob.intersectsSprite(candle);
+				
+				}
+				else {
+					GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
+				}
 			}
-			
-			// end the game when blob hit stuff
-			if (GAME_OVER) {
+
+			if (LIVELOSS) {
 				showHitEffect(); 
 				for (Sprite floor: floors) {
 					floor.setVelocity(0, 0);
 				}
 				timer.stop();
+				lives -=1;
+			}
+			
+			
+				
+			
+			// end the game when blob hit stuff
+			if (GAME_OVER) {
+				lives = 0;
+				showHitEffect(); 
+				for (Sprite floor: floors) {
+					floor.setVelocity(0, 0);
+				}
+				timer.stop();
+				
+				
 			}
 			
     	 }
     	 
+    	 
+    	 
     	 public void checkPumpkinCollect() {
     		 
-    		 for (Pumpkin pumpkin:pumpkins) {
+    		 for (Sprite pumpkin:pumpkins) {
     			 if (blob.intersectsSprite(pumpkin)) {
     				 System.out.println("pumpkin collected");
-    				 if (pumpkin.getType().equals("normal")) {
-    					 System.out.println("increase points");
+    				 System.out.println(pumpkin.isGold());
+    				 if (pumpkin.isGold()) {
+    					 System.out.println("autopilot");
+    					 auto = true;
+    					 
     				 }
     				 else {
     					 
-    					 System.out.println("autopilot");
+    					 System.out.println("increase points");
     				 }
     				 pumpkin.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
-    				 pumpkin.makeNormal();
+    				 
     				 pumpkin.setVelocity(0, 0);
     			 }
     			 for (Ghost ghost:ghosts) {
     				 if (ghost.intersectsSprite(pumpkin)) {
     					 ghost.stealPumpkin();
-    					 pumpkin.isStolen(DEF.GHOST_VEL1);
+    					 
     				 }
     			 }
     		 }
     		 
+    	 }
+    	 
+    	 private void showCollEffect() {
+    		 ParallelTransition parallelTransition = new ParallelTransition();
+ 	        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(DEF.TRANSITION_TIME), gameScene);
+ 	        fadeTransition.setToValue(0);
+ 	        fadeTransition.setCycleCount(DEF.TRANSITION_CYCLE);
+ 	        fadeTransition.setAutoReverse(true);
+ 	        
     	 }
     	 
 	     private void showHitEffect() {

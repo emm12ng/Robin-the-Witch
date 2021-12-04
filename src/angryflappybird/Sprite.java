@@ -90,8 +90,9 @@ public class Sprite {
         positionX += velocityX * time;
         positionY += velocityY * time;
     }
-    public String getType() {
-		return "normal";
-    	
+    public boolean isGold() {
+    	return image.getUrl().contains("goldpumpkin.png");
+ 
     }
+   
 }
