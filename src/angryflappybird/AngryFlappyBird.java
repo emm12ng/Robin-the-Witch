@@ -55,6 +55,8 @@ public class AngryFlappyBird extends Application {
 
     private ArrayList<Sprite> candles;
     
+    private ArrayList<Sprite> takenCandles;
+    
     private int score;
     private int lives;
     
@@ -320,10 +322,12 @@ public class AngryFlappyBird extends Application {
         
      // initialize pumpkins
         for(int i=0; i<DEF.PUMPKIN_COUNT; i++) {
-        	Pumpkin pumpkin = new Pumpkin(DEF.SCENE_WIDTH+2 + DEF.GHOST_WIDTH, DEF.SCENE_HEIGHT+1, 0, DEF.IMAGE.get("normalpumpkin"), "normal");
+        	Pumpkin pumpkin = new Pumpkin(DEF.SCENE_WIDTH+30 + DEF.GHOST_WIDTH, DEF.SCENE_HEIGHT+1, 0, DEF.IMAGE.get("normalpumpkin"), "normal");
         	pumpkin.render(gc);
         	pumpkins.add(pumpkin);
         }
+        
+        takenCandles = new ArrayList<>();
         
         // initialize timer
         startTime = System.nanoTime();
@@ -362,11 +366,14 @@ public class AngryFlappyBird extends Application {
     	    	 //control ghost
     	    	 controlGhost();
 
-    	    	 //controlPumpkin();
-    	    	 pumpkinOverCandle();
+    	    	 controlPumpkin();
+    	    	 //pumpkinOverCandle();
     	    	 //check pumpkin collection
     	    	 checkPumpkinCollect();
     	    	 
+    	    	 checkNoLives();
+    	    	 
+    	    	 candleScore();
     	    	 scoreText.setText(String.valueOf(score));
     	    	 livesText.setText(lives + " lives left");
 
@@ -428,7 +435,7 @@ public class AngryFlappyBird extends Application {
     	        	candles.get(i).setPositionXY(nextX, nextY);
      			}
      			candles.get(i).render(gc);
-     			candles.get(i).update(DEF.SCENE_SHIFT_TIME + 3);
+     			candles.get(i).update(DEF.SCENE_SHIFT_TIME);
      		}
      	 }
 
@@ -439,7 +446,7 @@ public class AngryFlappyBird extends Application {
 
     	 }
 
-
+/*
     	 //Place the pumpkins over the candles
     	 public void pumpkinOverCandle() {
     		 Random rand = new Random();
@@ -471,7 +478,7 @@ public class AngryFlappyBird extends Application {
     				 totalPumpkin = totalPumpkin - 1;
     			 }
     		 }
-    	}
+    	}*/
 
 
 
@@ -526,67 +533,77 @@ public class AngryFlappyBird extends Application {
         		 ghost.render(gc);
     		 }
     	 }
-
-    	 public void controlPumpkin(double posX, double posY) {
+    	 
+    	 public void controlPumpkin() {
     		 Random rand = new Random();
-    		 int makePumpkinInt = rand.nextInt(300);
-    		 boolean makePumpkin = false;
-    		 if (makePumpkinInt == 1) {
-    			 makePumpkin = true;
-    		 }
-    		 if (makePumpkin) {
-    			 int makeGoldPumpkinInt = rand.nextInt(4);
-    			 boolean makeGoldPumpkin = false;
-        		 if (makeGoldPumpkinInt == 3) {
-        			 makeGoldPumpkin = true;
-        		 }
-	    		 //for (Pumpkin pumpkin:pumpkins) {
-	    			 if (pumpkins.get(0).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
-	        			 pumpkins.get(0).setPositionXY(posX, posY);
-	        			 pumpkins.get(0).setVelocity(DEF.PUMPKIN_VEL, 0);
-	        			 if(makeGoldPumpkin) {
-	        				 pumpkins.get(0).makeGold();
-	        				 pumpkins.get(0).setImage(DEF.IMAGE.get("goldpumpkin"));
-	        			 }
-	        			 makePumpkin = false;
-	        			 //break;
-	        		 }
-	    		 //}
-    		 }
-    		 int makePumpkinInt2 = rand.nextInt(300);
-    		 boolean makePumpkin2 = false;
-    		 if (makePumpkinInt2 == 1) {
-    			 makePumpkin2 = true;
-    		 }
-    		 if (makePumpkin2) {
-    			 int makeGoldPumpkinInt2 = rand.nextInt(4);
-    			 boolean makeGoldPumpkin2 = false;
-        		 if (makeGoldPumpkinInt2 == 3) {
-        			 makeGoldPumpkin2 = true;
-        		 }
-	    		 //for (Pumpkin pumpkin:pumpkins) {
-	    			 if (pumpkins.get(1).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
-	        			 pumpkins.get(1).setPositionXY(posX, posY);
-	        			 pumpkins.get(1).setVelocity(DEF.PUMPKIN_VEL, 0);
-	        			 if(makeGoldPumpkin2) {
-	        				 pumpkins.get(1).makeGold();
-	        				 pumpkins.get(1).setImage(DEF.IMAGE.get("goldpumpkin"));
-	        			 }
-	        			 makePumpkin2 = false;
-	        			 //break;
-	        		 }
-	    		 //}
-    		 }
-    		 for(Pumpkin pumpkin :pumpkins) {
-    			 if (pumpkin.getPositionX()<0-pumpkin.getWidth() || pumpkin.getPositionY()<0-pumpkin.getHeight()) {
-        			 pumpkin.setPositionXY(posX, posY);
-        			 pumpkin.setVelocity(DEF.PUMPKIN_VEL, 0);
-        			 pumpkin.makeNormal();
-    			 }
-    			 pumpkin.update(elapsedTime * DEF.NANOSEC_TO_SEC);
-        		 pumpkin.render(gc);
-    		 }
+    	     int makePumpkinInt = rand.nextInt(100);
+    	     boolean makePumpkin = false;
+    	     if (makePumpkinInt == 1) {
+    	        makePumpkin = true;
+    	     }
+    	     if (makePumpkin) {
+    	    	 int makeGoldPumpkinInt = rand.nextInt(3);
+    	    	 boolean makeGoldPumpkin = false;
+    	    	 if (makeGoldPumpkinInt == 1) {
+    	            makeGoldPumpkin = true;
+    	            System.out.println("make gold pumpkin");
+    	         }
+    	         if (pumpkins.get(0).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
+    	        	 pumpkins.get(0).setVelocity(-50, 0);
+    	        	 pumpkins.get(0).setPositionXY(DEF.SCENE_WIDTH, 300);//DEF.SCENE_HEIGHT - (candle.getHeight() + DEF.FLOOR_HEIGHT));
+    	        	 if(makeGoldPumpkin) {
+    	        		 pumpkins.get(0).makeGold();
+    	        		 pumpkins.get(0).setImage(DEF.IMAGE.get("goldpumpkin"));
+    	        	 }
+    	         }
+    	         System.out.println("made pumpkin 1");
+    	         makePumpkin = false;
+    	         makeGoldPumpkin = false;
+    	     }
+    	     int makePumpkinInt2 = rand.nextInt(100);
+    	     boolean makePumpkin2 = false;
+    	     if (makePumpkinInt2 == 1) {
+    	    	 makePumpkin2 = true;
+    	       	}
+    	     if (makePumpkin2) {
+    	    	 int makeGoldPumpkinInt2 = rand.nextInt(3);
+    	    	 boolean makeGoldPumpkin2 = false;
+    	         if (makeGoldPumpkinInt2 == 1) {
+    	        	 makeGoldPumpkin2 = true;
+    	        	 System.out.println("make gold pumpkin");
+    	         }
+    	         if (pumpkins.get(1).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
+    	        	 pumpkins.get(1).setVelocity(-50, 0);
+    	        	 pumpkins.get(1).setPositionXY(DEF.SCENE_WIDTH, 300);
+    	        	 if(makeGoldPumpkin2) {
+    	        		 pumpkins.get(1).makeGold();
+    	        		 pumpkins.get(1).setImage(DEF.IMAGE.get("goldpumpkin"));
+    	        	 }
+    	        }
+    	        System.out.println("made pumpkin 2");
+    	        makePumpkin2 = false;
+	        	makeGoldPumpkin2 = false;
+    	     }
+    	     for(Pumpkin pumpkin :pumpkins) {
+    	    	 if (pumpkin.getPositionX()<0-pumpkin.getWidth()) {
+    	    		 pumpkin.setPositionXY(DEF.SCENE_WIDTH+2+DEF.GHOST_WIDTH, DEF.SCENE_HEIGHT+1);
+    	    		 pumpkin.setVelocity(0, 0);
+    	    		 pumpkin.makeNormal();
+    	    	 }
+    	    	 pumpkin.update(elapsedTime * DEF.NANOSEC_TO_SEC);
+    	         pumpkin.render(gc);
+    	     }
 
+    	 }
+    	 
+    	 public void candleScore() {
+    		 for (Sprite candle:candles) {
+    			 if (candle.getWidth() == 50) {
+    				 if (candle.getPositionX() == (blob.getPositionX())) {
+    					 score = score + 1;
+    				 }
+    			 }
+    		 }
     	 }
 
     	 public void regularFly() {
@@ -678,6 +695,13 @@ public class AngryFlappyBird extends Application {
 			}
 
     	 }
+    	 
+    	 public void checkNoLives() {
+    		 if (lives < 0) {
+    			 lives = 3;
+    			 score = 0;
+    		 }
+    	 }
 
     	 public void checkPumpkinCollect() {
     		 DEF.witchLaughMP.setCycleCount(1);
@@ -687,6 +711,8 @@ public class AngryFlappyBird extends Application {
     				 System.out.println("pumpkin collected");
     				 if (pumpkin.getType().equals("normal")) {
         				 NORMAL_PUMPKIN_COLLECTED = true;
+        				 score = score + 5;
+        				 
     				 }
     				 else {
     					 System.out.println("autopilot");
@@ -694,13 +720,18 @@ public class AngryFlappyBird extends Application {
     				 }
     				 //DEF.witchLaughMP.setCycleCount(DEF.witchLaughMP.getCycleCount() + 1);
     				 pumpkin.setPositionXY(DEF.SCENE_WIDTH+2 + DEF.GHOST_WIDTH, DEF.SCENE_HEIGHT+1);
-    				 pumpkin.makeNormal();
     				 pumpkin.setVelocity(0, 0);
+    	    		 pumpkin.makeNormal();
+    	    		 pumpkin.setImage(DEF.IMAGE.get("normalpumpkin"));
     			 }
     			 for (Ghost ghost:ghosts) {
     				 if (ghost.intersectsSprite(pumpkin)) {
-    					 pumpkin.isStolen(DEF.GHOST_VEL1);
+    					 pumpkin.setPositionXY(DEF.SCENE_WIDTH+2+DEF.GHOST_WIDTH, DEF.SCENE_HEIGHT+1);
+    					 pumpkin.setVelocity(0, 0);
+        	    		 pumpkin.makeNormal();
+        	    		 pumpkin.setImage(DEF.IMAGE.get("normalpumpkin"));
     					 decreaseScore = true;
+    					 System.out.println("pumpkin stolen");
     				 }
     			 }
     		 }
@@ -712,9 +743,9 @@ public class AngryFlappyBird extends Application {
     			 DEF.witchLaughMP.stop();
     			 DEF.witchLaughMP.play();
     			 PUMPKIN_COLLECTED = false;
-    			 if (NORMAL_PUMPKIN_COLLECTED) {
+    			 /*if (NORMAL_PUMPKIN_COLLECTED) {
         			 score = score + 5;
-    			 }
+    			 }*/
     		 }
 
     		 //!!! If game stops for any reason stop the laugh!!!
