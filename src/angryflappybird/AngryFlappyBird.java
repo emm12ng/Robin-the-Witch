@@ -33,15 +33,18 @@ public class AngryFlappyBird extends Application {
 	private Defines DEF = new Defines();
     
     // time related attributes
-    private long clickTime, startTime, elapsedTime;   
+    private long clickTime, startTime, elapsedTime; 
+    private long candleHitTime;
     private AnimationTimer timer;
     
     // game components
     private Sprite blob;
+    
+    private Sprite blobAnimate;
     private ArrayList<Sprite> floors;
 
     private ArrayList<Ghost> ghosts;
-    private ArrayList<Sprite> pumpkins;
+    private ArrayList<Sprite> pumpkins2;
 
     private ArrayList<Sprite> candles;
     
@@ -55,10 +58,12 @@ public class AngryFlappyBird extends Application {
     private Text scoreText;
     private Text livesText;
     private Text gameOverSlogen;
+    private Text startSlogen;
 
     
     // game flags
-    private boolean CLICKED, GAME_START, GAME_OVER,LIVELOSS;
+    private boolean CLICKED, GAME_START, GAME_OVER,LIVELOSS,RESTART;
+    
     
     // scene graphs
     private Group gameScene;	 // the left half of the scene
@@ -91,6 +96,7 @@ public class AngryFlappyBird extends Application {
     	
     	// initialize scene graphs and UIs
         resetGameControl();    // resets the gameControl
+       
     	resetGameScene(true);  // resets the gameScene
     	
         HBox root = new HBox();
@@ -128,10 +134,22 @@ public class AngryFlappyBird extends Application {
        	     bgc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
        	     cgc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
        	  gameOverSlogen.setText("GAMEOVER");
+          startSlogen.setText("Press SPACE or the 'Go!'"+"\n"+"     Button to Restart.");
+       	  
+       	  GAME_OVER = false;
+       	  RESTART = true;
                 
             }
+            else if (RESTART) {
+            	timer.stop();
+            	lives = 3;
+            	score = 0;
+            	 gameOverSlogen.setText("");
+            	resetGameScene(false);
+            }
             else if (LIVELOSS) {
-            	
+            	timer.stop();
+            	lives -= 1;
             	resetGameScene(false);
             	
             		
@@ -160,16 +178,18 @@ public class AngryFlappyBird extends Application {
    
     private void resetGameScene(boolean firstEntry) {
     	
+    	
+    	
     	// reset variables
         CLICKED = false;
         GAME_OVER = false;
         GAME_START = false;
-
+        RESTART = false;
         LIVELOSS = false;
         floors = new ArrayList<>();
 
         ghosts = new ArrayList<>();
-        pumpkins = new ArrayList<>();
+        pumpkins2 = new ArrayList<>();
 
         candles = new ArrayList<>();
         
@@ -177,7 +197,7 @@ public class AngryFlappyBird extends Application {
         
         
     	if(firstEntry) {
-    		// create two canvases
+    		// create four canvases
             Canvas canvas = new Canvas(DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
             gc = canvas.getGraphicsContext2D();
 
@@ -195,21 +215,25 @@ public class AngryFlappyBird extends Application {
             
             
             //create score and live display
-            
-            
-            
             scoreText = new Text();
             livesText = new Text();
             gameOverSlogen = new Text();
+            startSlogen = new Text();
             
             // create the game scene
             gameScene = new Group();
-            gameScene.getChildren().addAll(background, canvas, bcanvas, ccanvas,tcanvas,  scoreText, livesText,gameOverSlogen);
+            gameScene.getChildren().addAll(background, canvas, bcanvas, ccanvas,tcanvas,  scoreText, livesText,gameOverSlogen,startSlogen);
+            
+           
     	}
     	
     	//initialize live and score
     	
-    	
+        startSlogen.setX(75);
+        startSlogen.setY(260);
+        startSlogen.setFont(Font.font("Verdana", 20));
+        startSlogen.setFill(Color.WHITE);
+    	 
         
     	scoreText.setX(20);
     	scoreText.setY(60);
@@ -226,14 +250,7 @@ public class AngryFlappyBird extends Application {
     	livesText.setFont(Font.font("Verdana", 20));
     	scoreText.setFill(Color.WHITE);
     	livesText.setFill(Color.RED);
-    	/*
-    	tgc.setLineWidth(3.0);
-        tgc.setFill(Color.WHITE);
-    	tgc.fillText(String.valueOf(score), 20, 60);
     	
-    	tgc.fillText(String.valueOf(lives) + " lives left", DEF.SCENE_WIDTH - 120, DEF.SCENE_HEIGHT - 20);
-    	
-    	*/
     	
     	// initialize floor
     	for(int i=0; i<DEF.FLOOR_COUNT; i++) {
@@ -297,6 +314,9 @@ public class AngryFlappyBird extends Application {
 			
 			Sprite goldPumpkin = new Sprite(posA-36, posC-100, DEF.IMAGE.get("goldpumpkin"));
 			
+			
+			
+			
 			candleUp.setPositionXY(posA, posB);
 			candleUp.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
 			
@@ -312,13 +332,13 @@ public class AngryFlappyBird extends Application {
 				normalPumpkin.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
 				normalPumpkin.render(cgc);
 				
-				pumpkins.add(normalPumpkin);
+				pumpkins2.add(normalPumpkin);
 				
 			}
 			else if  (random %6 ==0)
 			{	goldPumpkin.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
 				goldPumpkin.render(cgc);
-				pumpkins.add(goldPumpkin);}
+				pumpkins2.add(goldPumpkin);}
 			else {
 				candleDown.render(cgc);
 				candles.add(candleDown);
@@ -372,7 +392,7 @@ public class AngryFlappyBird extends Application {
 		//initialize blob
 		blob = new Sprite(DEF.BLOB_POS_X, DEF.BLOB_POS_Y,DEF.IMAGE.get("1-0"));
 		blob.render(bgc);
-		
+		blobAnimate = new Sprite(DEF.BLOB_POS_X, DEF.BLOB_POS_Y,DEF.IMAGE.get("1-f"));
 		
         // initialize ghosts
         for(int i=0; i<DEF.GHOST_COUNT; i++) {
@@ -381,11 +401,11 @@ public class AngryFlappyBird extends Application {
         	ghosts.add(ghost);
         }
         
-     // initialize pumpkins
+     // initialize pumpkins2
        // for(int i=0; i<DEF.PUMPKIN_COUNT; i++) {
         //	Pumpkin pumpkin = new Pumpkin(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1, 0, DEF.IMAGE.get("normalpumpkin"), "normal");
         //	pumpkin.render(gc);
-        //	pumpkins.add(pumpkin);
+        //	pumpkins2.add(pumpkin);
         //}
 
     	
@@ -419,6 +439,8 @@ public class AngryFlappyBird extends Application {
 
     	     if (GAME_START) {
     	    	 // step1: update floor
+    	    	 
+    	    	 startSlogen.setText("");
     	    	 moveFloor();
     	    	 
     	    	 moveCandle();
@@ -448,6 +470,15 @@ public class AngryFlappyBird extends Application {
     	    	 
     	    	 
     	    	 }
+    	     else {
+    	    	
+    	                 startSlogen.setText("Press SPACE or the 'Go!'"+"\n"+"       Button to Start.");
+    	             
+    	        	 
+    	        	 
+    	        	 
+    	   
+    	     }
     	     }
     	 
     	 
@@ -478,22 +509,24 @@ public class AngryFlappyBird extends Application {
      		}
      	 }
     	 
+    	
+    	 
     	 //update pumpkin
     	
     	 private void movePumpkin() {
       		
       		for(int i=0; i<DEF.PUMPKIN_COUNT; i++) {
       			
-      			pumpkins.get(i).render(cgc);
-      			pumpkins.get(i).update(DEF.SCENE_SHIFT_TIME);
+      			pumpkins2.get(i).render(cgc);
+      			pumpkins2.get(i).update(DEF.SCENE_SHIFT_TIME);
       		}
       	 }
     	 
     	 //check score
     	 public  void checkScore() {
     		 
-    		 for (int i =1; i < DEF.CANDLE_COUNT; i += 3) {
-    			 if (candles.get(i).getPositionX() ==DEF.BLOB_POS_X ) {
+    		 for (Sprite candle: candles) {
+    			 if (candle.getWidth()==DEF.CANDLE_HOLDER_SQUARE  && candle.getPositionX() ==DEF.BLOB_POS_X ) {
     				 score ++;
     				 
     			 }
@@ -584,7 +617,8 @@ public class AngryFlappyBird extends Application {
     		// check if either floors were hit
     		// check collision to floor
 			for (Sprite floor: floors) {
-				GAME_OVER = GAME_OVER || blob.intersectsSprite(floor);
+				if (!LIVELOSS) {
+				GAME_OVER = GAME_OVER || blob.intersectsSprite(floor);}
 			}
 			
 
@@ -596,32 +630,52 @@ public class AngryFlappyBird extends Application {
 			for (Sprite candle: candles) {
 				if (lives != 0) {
 				LIVELOSS = LIVELOSS || blob.intersectsSprite(candle);
-				
+				blobAnimate = new Sprite(blob.getPositionX(), blob.getPositionY(),DEF.IMAGE.get("1-f"));
+				candleHitTime = System.nanoTime();
 				}
 				else {
+					blobAnimate = new Sprite(blob.getPositionX(), blob.getPositionY(),DEF.IMAGE.get("1-f"));
 					GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
 				}
 			}
 
 			if (LIVELOSS) {
-				showHitEffect(); 
+				
+				//lives -= 1;
+				
+				//timer.stop();
+				//showCollEffect();
 				for (Sprite floor: floors) {
 					floor.setVelocity(0, 0);
 				}
-				timer.stop();
-				lives -=1;
+				for (Sprite candle: candles) {
+					candle.setVelocity(0, 0);
+				}
+				for (Ghost ghost: ghosts) {
+					ghost.setVelocity(0, 0);
+				}
+				for (Sprite pumpkin:pumpkins2) {
+					pumpkin.setVelocity(0, 0);
+				}
+				blob.setVelocity(0,0);
+				
+				showCollEffect();
 			}
 			
 			
 				
 			
 			// end the game when blob hit stuff
-			if (GAME_OVER) {
-				lives = 0;
+			if (GAME_OVER && LIVELOSS == false) {
+				showCollEffect();
 				showHitEffect(); 
+				
+				lives = 0;
+				
 				for (Sprite floor: floors) {
 					floor.setVelocity(0, 0);
 				}
+				
 				timer.stop();
 				
 				
@@ -633,7 +687,7 @@ public class AngryFlappyBird extends Application {
     	 
     	 public void checkPumpkinCollect() {
     		 
-    		 for (Sprite pumpkin:pumpkins) {
+    		 for (Sprite pumpkin:pumpkins2) {
     			 if (blob.intersectsSprite(pumpkin)) {
     				 System.out.println("pumpkin collected");
     				 System.out.println(pumpkin.isGold());
@@ -643,8 +697,8 @@ public class AngryFlappyBird extends Application {
     					 
     				 }
     				 else {
-    					 
     					 System.out.println("increase points");
+    					 score  = score+1;
     				 }
     				 pumpkin.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
     				 
@@ -661,13 +715,24 @@ public class AngryFlappyBird extends Application {
     	 }
     	 
     	 private void showCollEffect() {
-    		 ParallelTransition parallelTransition = new ParallelTransition();
- 	        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(DEF.TRANSITION_TIME), gameScene);
- 	        fadeTransition.setToValue(0);
- 	        fadeTransition.setCycleCount(DEF.TRANSITION_CYCLE);
- 	        fadeTransition.setAutoReverse(true);
- 	        
+    		 
+    		
+    			 blob.setImage(DEF.IMAGE.get("1-f"));
+    			 
+    			 blob.setPositionXY(blob.getPositionX()-6,blob.getPositionY()+6);
+        		 
+        		
+        		 blob.update(DEF.SCENE_SHIFT_TIME);
+        	
+        		 
+        		 
+    		 
+    		 
+      		 
     	 }
+    	 
+    	 
+    	 
     	 
 	     private void showHitEffect() {
 	        ParallelTransition parallelTransition = new ParallelTransition();
