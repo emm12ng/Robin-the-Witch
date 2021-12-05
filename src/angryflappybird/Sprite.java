@@ -34,6 +34,20 @@ public class Sprite {
         this.width = image.getWidth();
         this.height = image.getHeight();
     }
+    
+    public Image getImage() {
+        return image;
+    }
+    
+    
+    
+    public void setWidth(Integer width) {
+        this.width = width;
+    }
+    
+    public void setHeight(Integer height) {
+    	this.height = height;
+    }
 
     public void setPositionXY(double positionX, double positionY) {
         this.positionX = positionX;
@@ -90,7 +104,6 @@ public class Sprite {
     public Rectangle2D getBlobBoundary() {
         return new Rectangle2D(positionX, positionY, width, height);
     }
-
     public boolean intersectsBlobSprite(Sprite s) {
         return s.getBoundary().intersects(this.getBoundary());
     }
@@ -109,5 +122,10 @@ public class Sprite {
     public void update(double time) {
         positionX += velocityX * time;
         positionY += velocityY * time;
+    }
+    
+    public boolean isGold() {
+    	return image.getUrl().contains("goldpumpkin.png");
+ 
     }
 }

@@ -7,6 +7,7 @@ import java.util.HashMap;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
@@ -42,7 +43,7 @@ public class Defines {
     // coefficients related to the ghost
     final int GHOST_POS_Y = 0;
     final int GHOST_POS_X = SCENE_WIDTH;
-    final int GHOST_VEL1 = 50;
+    final int GHOST_VEL1 = 45;
     final int GHOST_VEL2 = 90;
     final int GHOST_VEL3 = 120;
     final int GHOST_WIDTH = 70;
@@ -52,7 +53,7 @@ public class Defines {
     // coefficients related to the pumpkin
     final int PUMPKIN_POS_X = SCENE_WIDTH;
     final int PUMPKIN_POS_Y = 150; // depend on pipe
-    final double PUMPKIN_VEL = -9; // depend on pipe
+    final double PUMPKIN_VEL = -58.2; // depend on pipe
     final int PUMPKIN_WIDTH = 45;
     final int PUMPKIN_HEIGHT = 45;
     final int PUMPKIN_COUNT = 2;
@@ -69,6 +70,10 @@ public class Defines {
     final int MIDDLE_CANDLE_HEIGHT = 140;
     final int SHORT_CANDLE_HEIGHT = 110;
     final int CANDLE_COUNT = 30;
+    
+    final int CANDLES_SPLIT = 300;
+    final int CANDLES_START = 500;
+    final int CANDLE_HOLDER_SQUARE = 130;
     
     // coefficients related to time
     final int SCENE_SHIFT_TIME = 5;
@@ -95,7 +100,7 @@ public class Defines {
     final String STAGE_TITLE = "Angry Flappy Bird";
 	private final String IMAGE_DIR = "../resources/images/";
 
-    final String[] IMAGE_FILES = {"backgroundLight","blob0", "blob1", "blob2", "blob3", "floor1", "ShortCandleUp", "MiddleCandleUp", "LongCandleUp", "ShortCandleBottom", "MiddleCandleBottom", "LongCandleBottom", "ghost", "goldpumpkin", "normalpumpkin","1-0", "1-1", "1-2", "1-3","1-4","1-5","1-6","1-7","1-8","1-9","1-f"};
+    final String[] IMAGE_FILES = {"backgroundLight","blob0", "blob1", "blob2", "blob3", "floor1", "ShortCandleUp", "MiddleCandleUp", "LongCandleUp", "ShortCandleBottom", "MiddleCandleBottom", "LongCandleBottom", "ghost", "goldpumpkin", "normalpumpkin","1-0", "1-1", "1-2", "1-3","1-4","1-5","1-6","1-7","1-8","1-9","1-f", "CandlesLong","CandlesLongUp","CandleBottom", "background1"};
 
 
     final HashMap<String, ImageView> IMVIEW = new HashMap<String, ImageView>();
@@ -111,7 +116,9 @@ public class Defines {
     
     ToggleGroup difficultyLevels;
     
-    TextArea informLevels;
+    Label normalPumpkinInstruct;
+    Label goldPumpkinInstruct;
+    Label ghostInstruct;
     
     // constructor
 	Defines() {
@@ -162,6 +169,13 @@ public class Defines {
 				img = new Image(pathImage(IMAGE_FILES[i]), BLOB_WIDTH, BLOB_HEIGHT, false, false);
 				
 			}
+			else if (i == 26 || i == 27) {
+				img = new Image(pathImage(IMAGE_FILES[i]), 40, 500, false, false);
+				
+			}
+			else if (i == 28) {
+				img = new Image(pathImage(IMAGE_FILES[i]), CANDLE_HOLDER_SQUARE -50 ,CANDLE_HOLDER_SQUARE, false, false);
+			}
 			else {
 				img = new Image(pathImage(IMAGE_FILES[i]), SCENE_WIDTH, SCENE_HEIGHT, false, false);
 			}
@@ -189,9 +203,24 @@ public class Defines {
 		hard.setToggleGroup(difficultyLevels);
 		survival.setToggleGroup(difficultyLevels);
 		
-		informLevels = new TextArea();
+		normalPumpkinInstruct = new Label("5 Bonus Points");
+		goldPumpkinInstruct = new Label("Go on autopilot");
+		ghostInstruct = new Label("Avoid ghosts, \nand don't let \nthem steal \npumpkins");
 		
-		//selectedDifficulty = (RadioButton) difficultyLevels.getSelectedToggle();
+		ImageView normalPumpkinView = new ImageView(IMAGE.get("normalpumpkin"));
+		ImageView goldPumpkinView = new ImageView(IMAGE.get("goldpumpkin"));
+		ImageView ghostView = new ImageView(IMAGE.get("ghost"));
+		
+		normalPumpkinView.setFitHeight(70);
+		normalPumpkinView.setFitWidth(70);
+		goldPumpkinView.setFitHeight(70);
+		goldPumpkinView.setFitWidth(70);
+		
+		normalPumpkinInstruct.setGraphic(normalPumpkinView);
+		goldPumpkinInstruct.setGraphic(goldPumpkinView);
+		ghostInstruct.setGraphic(ghostView);
+		
+		
 	}
 	
 	public String pathImage(String filepath) {
