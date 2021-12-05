@@ -143,14 +143,16 @@ public class AngryFlappyBird extends Application {
                 
             }
             else if (RESTART) {
-            	
+            	CANDLESCOLL = false;
+            	timer.stop();
             	lives = 3;
             	score = 0;
             	gameOverSlogen.setText("");
             	resetGameScene(false);
             }
             else if (LIVELOSS) {
-            	
+            	CANDLESCOLL = false;
+            	timer.stop();
             	lives -= 1;
             	resetGameScene(false);
             	
@@ -444,6 +446,7 @@ public class AngryFlappyBird extends Application {
     	    	 // step1: update floor
     	    	 
     	    	 startSlogen.setText("");
+    	    	 gameOverSlogen.setText("");
     	    	 moveFloor();
     	    	 
     	    	 moveCandle();
@@ -464,6 +467,7 @@ public class AngryFlappyBird extends Application {
     	    	 
     	    	 
     	    	 }
+    	     
     	     else {
     	    	
     	                 startSlogen.setText("Press SPACE or the 'Go!'"+"\n"+"       Button to Start.");
@@ -550,7 +554,8 @@ public class AngryFlappyBird extends Application {
     	 
     	 // step2: update blob
     	 private void moveBlob() {
-    		 if (auto == false) {
+    		 if (auto == false ) {
+    			 
     		 regularFly();}
     		 else {autoFly();}
  
@@ -733,7 +738,7 @@ public class AngryFlappyBird extends Application {
 		    		 blob.render(bgc);
         		 
     		 	}else { 
-    		 		
+    		 		CANDLESCOLL = false;
 	       			 showHitEffect();
 	       			 timer.stop();
        			 }
