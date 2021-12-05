@@ -39,7 +39,8 @@ public class AngryFlappyBird extends Application {
     
     // game components
     private Sprite blob;
-    
+    Sprite candle;
+    private double pumpkinsCollectTime;
  
     private ArrayList<Sprite> floors;
 
@@ -55,10 +56,13 @@ public class AngryFlappyBird extends Application {
     private int score;
     private int lives = 3;
     
+    
     private Text scoreText;
     private Text livesText;
     private Text gameOverSlogen;
     private Text startSlogen;
+    
+
 
     
     // game flags
@@ -77,10 +81,10 @@ public class AngryFlappyBird extends Application {
     private GraphicsContext cgc;
     private GraphicsContext tgc;
     
-    Sprite candle;
+    
     
 	
-    private ArrayList<Integer> autoHeight;
+
     
     //the status of the auto-pliot mode
     private boolean auto = false;
@@ -295,20 +299,27 @@ public class AngryFlappyBird extends Application {
     	}
     	*/
     	
+    
     	
-    	int posA;
-    	int posB;
-    	int posC =  DEF.SCENE_HEIGHT - (60);
-    	int random;
+    	
+    	
+    	
+    	
+    	
+    	boolean initPump = false;
+    	
     	
     	// initialize candle
     	for(int i=0; i<DEF.CANDLE_COUNT; i++) {
-    		random = (int)(Math.random() * 200) + 100; // 100~380
-    		
+    		 
+    		int random;
+        	random = (int)(Math.random() * 200) + 100;// 100~380
     		//autoHeight.add(random);
-	    		
-	    	posA =i* DEF.CANDLES_SPLIT+DEF.CANDLES_START;
-			posB = -(random+80); //70 is the difficulty
+    		int posA=i* DEF.CANDLES_SPLIT+DEF.CANDLES_START;
+        	int posB = -(random+80); //70 is the difficulty
+        	int posC =  DEF.SCENE_HEIGHT - (60);
+        	
+			
 			Sprite candleDown = new Sprite(posA, posB,DEF.IMAGE.get("CandlesLong"));
 			
 			Sprite candleUp = new Sprite(posA, posB, DEF.IMAGE.get("CandlesLongUp"));
@@ -325,25 +336,39 @@ public class AngryFlappyBird extends Application {
 			candleUp.setPositionXY(posA, posB);
 			candleUp.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
 			
-			posB = DEF.SCENE_HEIGHT - (random); 
+			posB = DEF.SCENE_HEIGHT - (random);  //the height of the down candle
 			candleDown.setPositionXY(posA, posB);
 			candleDown.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
 			
 			candleBot.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
-		
+			
+			candles.add(candleUp);
 			
 			
-			if (random %3 == 0 && random %6 !=0) {
-				normalPumpkin.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
-				normalPumpkin.render(cgc);
+			//candles or pumpkins
+			if (random %3 == 0 && random %6 !=0)// normal pumpkins 
+			{
 				
-				pumpkins2.add(normalPumpkin);
+				normalPumpkin.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+				normalPumpkin.render(cgc);			
+				
+				
+				candleDown.setPositionXY(posA, DEF.SCENE_HEIGHT);
+				candles.add(candleDown);
+				
+				;
 				
 			}
-			else if  (random %6 ==0)
+			else if  (random %6 ==0) // gold pumpkins 
 			{	goldPumpkin.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
 				goldPumpkin.render(cgc);
-				pumpkins2.add(goldPumpkin);}
+				
+				
+				candleDown.setPositionXY(posA, DEF.SCENE_HEIGHT);
+				candles.add(candleDown);
+			}
+			
+			// down candles
 			else {
 				candleDown.render(cgc);
 				candles.add(candleDown);
@@ -351,18 +376,20 @@ public class AngryFlappyBird extends Application {
 			
 			candleUp.render(cgc);
 			candleBot.render(cgc);
-			
-			candles.add(candleUp);
-			
-			
 			candles.add(candleBot);
 			
-			
+			if (!initPump) {
+				
+				pumpkins2.add(goldPumpkin);
+				pumpkins2.add(normalPumpkin);
+				initPump = true;
 
+			}
+			
 			
     	}
 		
-		
+    	
 		
     	/*
     	
@@ -495,15 +522,55 @@ public class AngryFlappyBird extends Application {
     	 }
     	 // update candles
     	 private void moveCandle() {
+
+    		 
+    		// 100~380
+     		//autoHeight.add(random);
      		
-     		for(int i=0; i<DEF.CANDLE_COUNT; i++) {
-     			if (candles.get(i).getPositionX() <= -500) {
-    				double nextX = candles.get((i+1)%500).getPositionX() + DEF.UP_CANDLE_WIDTH;
-    	        	double nextY = DEF.SHORT_CANDLE_HEIGHT;
-    	        	candles.get(i).setPositionXY(nextX, nextY);
+     		for(int i=0; i<DEF.CANDLE_COUNT*3; i = i +3) {
+     			
+     			// 0 = up, 1 = down, 2 = bottom
+     			int random;
+             	random = (int)(Math.random() * 200) + 100;
+             	int posVertical= i* DEF.CANDLES_SPLIT+DEF.CANDLES_START;
+     			
+             	int posUpH = -(random+80); //0 is the difficulty
+             	int posDownH = DEF.SCENE_HEIGHT - (random); 
+             	int posBotH =  DEF.SCENE_HEIGHT - (60);
+             	
+         		
+     			if (candles.get(i).getPositionX() <= - ( DEF.CANDLE_HOLDER_SQUARE+DEF.CANDLES_SPLIT)) {
+    				double nextX = candles.get((i+3)%(DEF.CANDLE_COUNT*3)).getPositionX() + (24 + DEF.CANDLES_SPLIT)*(DEF.CANDLE_COUNT-1);
+    	        	
+    	        	candles.get(i).setPositionXY(nextX, posUpH);
+    	        	if (random %3 == 0 && random %6 !=0) {
+    	        		pumpkins2.get(0).setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+    	        		candles.get(i+1).setPositionXY(nextX, DEF.SCENE_HEIGHT);
+    	        	
+    	        		
+    	 			}
+    	 			else if  (random %6 ==0)	
+    	 			{	pumpkins2.get(1).setVelocity(DEF.SCENE_SHIFT_INCR, 0); // gold 
+    	 				candles.get(i+1).setPositionXY(nextX, DEF.SCENE_HEIGHT);
+    	 				}
+    	 			else {
+    	 				
+    	 				candles.get(i+1).setPositionXY(nextX, posDownH);
+    	 			}
+
+    	        	
+    	        	candles.get(i+2).setPositionXY(nextX-16, posBotH);
      			}
+     			
+     			
      			candles.get(i).render(cgc);
      			candles.get(i).update(DEF.SCENE_SHIFT_TIME);
+     			candles.get(i+1).render(cgc);
+     			candles.get(i+1).update(DEF.SCENE_SHIFT_TIME);
+     			candles.get(i+2).render(cgc);		
+     			candles.get(i+2).update(DEF.SCENE_SHIFT_TIME);
+     			
+     			
      		}
      	 }
     	 
@@ -555,7 +622,6 @@ public class AngryFlappyBird extends Application {
     	 // step2: update blob
     	 private void moveBlob() {
     		 if (auto == false ) {
-    			 
     		 regularFly();}
     		 else {autoFly();}
  
@@ -566,22 +632,29 @@ public class AngryFlappyBird extends Application {
     	
     	 public void autoFly() {
     		 
-    		 long diffTime = System.nanoTime() - clickTime;
-    		 long ongoingTime = System.nanoTime();
+    		
+    		 double ongoingTime = System.nanoTime() * DEF.NANOSEC_TO_SEC;
     		 
-			if (auto && ongoingTime < 6) {
+			if (auto &&  (ongoingTime - pumpkinsCollectTime) <= 6) {
+				System.out.println("auto on");
 				int imageIndex = Math.floorDiv(counter++, DEF.BLOB_IMG_PERIOD);
       			imageIndex = Math.floorMod(imageIndex, DEF.BLOB_IMG_LEN);
       			blob.setImage(DEF.IMAGE.get("1-"+String.valueOf(imageIndex)));
+      			
+      			
       			blob.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+      			
 			
-			}else {auto = false;}
+			}else {
+				System.out.println("auto off");
+				auto = false;
+				}
+			
+			
     		blob.render(bgc);
     		blob.update(elapsedTime*DEF.NANOSEC_TO_SEC);
-
     	 }
-    	 
-    	 
+
     	 public void regularFly() {
     		 long diffTime = System.nanoTime() - clickTime;
     		 
@@ -701,6 +774,7 @@ public class AngryFlappyBird extends Application {
     				 System.out.println(pumpkin.isGold());
     				 if (pumpkin.isGold()) {
     					 System.out.println("autopilot");
+    					 pumpkinsCollectTime = System.nanoTime()*DEF.NANOSEC_TO_SEC;
     					 auto = true;
     					 
     				 }
@@ -725,7 +799,7 @@ public class AngryFlappyBird extends Application {
     	 private void showCollEffect() {
     		 double posBlobX = blob.getPositionX();
     		 double posBlobY = blob.getPositionY();
-    		 System.out.println(String.valueOf(posBlobY));
+    		 
     		 
     		 	if(CANDLESCOLL &&blob.getPositionY() <= ( DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT-40)) {    	
     		 		
