@@ -40,8 +40,6 @@ public class AngryFlappyBird extends Application {
     // game components
     private Sprite blob;
     
-    private long candleHitTime = 0;
-    
  
     private ArrayList<Sprite> floors;
 
@@ -82,7 +80,7 @@ public class AngryFlappyBird extends Application {
     Sprite candle;
     
 	
-
+    private ArrayList<Integer> autoHeight;
     
     //the status of the auto-pliot mode
     private boolean auto = false;
@@ -148,7 +146,7 @@ public class AngryFlappyBird extends Application {
             	
             	lives = 3;
             	score = 0;
-            	 
+            	gameOverSlogen.setText("");
             	resetGameScene(false);
             }
             else if (LIVELOSS) {
@@ -446,7 +444,6 @@ public class AngryFlappyBird extends Application {
     	    	 // step1: update floor
     	    	 
     	    	 startSlogen.setText("");
-    	    	 gameOverSlogen.setText("");
     	    	 moveFloor();
     	    	 
     	    	 moveCandle();
@@ -497,7 +494,7 @@ public class AngryFlappyBird extends Application {
      		
      		for(int i=0; i<DEF.CANDLE_COUNT; i++) {
      			if (candles.get(i).getPositionX() <= -500) {
-    				double nextX = candles.get((i+1)%DEF.CANDLE_COUNT).getPositionX() + DEF.UP_CANDLE_WIDTH;
+    				double nextX = candles.get((i+1)%500).getPositionX() + DEF.UP_CANDLE_WIDTH;
     	        	double nextY = DEF.SHORT_CANDLE_HEIGHT;
     	        	candles.get(i).setPositionXY(nextX, nextY);
      			}
@@ -507,15 +504,15 @@ public class AngryFlappyBird extends Application {
      	 }
     	 
     	
-    	 
+    	  
     	 //update pumpkin
     	
     	 private void movePumpkin() {
       		
-      		for(int i=0; i<DEF.PUMPKIN_COUNT; i++) {
+      		for(Sprite pumpkin : pumpkins2) {
       			
-      			pumpkins2.get(i).render(cgc);
-      			pumpkins2.get(i).update(DEF.SCENE_SHIFT_TIME);
+      			pumpkin.render(cgc);
+      			pumpkin.update(DEF.SCENE_SHIFT_TIME);
       		}
       	 }
     	 
@@ -673,8 +670,7 @@ public class AngryFlappyBird extends Application {
 			// end the game when blob hit stuff
 			if (GAME_OVER && !LIVELOSS ) {
 				
-				showHitEffect();
-				timer.stop();
+				showCollEffect();
 					
 				
 				lives = 0;
@@ -725,8 +721,8 @@ public class AngryFlappyBird extends Application {
     		 double posBlobX = blob.getPositionX();
     		 double posBlobY = blob.getPositionY();
     		 System.out.println(String.valueOf(posBlobY));
-    		 System.out.println(String.valueOf(posBlobX));
-    		 	if(CANDLESCOLL && blob.getPositionY() < ( DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT-40) && blob.getPositionX()> -DEF.BLOB_WIDTH) {    	
+    		 
+    		 	if(CANDLESCOLL &&blob.getPositionY() <= ( DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT-40)) {    	
     		 		
 				 	
 					 blob.setImage(DEF.IMAGE.get("1-f"));
@@ -736,9 +732,7 @@ public class AngryFlappyBird extends Application {
 		    		 blob.update(DEF.SCENE_SHIFT_TIME);
 		    		 blob.render(bgc);
         		 
-    		 	}
-    		 	else { 
-    		 	
+    		 	}else { 
     		 		
 	       			 showHitEffect();
 	       			 timer.stop();
