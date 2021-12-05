@@ -62,7 +62,7 @@ public class AngryFlappyBird extends Application {
 
     
     // game flags
-    private boolean CLICKED, GAME_START, GAME_OVER,LIVELOSS,RESTART;
+    private boolean CLICKED, GAME_START, GAME_OVER,LIVELOSS,RESTART,CANDLESCOLL;
     
     
     // scene graphs
@@ -135,20 +135,21 @@ public class AngryFlappyBird extends Application {
        	     cgc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
        	  gameOverSlogen.setText("GAMEOVER");
           startSlogen.setText("Press SPACE or the 'Go!'"+"\n"+"     Button to Restart.");
-       	  
+          
+          
        	  GAME_OVER = false;
        	  RESTART = true;
                 
             }
             else if (RESTART) {
-            	timer.stop();
+            	
             	lives = 3;
             	score = 0;
             	 gameOverSlogen.setText("");
             	resetGameScene(false);
             }
             else if (LIVELOSS) {
-            	timer.stop();
+            	
             	lives -= 1;
             	resetGameScene(false);
             	
@@ -186,6 +187,7 @@ public class AngryFlappyBird extends Application {
         GAME_START = false;
         RESTART = false;
         LIVELOSS = false;
+        CANDLESCOLL = false;
         floors = new ArrayList<>();
 
         ghosts = new ArrayList<>();
@@ -448,20 +450,11 @@ public class AngryFlappyBird extends Application {
     	    	 movePumpkin();
     	    	 
     	    	 checkScore();
-    	    	 
-    	    	 // step2: update blob
-    	    	 
-    	    	 
+
     	    	 moveBlob();
-    	    	 
-    	    	 
-    	    	 
+ 
     	    	 checkCollision();
-    	    	 
-    	    	 //controlGhost();
-    	    	 
-    	    	 //controlPumpkin();
-    	    	 
+	 
     	    	 checkPumpkinCollect();
     	    	 
     	    	 displayLives();
@@ -556,7 +549,9 @@ public class AngryFlappyBird extends Application {
     	 
     	 // step2: update blob
     	 private void moveBlob() {
-    		 regularFly();
+    		 if (auto == false) {
+    		 regularFly();}
+    		 else {autoFly();}
  
     	 }
     	 
@@ -564,19 +559,20 @@ public class AngryFlappyBird extends Application {
     	 
     	
     	 public void autoFly() {
-    		 long difftime  = System.nanoTime();
     		 
-    		 if (System.nanoTime() - difftime >= 6000000 && auto ==true ) {
-    			int imageIndex = Math.floorDiv(counter++, DEF.BLOB_IMG_PERIOD);
+    		 long diffTime = System.nanoTime() - clickTime;
+    		 long ongoingTime = System.nanoTime();
+    		 if (ongoingTime < 6) {
+			if (auto && diffTime <= DEF.BLOB_DROP_TIME) {
+				int imageIndex = Math.floorDiv(counter++, DEF.BLOB_IMG_PERIOD);
       			imageIndex = Math.floorMod(imageIndex, DEF.BLOB_IMG_LEN);
       			blob.setImage(DEF.IMAGE.get("1-"+String.valueOf(imageIndex)));
-      			blob.setVelocity(0, DEF.BLOB_FLY_VEL);
-    		 }
-    		 else {
-    			 auto = false;}
-    		 
-    		 blob.update(elapsedTime * DEF.NANOSEC_TO_SEC);
-      		 blob.render(bgc);
+      			blob.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+			}
+			}else {auto = false;}
+    		blob.render(bgc);
+    		blob.update(elapsedTime*DEF.NANOSEC_TO_SEC);
+
     	 }
     	 
     	 
@@ -618,11 +614,13 @@ public class AngryFlappyBird extends Application {
     		// check collision to floor
 			for (Sprite floor: floors) {
 				if (!LIVELOSS) {
+					
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(floor);}
 			}
 			
 
 			for (Sprite ghost: ghosts) {
+				
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost);
 			}
 			
@@ -630,12 +628,13 @@ public class AngryFlappyBird extends Application {
 			for (Sprite candle: candles) {
 				if (lives != 0) {
 				LIVELOSS = LIVELOSS || blob.intersectsSprite(candle);
-				blobAnimate = new Sprite(blob.getPositionX(), blob.getPositionY(),DEF.IMAGE.get("1-f"));
-				candleHitTime = System.nanoTime();
+				CANDLESCOLL = LIVELOSS|| blob.intersectsSprite(candle);
+				
 				}
 				else {
-					blobAnimate = new Sprite(blob.getPositionX(), blob.getPositionY(),DEF.IMAGE.get("1-f"));
+					
 					GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
+					CANDLESCOLL = GAME_OVER || blob.intersectsSprite(candle);
 				}
 			}
 
@@ -660,15 +659,17 @@ public class AngryFlappyBird extends Application {
 				blob.setVelocity(0,0);
 				
 				showCollEffect();
+				
 			}
 			
 			
 				
 			
 			// end the game when blob hit stuff
-			if (GAME_OVER && LIVELOSS == false) {
-				showCollEffect();
-				showHitEffect(); 
+			if (GAME_OVER && !LIVELOSS ) {
+				
+					showCollEffect();
+				
 				
 				lives = 0;
 				
@@ -676,7 +677,7 @@ public class AngryFlappyBird extends Application {
 					floor.setVelocity(0, 0);
 				}
 				
-				timer.stop();
+				
 				
 				
 			}
@@ -715,20 +716,31 @@ public class AngryFlappyBird extends Application {
     	 }
     	 
     	 private void showCollEffect() {
-    		 
-    		
+    		 double posBlobX = blob.getPositionX();
+    		 double posBlobY = blob.getPositionY();
+    		 System.out.println(String.valueOf(posBlobX));
+    		 System.out.println(String.valueOf(posBlobY));
+    		 if (CANDLESCOLL) {
+    		 	if(blob.getPositionY() <= ( DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT+20)) {    	
+    		 		
+    		 	
     			 blob.setImage(DEF.IMAGE.get("1-f"));
     			 
-    			 blob.setPositionXY(blob.getPositionX()-6,blob.getPositionY()+6);
-        		 
-        		
+    			 blob.setPositionXY(posBlobX,posBlobY);
+    			 blob.setVelocity(-2, 2);
         		 blob.update(DEF.SCENE_SHIFT_TIME);
-        	
+        		 blob.render(bgc);
         		 
-        		 
-    		 
-    		 
-      		 
+    		 	}else {
+       			 showHitEffect();
+       			 timer.stop();
+       			 }
+    		 	
+    		 }
+        		 else {
+        			 showHitEffect();
+        			 timer.stop();
+        			 }
     	 }
     	 
     	 
