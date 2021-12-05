@@ -34,13 +34,15 @@ public class AngryFlappyBird extends Application {
     
     // time related attributes
     private long clickTime, startTime, elapsedTime; 
-    private long candleHitTime;
+
     private AnimationTimer timer;
     
     // game components
     private Sprite blob;
     
-    private Sprite blobAnimate;
+    private long candleHitTime = 0;
+    
+ 
     private ArrayList<Sprite> floors;
 
     private ArrayList<Ghost> ghosts;
@@ -65,6 +67,7 @@ public class AngryFlappyBird extends Application {
     private boolean CLICKED, GAME_START, GAME_OVER,LIVELOSS,RESTART,CANDLESCOLL;
     
     
+    
     // scene graphs
     private Group gameScene;	 // the left half of the scene
     private VBox gameControl;	 // the right half of the GUI (control)
@@ -79,7 +82,7 @@ public class AngryFlappyBird extends Application {
     Sprite candle;
     
 	
-    private ArrayList<Integer> autoHeight;
+
     
     //the status of the auto-pliot mode
     private boolean auto = false;
@@ -145,7 +148,7 @@ public class AngryFlappyBird extends Application {
             	
             	lives = 3;
             	score = 0;
-            	 gameOverSlogen.setText("");
+            	 
             	resetGameScene(false);
             }
             else if (LIVELOSS) {
@@ -187,7 +190,7 @@ public class AngryFlappyBird extends Application {
         GAME_START = false;
         RESTART = false;
         LIVELOSS = false;
-        CANDLESCOLL = false;
+       // CANDLESCOLL = false;
         floors = new ArrayList<>();
 
         ghosts = new ArrayList<>();
@@ -394,7 +397,7 @@ public class AngryFlappyBird extends Application {
 		//initialize blob
 		blob = new Sprite(DEF.BLOB_POS_X, DEF.BLOB_POS_Y,DEF.IMAGE.get("1-0"));
 		blob.render(bgc);
-		blobAnimate = new Sprite(DEF.BLOB_POS_X, DEF.BLOB_POS_Y,DEF.IMAGE.get("1-f"));
+		
 		
         // initialize ghosts
         for(int i=0; i<DEF.GHOST_COUNT; i++) {
@@ -443,6 +446,7 @@ public class AngryFlappyBird extends Application {
     	    	 // step1: update floor
     	    	 
     	    	 startSlogen.setText("");
+    	    	 gameOverSlogen.setText("");
     	    	 moveFloor();
     	    	 
     	    	 moveCandle();
@@ -492,7 +496,7 @@ public class AngryFlappyBird extends Application {
     	 private void moveCandle() {
      		
      		for(int i=0; i<DEF.CANDLE_COUNT; i++) {
-     			if (candles.get(i).getPositionX() <= -DEF.CANDLE_COUNT) {
+     			if (candles.get(i).getPositionX() <= -500) {
     				double nextX = candles.get((i+1)%DEF.CANDLE_COUNT).getPositionX() + DEF.UP_CANDLE_WIDTH;
     	        	double nextY = DEF.SHORT_CANDLE_HEIGHT;
     	        	candles.get(i).setPositionXY(nextX, nextY);
@@ -562,13 +566,13 @@ public class AngryFlappyBird extends Application {
     		 
     		 long diffTime = System.nanoTime() - clickTime;
     		 long ongoingTime = System.nanoTime();
-    		 if (ongoingTime < 6) {
-			if (auto && diffTime <= DEF.BLOB_DROP_TIME) {
+    		 
+			if (auto && ongoingTime < 6) {
 				int imageIndex = Math.floorDiv(counter++, DEF.BLOB_IMG_PERIOD);
       			imageIndex = Math.floorMod(imageIndex, DEF.BLOB_IMG_LEN);
       			blob.setImage(DEF.IMAGE.get("1-"+String.valueOf(imageIndex)));
       			blob.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
-			}
+			
 			}else {auto = false;}
     		blob.render(bgc);
     		blob.update(elapsedTime*DEF.NANOSEC_TO_SEC);
@@ -622,6 +626,7 @@ public class AngryFlappyBird extends Application {
 			for (Sprite ghost: ghosts) {
 				
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost);
+				
 			}
 			
 			// check collision to candles
@@ -668,8 +673,9 @@ public class AngryFlappyBird extends Application {
 			// end the game when blob hit stuff
 			if (GAME_OVER && !LIVELOSS ) {
 				
-					showCollEffect();
-				
+				showHitEffect();
+				timer.stop();
+					
 				
 				lives = 0;
 				
@@ -718,29 +724,26 @@ public class AngryFlappyBird extends Application {
     	 private void showCollEffect() {
     		 double posBlobX = blob.getPositionX();
     		 double posBlobY = blob.getPositionY();
-    		 System.out.println(String.valueOf(posBlobX));
     		 System.out.println(String.valueOf(posBlobY));
-    		 if (CANDLESCOLL) {
-    		 	if(blob.getPositionY() <= ( DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT+20)) {    	
+    		 System.out.println(String.valueOf(posBlobX));
+    		 	if(CANDLESCOLL && blob.getPositionY() < ( DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT-40) && blob.getPositionX()> -DEF.BLOB_WIDTH) {    	
     		 		
-    		 	
-    			 blob.setImage(DEF.IMAGE.get("1-f"));
-    			 
-    			 blob.setPositionXY(posBlobX,posBlobY);
-    			 blob.setVelocity(-2, 2);
-        		 blob.update(DEF.SCENE_SHIFT_TIME);
-        		 blob.render(bgc);
+				 	
+					 blob.setImage(DEF.IMAGE.get("1-f"));
+					 
+					 blob.setPositionXY(posBlobX,posBlobY);
+					 blob.setVelocity(-2, 2);
+		    		 blob.update(DEF.SCENE_SHIFT_TIME);
+		    		 blob.render(bgc);
         		 
-    		 	}else {
-       			 showHitEffect();
-       			 timer.stop();
+    		 	}
+    		 	else { 
+    		 	
+    		 		
+	       			 showHitEffect();
+	       			 timer.stop();
        			 }
     		 	
-    		 }
-        		 else {
-        			 showHitEffect();
-        			 timer.stop();
-        			 }
     	 }
     	 
     	 
@@ -754,6 +757,7 @@ public class AngryFlappyBird extends Application {
 	        fadeTransition.setAutoReverse(true);
 	        parallelTransition.getChildren().add(fadeTransition);
 	        parallelTransition.play();
+	        
 	     }
     	 
     } // End of MyTimer class

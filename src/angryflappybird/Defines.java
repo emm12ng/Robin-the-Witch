@@ -62,8 +62,8 @@ public class Defines {
     final int LONG_CANDLE_HEIGHT = 170;
     final int MIDDLE_CANDLE_HEIGHT = 150;
     final int SHORT_CANDLE_HEIGHT = 120;
-    final int CANDLE_COUNT = 500;
-    
+    final int CANDLE_COUNT = 30;
+   
     final int CANDLES_SPLIT = 300;
     final int CANDLES_START = 400;
     final int CANDLE_HOLDER_SQUARE = 60;
