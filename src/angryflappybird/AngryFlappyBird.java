@@ -251,6 +251,8 @@ public class AngryFlappyBird extends Application {
            	    survivalModeCandlesEntry = -1;
            	    //difficultiesCandlesEntry = -1;
             	//sceneStatus = "gameOver";
+           	    CANDLESCOLL = false;
+           	    timer.stop();
             	DEF.backgroundMusicMP.pause();
                 resetGameScene(false);
                 //timer.stop();
@@ -261,6 +263,9 @@ public class AngryFlappyBird extends Application {
             	gc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
            	    bgc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
            	    cgc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
+           	    
+           	    CANDLESCOLL = false;
+        	    
             	timer.stop();
             	survivalModeCandlesEntry = -1;
             	//lives = 3;
@@ -1005,6 +1010,7 @@ public class AngryFlappyBird extends Application {
 						//showCollEffect();
 					}
 					GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
+					CANDLESCOLL = GAME_OVER || blob.intersectsSprite(candle);
 					
 				}
 			}else {
@@ -1020,12 +1026,15 @@ public class AngryFlappyBird extends Application {
 					//showCollEffect();
 				}
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
+				CANDLESCOLL = GAME_OVER || blob.intersectsSprite(candle);
+				
 				
 			}
 			}
+			
 			if (candleCollision) {
 				lives = lives - 1;
-				CANDLESCOLL = GAME_OVER;
+				
 				
 				candleCollision = false;
 			}
@@ -1033,13 +1042,14 @@ public class AngryFlappyBird extends Application {
 			// end the game when blob hit stuff
 			if (GAME_OVER) {
 				survivalModeCandlesEntry = -1;
-				//showCollEffect();
-				showHitEffect();
+				showCollEffect();
+				//showHitEffect();
 				DEF.backgroundMusicMP.pause();
 				blob.setVelocity(0,0);
 				for (Sprite floor: floors) {
 					floor.setVelocity(0, 0);
-				}timer.stop();
+				}
+				
 				
 			}
 
@@ -1207,31 +1217,26 @@ public class AngryFlappyBird extends Application {
     	 private void showCollEffect() {
     		 double posBlobX = blob.getPositionX();
     		 double posBlobY = blob.getPositionY();
-    		 System.out.println(String.valueOf(posBlobX));
-    		 System.out.println(String.valueOf(posBlobY));
-    		
-    		 	if(CANDLESCOLL && blob.getPositionX() >= -10) {    	
+    		 
+    		 
+    		 	if(CANDLESCOLL &&blob.getPositionY() <= ( DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT-40)) {    	
     		 		
-    		 	
-    			 blob.setImage(DEF.IMAGE.get("1-f"));
-    			 
-    			 blob.setPositionXY(posBlobX,posBlobY);
-    			 
-    			
-    			 
-    			 blob.setVelocity(-2,-1); 
-        		 blob.update(DEF.SCENE_SHIFT_TIME);
-        		 blob.render(gc);
+				 	System.out.println("bounce back");
+					 blob.setImage(DEF.IMAGE.get("1-f"));
+					 
+					 blob.setPositionXY(posBlobX,posBlobY);
+					 blob.setVelocity(-2, 2);
+		    		 blob.update(DEF.SCENE_SHIFT_TIME);
+		    		 blob.render(gc);
         		 
-        		 
-    		 	}else {
-		 		
-       			 showHitEffect();
-       			 timer.stop();
+    		 	}else { 
+    		 		CANDLESCOLL = false;
+	       			 showHitEffect();
+	       			 timer.stop();
        			 }
     		 	
-    		 
     	 }
+    	 
 	 
 	     private void showHitEffect() {
 	        ParallelTransition parallelTransition = new ParallelTransition();
