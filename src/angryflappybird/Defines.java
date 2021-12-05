@@ -7,6 +7,7 @@ import java.util.HashMap;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.Image;
@@ -95,7 +96,7 @@ public class Defines {
     final String STAGE_TITLE = "Angry Flappy Bird";
 	private final String IMAGE_DIR = "../resources/images/";
 
-    final String[] IMAGE_FILES = {"backgroundLight","blob0", "blob1", "blob2", "blob3", "floor1", "ShortCandleUp", "MiddleCandleUp", "LongCandleUp", "ShortCandleBottom", "MiddleCandleBottom", "LongCandleBottom", "ghost", "goldpumpkin", "normalpumpkin","1-0", "1-1", "1-2", "1-3","1-4","1-5","1-6","1-7","1-8","1-9","1-f"};
+    final String[] IMAGE_FILES = {"backgroundLight","blob0", "blob1", "blob2", "blob3", "floor1", "ShortCandleUp", "MiddleCandleUp", "LongCandleUp", "ShortCandleBottom", "MiddleCandleBottom", "LongCandleBottom", "ghost", "goldpumpkin", "normalpumpkin","1-0", "1-1", "1-2", "1-3","1-4","1-5","1-6","1-7","1-8","1-9","1-f", "background1"};
 
 
     final HashMap<String, ImageView> IMVIEW = new HashMap<String, ImageView>();
@@ -112,6 +113,10 @@ public class Defines {
     ToggleGroup difficultyLevels;
     
     TextArea informLevels;
+    
+    Label normalPumpkinInstruct;
+    Label goldPumpkinInstruct;
+    Label ghostInstruct;
     
     // constructor
 	Defines() {
@@ -190,6 +195,23 @@ public class Defines {
 		survival.setToggleGroup(difficultyLevels);
 		
 		informLevels = new TextArea();
+		
+		normalPumpkinInstruct = new Label("5 Bonus Points");
+		goldPumpkinInstruct = new Label("Go on autopilot");
+		ghostInstruct = new Label("Avoid ghosts, \nand don't let \nthem steal \npumpkins");
+		
+		ImageView normalPumpkinView = new ImageView(IMAGE.get("normalpumpkin"));
+		ImageView goldPumpkinView = new ImageView(IMAGE.get("goldpumpkin"));
+		ImageView ghostView = new ImageView(IMAGE.get("ghost"));
+		
+		normalPumpkinView.setFitHeight(70);
+		normalPumpkinView.setFitWidth(70);
+		goldPumpkinView.setFitHeight(70);
+		goldPumpkinView.setFitWidth(70);
+		
+		normalPumpkinInstruct.setGraphic(normalPumpkinView);
+		goldPumpkinInstruct.setGraphic(goldPumpkinView);
+		ghostInstruct.setGraphic(ghostView);
 		
 		//selectedDifficulty = (RadioButton) difficultyLevels.getSelectedToggle();
 	}

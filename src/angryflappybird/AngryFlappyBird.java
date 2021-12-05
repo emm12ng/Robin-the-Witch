@@ -67,6 +67,12 @@ public class AngryFlappyBird extends Application {
     private boolean floorCollision = false;
     private boolean ghostCollision = false;
     private boolean decreaseScore = false;
+    private boolean changeBackground = false;
+    private boolean backgroundChangeAvailable;
+    
+    private ImageView background;
+    
+    private String currBackground;
 
 
     // game flags
@@ -174,7 +180,7 @@ public class AngryFlappyBird extends Application {
         );
 
         gameControl = new VBox();
-        gameControl.getChildren().addAll( DEF.easy, DEF.intermediate, DEF.hard, DEF.survival, DEF.startButton);
+        gameControl.getChildren().addAll( DEF.easy, DEF.intermediate, DEF.hard, DEF.survival, DEF.startButton, DEF.normalPumpkinInstruct, DEF.goldPumpkinInstruct, DEF.ghostInstruct);
 
 
 
@@ -257,7 +263,8 @@ public class AngryFlappyBird extends Application {
             tgc = canvas.getGraphicsContext2D();
 
             // create a background
-            ImageView background = DEF.IMVIEW.get("backgroundLight");
+            background = DEF.IMVIEW.get("backgroundLight");
+            currBackground = "backgroundA";
             //ImageView background = changeBackground();
 
             //MediaPlayer backgroundMusic = DEF.backgroundMusicMP;
@@ -378,10 +385,34 @@ public class AngryFlappyBird extends Application {
     	    	 livesText.setText(lives + " lives left");
 
     	    	 //change background
-    	    	 //changeBackground();
+    	    	 changeBackground();
 
 
     	     }
+    	 }
+    	 
+    	 private void changeBackground() {
+    		 if (score > 0 && score%20 == 0 && backgroundChangeAvailable) {
+    			 changeBackground = true;
+    		 }
+    		 if (changeBackground) {
+    			 if (currBackground.equals("backgroundA")) {
+    				 background = DEF.IMVIEW.get("background1");
+    				 currBackground = "backgroundB";
+    			 }
+    			 else {
+    				 background = DEF.IMVIEW.get("backgroundLight");
+    				 currBackground = "backgroundA";
+    			 }
+    			 gameScene.getChildren().remove(background);
+    			 gameScene.getChildren().add(background);
+    			 gameScene.getChildren().get(gameScene.getChildren().size()-1).toBack();
+    			 changeBackground = false;
+    			 backgroundChangeAvailable = false;
+    		 }
+    		 if (score%20 == 1) {
+    			 backgroundChangeAvailable = true;
+    		 }
     	 }
 
 
