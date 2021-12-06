@@ -4,6 +4,10 @@ import javafx.scene.image.Image;
 
 public class Ghost extends Sprite {  
 	
+	/**
+	 * Ghost class extends Sprite class. Allows setup of velocity in construction.
+	 */
+	
 	private Image image;
     private double positionX;
     private double positionY;
@@ -16,10 +20,6 @@ public class Ghost extends Sprite {
     	super(pX, pY, image);
     	this.velocityX = vX;
     	this.velocityY = vY;
-    }
-    
-    public void stealPumpkin() {
-    	this.setVelocity(this.velocityX, -this.velocityY); 
     }
 	
 }
