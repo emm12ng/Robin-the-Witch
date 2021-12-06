@@ -194,7 +194,9 @@ public class AngryFlappyBird extends Application {
     
     
    
-    
+    /**
+     * Initialize the candles for normal mode
+     */
     
     private void normalInit() {
     	
@@ -211,6 +213,7 @@ public class AngryFlappyBird extends Application {
     	}
     	
     	// initialize Pumpkin for normal mode
+    	// make the pumpkins bigger for normal mode
     	 DEF.resizeImage("normalpumpkin", 100, 100);
     	 DEF.resizeImage("goldpumpkin", 100, 100);
     	for (int i = 0;i<(DEF.CANDLE_COUNT); i++) {
@@ -224,6 +227,7 @@ public class AngryFlappyBird extends Application {
 				pumpkins2.add(normalPumpkin);
 	    	
     	}
+    	// make the pumpkin size back to normal
     	 DEF.resizeImage("normalpumpkin", DEF.PUMPKIN_WIDTH, DEF.PUMPKIN_HEIGHT);
 		DEF.resizeImage("goldpumpkin", DEF.PUMPKIN_WIDTH, DEF.PUMPKIN_HEIGHT);
     	
@@ -305,7 +309,7 @@ public class AngryFlappyBird extends Application {
 				
 				
 	    	
- 	}
+	    		}
 	    	}
     
 
@@ -416,7 +420,7 @@ public class AngryFlappyBird extends Application {
            	    //update CANDLESCOLL
            	    CANDLESCOLL = false;
            	    GHOSTSCOLL = false;
-           	    //stop timer
+           	    //stop timer 
             	timer.stop();
             	//update the candle entry for survival mode
             	survivalModeCandlesEntry = -1;
@@ -427,6 +431,7 @@ public class AngryFlappyBird extends Application {
             	//update resetGameScene to false 
             	resetGameScene(false);
             }
+            // for live loss in normal mode
             else if (LIVELOSS) {
             	
             	CANDLESCOLL = false;
@@ -523,10 +528,11 @@ public class AngryFlappyBird extends Application {
     	
     	
     	
-    	
+    	// initialize the normal mode sprite
     	normalInit();
     	
-    	//initialize candle
+    	// initialize survival mode sprite
+    	// initialize candle
     	for(int i=0; i<DEF.CANDLE_COUNT_SURVIVIAL; i++) {
     		Sprite candle = new Sprite(0, 0, DEF.IMAGE.get("ShortCandleUp"));
     		candlesSurvival.add(candle);
@@ -631,26 +637,21 @@ public class AngryFlappyBird extends Application {
     	    	    	 
        	    	
 
-    	    	    	 
+    	    	    	 // check live loss because of crushing a candle
     	    		 	checkLives();
-    	    	    	 checkCollision("other");
-    		 
-    	    	    	 checkPumpkinCollect();
+    	    		 	
+    	    		 	// check collision
+    	    	    	checkCollision("other");
+    	    	    	
+    	    	    	// check pumpkin Collect
+    	    	    	checkPumpkinCollect();
     	    	    	 
-    	    	    	 
-    	    	    	 displayScoreLives();
-    	 		    	/*
+    	    	    	// display lives and scores 
+    	    	    	displayScoreLives();
+    	 		    	
     	 			 
     	    		 
-    	    		//control Pumpkin
-	    	    	 movePumpkin();
-	    	    	 //check pumpkin collection
-	    	    	 checkPumpkinCollect();
-	    	    	 
-	    	    	 //update texts
-	    	    	 scoreText.setText(String.valueOf(score));
-	    	    	 livesText.setText(lives + " lives left");
-	    	    	 */
+    	    		
 	    	    	 //for easy mode
     	    		 if(easyMode) {
     	    			//update floor
@@ -722,6 +723,9 @@ public class AngryFlappyBird extends Application {
     		 }
     	 }
     	 
+    	 /**
+    	  * check live loss for crashing candles
+    	  */
     	 public void  checkLives() {
     		 for (Sprite candle: candles) {
  				if  (lives != 0 && blob.intersectsSprite(candle,"others")) {
@@ -730,7 +734,9 @@ public class AngryFlappyBird extends Application {
  			}
     	 }
 
-    	 // update live
+    	 /**
+    	  * uodate live
+    	  */
     	 public void displayScoreLives() {
     		 scoreText.setText(String.valueOf(score));
 	    	 livesText.setText(lives + " lives left");
@@ -937,16 +943,7 @@ public class AngryFlappyBird extends Application {
       	 }
     	 
     	 
-    	 /**
-    	  * Moves the pumpkins to left
-    	  */
-    	// private void movePumpkin() {
-       		
-       	//	for(int i=0; i<DEF.PUMPKIN_COUNT; i++) {
-       	//		pumpkins2.get(i).render(gc);
-       	//		pumpkins2.get(i).update(DEF.SCENE_SHIFT_TIME);
-       	//	}
-       	  //}
+    	 
 
     	 
     	 /**
@@ -1177,10 +1174,10 @@ public class AngryFlappyBird extends Application {
     			 //update blob's position
     			 blob.setPositionXY(DEF.BLOB_POS_X, DEF.BLOB_POS_Y + 15);
     			 } //for other modes
-    			 //else {
+    			 else {
         			 //update blob's position
-    				// blob.setPositionXY(DEF.BLOB_POS_X, DEF.BLOB_POS_Y);
-    			// }
+    				 blob.setPositionXY(DEF.BLOB_POS_X, DEF.BLOB_POS_Y);
+    			 }
     			 //set autopilot mode to false
           		 auto = false;
     		 }

@@ -75,7 +75,7 @@ public class Defines {
     
     final int CANDLE_PAIR_DISTANCE  =80;
     
-    final int CANDLES_SPLIT = 300;
+    final int CANDLES_SPLIT = 350;
     final int CANDLES_START = 500;
     final int CANDLE_HOLDER_SQUARE = 60;
     
