@@ -92,12 +92,17 @@ public class Sprite {
         gc.drawImage(image, positionX, positionY);
     }
 
-    public Rectangle2D getBoundary() {
+    public Rectangle2D getBoundary(String difficultyLevel) {
+    	if (difficultyLevel == "survival") {
         return new Rectangle2D(positionX -13, positionY, width-25, height);
+    	}else {
+    		return new Rectangle2D(positionX -13, positionY, width-25, height);
+    	}
+    	
     }
 
-    public boolean intersectsSprite(Sprite s) {
-        return s.getBoundary().intersects(this.getBoundary());
+    public boolean intersectsSprite(Sprite s, String difficultyLevel) {
+        return s.getBoundary(difficultyLevel).intersects(this.getBoundary(difficultyLevel));
     }
     
     /*

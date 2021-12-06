@@ -43,6 +43,7 @@ public class AngryFlappyBird extends Application {
     private ArrayList<Sprite> pumpkins2;
     private ArrayList<Sprite> candles;
     private ArrayList<Sprite> candlesSurvival;
+    private ArrayList<Sprite> ghosts2;
     
     //Variable to check if the survivalModeCandles method is run once
     int survivalModeCandlesEntry = -1;
@@ -53,6 +54,7 @@ public class AngryFlappyBird extends Application {
     
     private int score;
     private int lives;
+    private int random;
     
     private Text scoreText;
     private Text livesText;
@@ -95,6 +97,15 @@ public class AngryFlappyBird extends Application {
         launch(args);
     }
 
+    
+  
+    
+    
+    
+    
+    
+    
+    
     /**
      * Puts the candles to the appropriate positions for the Survival Mode
      * @param candle(Sprite)
@@ -135,7 +146,7 @@ public class AngryFlappyBird extends Application {
     	// initialize candle
     	if (survivalModeCandlesEntry == 0) {
     		candlesSurvival.clear();
-    		for(int i=0; i<DEF.CANDLE_COUNT; i++) {
+    		for(int i=0; i<DEF.CANDLE_COUNT_SURVIVIAL; i++) {
     			//18 depends on preference, for difficulty it can be changed. It determines the distance of the candles
     			int posX = i * (DEF.UP_CANDLE_WIDTH + 18);
     			int posY = 0;
@@ -149,6 +160,118 @@ public class AngryFlappyBird extends Application {
     		}
     	}
     }
+    
+    
+   
+    
+    
+    private void normalInit() {
+    	
+    	
+    	//Initialize Ghost for normal mode
+    	for (int i = 0;i<(DEF.CANDLE_COUNT); i++) {
+    	 	double nextX =  -14+ (24 + DEF.CANDLES_SPLIT)*(DEF.CANDLE_COUNT-1);
+    	 	
+    		Sprite ghost = new Sprite(nextX-76, -100, DEF.IMAGE.get("ghost"));
+    	
+
+    		ghosts2.add(ghost);
+
+    	}
+    	
+    	// initialize Pumpkin for normal mode
+    	 DEF.resizeImage("normalpumpkin", 100, 100);
+    	 DEF.resizeImage("goldpumpkin", 100, 100);
+    	for (int i = 0;i<(DEF.CANDLE_COUNT); i++) {
+    	 	double nextX =  -14+ (24 + DEF.CANDLES_SPLIT)*(DEF.CANDLE_COUNT-1);
+    	 	int posBotH =  DEF.SCENE_HEIGHT - (60);
+    		 Sprite goldPumpkin = new Sprite(nextX-76, posBotH-100, DEF.IMAGE.get("goldpumpkin"));
+		
+				Sprite normalPumpkin = new Sprite(nextX-76, posBotH-100, DEF.IMAGE.get("normalpumpkin"));
+				
+				pumpkins2.add(goldPumpkin);
+				pumpkins2.add(normalPumpkin);
+	    	
+    	}
+			
+		// initialize candle for normal mode
+	    	int posA;
+	    	int posB;
+	    	int posC =  DEF.SCENE_HEIGHT - (60);
+	    	
+	    	
+	    	// initialize candle
+	    	for(int i=0; i<DEF.CANDLE_COUNT; i++) {
+	    		random = (int)(Math.random() * 200) + 100; // 100~380
+	    		
+	    		//autoHeight.add(random);
+		    		
+		    	posA =i* DEF.CANDLES_SPLIT+DEF.CANDLES_START;
+				posB = -(random+DEF.CANDLE_PAIR_DISTANCE); //70 is the difficulty
+				Sprite candleDown = new Sprite(posA, posB,DEF.IMAGE.get("CandlesLong"));
+				
+				Sprite candleUp = new Sprite(posA, posB, DEF.IMAGE.get("CandlesLongUp"));
+				
+				Sprite candleBot = new Sprite(posA-16, posC, DEF.IMAGE.get("CandleBottom"));
+				
+				Sprite normalPumpkin = new Sprite(posA-36, posC-100, DEF.IMAGE.get("normalpumpkin"));
+				
+				Sprite goldPumpkin = new Sprite(posA-36, posC-100, DEF.IMAGE.get("goldpumpkin"));
+				
+				Sprite ghost = new Sprite (posA-36, -100, DEF.IMAGE.get("ghost"));
+				
+				
+				candleUp.setPositionXY(posA, posB);
+				candleUp.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+				
+				posB = DEF.SCENE_HEIGHT - (random); 
+				candleDown.setPositionXY(posA, posB);
+				candleDown.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+				
+				candleBot.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+			
+				candles.add(candleUp);
+				
+				
+				if (random %3 == 0 && random %6 !=0) {
+					normalPumpkin.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+					normalPumpkin.render(gc);
+					
+					pumpkins2.add(normalPumpkin);
+					candles.add(candleDown);
+				}
+				
+				else if  (random %6 ==0)
+				{	goldPumpkin.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+					goldPumpkin.render(gc);
+					pumpkins2.add(goldPumpkin);
+					candles.add(candleDown);
+				}
+				
+				else {
+					candleDown.render(gc);
+					candles.add(candleDown);
+				}
+				
+				if  (random %5 ==0) {
+					ghost.setVelocity(DEF.SCENE_SHIFT_INCR, -0.2);
+					ghost.render(gc);
+					ghosts2.add(ghost);
+				}
+				
+				candleUp.render(gc);
+				candleBot.render(gc);
+				
+				
+				
+				candles.add(candleBot);
+				
+				
+				
+				
+	    	
+ 	}
+	    	}
     
 
     /**
@@ -300,6 +423,7 @@ public class AngryFlappyBird extends Application {
         candles = new ArrayList<>();
         candlesSurvival = new ArrayList<>();
         pumpkins2 = new ArrayList<>();
+        ghosts2 = new ArrayList<>();
         //For first try out of four
     	if(firstEntry) {
     		//Set lives to 3
@@ -344,19 +468,20 @@ public class AngryFlappyBird extends Application {
     	scoreText.setFill(Color.WHITE);
     	livesText.setFill(Color.RED);
     	
-    	// initialize floor
-    	for(int i=0; i<DEF.FLOOR_COUNT; i++) {
-    		int posX = i * DEF.FLOOR_WIDTH;
-    		int posY = DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT;
-    		Sprite floor = new Sprite(posX, posY, DEF.IMAGE.get("floor1"));
-    		floor.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
-    		floor.render(gc);
-    		floors.add(floor);
-    	}
     	
-		//initialize blob
-		blob = new Sprite(DEF.BLOB_POS_X, DEF.BLOB_POS_Y,DEF.IMAGE.get("1-0"));
-		blob.render(gc);
+    	
+    	
+    	
+    	normalInit();
+    	
+    	//initialize candle
+    	for(int i=0; i<DEF.CANDLE_COUNT_SURVIVIAL; i++) {
+    		Sprite candle = new Sprite(0, 0, DEF.IMAGE.get("ShortCandleUp"));
+    		candlesSurvival.add(candle);
+    	}
+    
+    	
+		
 		
         //initialize ghosts
         for(int i=0; i<DEF.GHOST_COUNT; i++) {
@@ -371,6 +496,20 @@ public class AngryFlappyBird extends Application {
         	pumpkin.render(gc);
         	pumpkins.add(pumpkin);
         }
+    	
+    	// initialize floor
+    	for(int i=0; i<DEF.FLOOR_COUNT; i++) {
+    		int posX = i * DEF.FLOOR_WIDTH;
+    		int posY = DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT;
+    		Sprite floor = new Sprite(posX, posY, DEF.IMAGE.get("floor1"));
+    		floor.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+    		floor.render(gc);
+    		floors.add(floor);
+    	}
+    	
+    	//initialize blob
+		blob = new Sprite(DEF.BLOB_POS_X, DEF.BLOB_POS_Y,DEF.IMAGE.get("1-0"));
+		blob.render(gc);
         
         // initialize timer
         startTime = System.nanoTime();
@@ -378,11 +517,8 @@ public class AngryFlappyBird extends Application {
         timer.start();
         
 
-    	//initialize candle
-    	for(int i=0; i<DEF.CANDLE_COUNT; i++) {
-    		Sprite candle = new Sprite(0, 0, DEF.IMAGE.get("ShortCandleUp"));
-    		candlesSurvival.add(candle);
-    	}
+    	
+    	
     }
     
     
@@ -416,7 +552,7 @@ public class AngryFlappyBird extends Application {
 	    	    	 //keep track of the score
 	    	    	 candleScore(pickedDifficulty);
     	    		//update floor
-	    	    	 moveFloor();
+	    	    	 moveFloor("easy");
 	    	    	 //update candle
 	    	    	 moveCandle();
 	    	    	 //control ghost
@@ -434,85 +570,50 @@ public class AngryFlappyBird extends Application {
 	    	    	 changeBackground();
     	    	 } //For other modes
     	    	 else {
-    	    		 int posA;
-    	    	     int posB;
-    	    	     int posC =  DEF.SCENE_HEIGHT - (60);
-    	    	     int random;
-    	    	     //resize images for the game environment
-    	    		 DEF.resizeImage("normalpumpkin", 90, 90);
-    	 			 DEF.resizeImage("goldpumpkin", 90, 90);
-    	 			 for(int i=0; i<DEF.CANDLE_COUNT; i++) {
-    	 				//pick a random number
-    	 	    		random = (int)(Math.random() * 200) + 100; // 100~380
-    	 	    		//Assign positions
-    	 		    	posA =i* DEF.CANDLES_SPLIT+DEF.CANDLES_START;
-    	 				posB = -(random+80); //70 is the difficulty
-    	 				//initialize candles
-    	 				Sprite candleDown = new Sprite(posA, posB,DEF.IMAGE.get("CandlesLong"));
-    	 				Sprite candleUp = new Sprite(posA, posB, DEF.IMAGE.get("CandlesLongUp"));
-    	 				Sprite candleBot = new Sprite(posA-16, posC, DEF.IMAGE.get("CandleBottom"));
-    	 				//Initialize pumpkins
-    	 				Sprite normalPumpkin = new Sprite(posA-36, posC-100, DEF.IMAGE.get("normalpumpkin"));
-    	 				Sprite goldPumpkin = new Sprite(posA-36, posC-100, DEF.IMAGE.get("goldpumpkin"));
-    	 				//clear the other pumpkins list
-    	 				pumpkins.clear();
-    	 				//update candle's properties
-    	 				candleUp.setPositionXY(posA, posB);
-    	 				candleUp.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
-    	 				//update candle's properties
-    	 				posB = DEF.SCENE_HEIGHT - (random); 
-    	 				candleDown.setPositionXY(posA, posB);
-    	 				candleDown.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
-    	 				//update candle's properties
-    	 				candleBot.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
-    	 			
-    	 				//random pumpkin display
-    	 				if (random %3 == 0 && random %6 !=0) {
-    	 					normalPumpkin.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
-    	 					normalPumpkin.render(gc);
-    	 					pumpkins2.add(normalPumpkin);
-    	 				}
-    	 				else if  (random %6 ==0)
-    	 				{	goldPumpkin.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
-    	 					goldPumpkin.render(gc);
-    	 					pumpkins2.add(goldPumpkin);}
-    	 				else {
-    	 					candleDown.render(gc);
-    	 					candles.add(candleDown);
-    	 				}
-    	 				
-    	 				//candle display
-    	 				candleUp.render(gc);
-    	 				candleBot.render(gc);
-    	 				//add candles to the arrayList
-    	 				candles.add(candleUp);
-    	 				candles.add(candleBot);
-    	 	    	}
-    	 			 //check scores
-    	    		 candleScore(pickedDifficulty);
-    	    		 //check if no lives left
+    	    		
+    	 		    	
+    	    	    	 
+    	    	    	
+    	 		    	//check scores
+       	    		 candleScore(pickedDifficulty);
+    	    	    	 
+       	    	//check if no lives left
     	    		 checkNoLives();
+
+    	    	    	 
+    	 
+    	    	    	 checkCollision("other");
+    		 
+    	    	    	 checkPumpkinCollect();
+    	    	    	 
+    	    	    	 
+    	    	    	 displayScoreLives();
+    	 		    	/*
+    	 			 
+    	    		 
     	    		//control Pumpkin
 	    	    	 movePumpkin();
 	    	    	 //check pumpkin collection
 	    	    	 checkPumpkinCollect();
+	    	    	 
 	    	    	 //update texts
 	    	    	 scoreText.setText(String.valueOf(score));
 	    	    	 livesText.setText(lives + " lives left");
+	    	    	 */
 	    	    	 //for easy mode
     	    		 if(easyMode) {
     	    			//update floor
-    	    			 moveFloor();
+    	    			 moveFloor("easy");
     	    	    	 //update candle
     	    	    	 moveCandle("easy");
     	    	    	 //update blob
     	    	    	 moveBlob();
     	    	    	//control ghost
-    	    	    	 controlGhost();
+    	    	    	 //controlGhost();
     	    		 } //for intermediate mode
     	    		 else if(intermediateMode) {
     	    			//update floor
-    	    	    	 moveFloor();
+    	    	    	 moveFloor("intermediate");
     	    	    	 //update candle
     	    	    	 moveCandle("intermediate");
     	    	    	 //update blob
@@ -522,7 +623,7 @@ public class AngryFlappyBird extends Application {
     	    		 } //for hard mode
     	    		 else if(hardMode) {
     	    			//update floor
-    	    	    	 moveFloor();
+    	    	    	 moveFloor("hard");
     	    	    	 //update candle
     	    	    	 moveCandle("hard");
     	    	    	 //update blob
@@ -545,7 +646,7 @@ public class AngryFlappyBird extends Application {
     	  */
     	 private void changeBackground() {
     		 // check if the background should be changed
-    		 if (score > 0 && score%20 == 0 && backgroundChangeAvailable) {
+    		 if (score > 0 && score%5 == 0 && backgroundChangeAvailable) {
     			 changeBackground = true;
     		 }
     		 // if the background should be changed, change the background
@@ -572,10 +673,30 @@ public class AngryFlappyBird extends Application {
 
 
 
+    	 // update live
+    	 public void displayScoreLives() {
+    		 scoreText.setText(String.valueOf(score));
+	    	 livesText.setText(lives + " lives left");
+    	 }
+    	 
+    	 
     	 /**
     	  * Updates the floor and gives the illusion of moving
     	  */
-    	 private void moveFloor() {
+    	 private void moveFloor(String difficultyLevel) {
+    		 int upDateTime;
+    		//set the velocity
+    			if (difficultyLevel == "easy") {
+    				upDateTime = DEF.SCENE_SHIFT_TIME;
+    			}
+    			else if(difficultyLevel == "intermediate") {
+    				upDateTime = DEF.SCENE_SHIFT_TIME + 3;
+    			}
+    			else {
+    				upDateTime = DEF.SCENE_SHIFT_TIME + 7;
+    			}
+    		 
+    		 
     		//moves each floor to the left 
     		for(int i=0; i<DEF.FLOOR_COUNT; i++) {
     			if (floors.get(i).getPositionX() <= -DEF.FLOOR_WIDTH) {
@@ -598,19 +719,19 @@ public class AngryFlappyBird extends Application {
     	  */
     	 private void moveCandle() {
     		//moves each candle to the left 
-     		for(int i=0; i<DEF.CANDLE_COUNT; i++) {
+     		for(int i=0; i<DEF.CANDLE_COUNT_SURVIVIAL; i++) {
      			//If all the candles in the array are placed
-     			if (candlesSurvival.get(i).getPositionX() <= -DEF.CANDLE_COUNT) {
+     			if (candlesSurvival.get(i).getPositionX() <= -DEF.CANDLE_COUNT_SURVIVIAL) {
      				//For the candles on top
      				if (candlesSurvival.get(i).getWidth() == 60) {
      					//50 depends on preference, it can be changed according to the difficulty
-     					nextX = candlesSurvival.get((i+ (DEF.CANDLE_COUNT - 1))%DEF.CANDLE_COUNT).getPositionX() + 50;
+     					nextX = candlesSurvival.get((i+ (DEF.CANDLE_COUNT_SURVIVIAL - 1))%DEF.CANDLE_COUNT_SURVIVIAL).getPositionX() + 50;
      					nextY = 0;
      	    		}
      				//For the candles on bottom
      	    		else if (candlesSurvival.get(i).getWidth() == 50) {
      	    			//40 depends on preference, it can be changed according to the difficulty
-     	    			nextX = candlesSurvival.get((i+ (DEF.CANDLE_COUNT - 1))%DEF.CANDLE_COUNT).getPositionX() + 40;
+     	    			nextX = candlesSurvival.get((i+ (DEF.CANDLE_COUNT_SURVIVIAL - 1))%DEF.CANDLE_COUNT_SURVIVIAL).getPositionX() + 40;
      	    			//For the short candles
      	    			if (candlesSurvival.get(i).getHeight() == DEF.SHORT_CANDLE_HEIGHT) {
      	    				nextY = DEF.SCENE_HEIGHT - (185);
@@ -639,27 +760,123 @@ public class AngryFlappyBird extends Application {
     	  * Made for easy, intermediate, and hard modes
     	  * @param difficultyLevel(String): depending on the difficulty the movement speed is different
     	  */
+    	 
+    	 
     	 private void moveCandle(String difficultyLevel) {
-    		//set new positions
-      		for(int i=0; i<DEF.CANDLE_COUNT; i++) {
-      			if (candles.get(i).getPositionX() <= -500) {
-     				double nextX = candles.get((i+1)%DEF.CANDLE_COUNT).getPositionX() + DEF.UP_CANDLE_WIDTH;
-     	        	double nextY = DEF.SHORT_CANDLE_HEIGHT;
-     	        	candles.get(i).setPositionXY(nextX, nextY);
-      			}
-      			//display candles
-      			candles.get(i).render(gc);
-      			//set the velocity
-      			if (difficultyLevel == "easy") {
-      				candles.get(i).update(DEF.SCENE_SHIFT_TIME + 3);
-      			}
-      			else if(difficultyLevel == "intermediate") {
-      				candles.get(i).update(DEF.SCENE_SHIFT_TIME + 7);
-      			}
-      			else {
-      				candles.get(i).update(DEF.SCENE_SHIFT_TIME + 11);
-      			}
-      		}
+    		 int upDateTime;
+
+   			//set the velocity
+   			if (difficultyLevel == "easy") {
+   				upDateTime = DEF.SCENE_SHIFT_TIME;
+   			}
+   			else if(difficultyLevel == "intermediate") {
+   				upDateTime = DEF.SCENE_SHIFT_TIME + 3;
+   			}
+   			else {
+   				upDateTime = DEF.SCENE_SHIFT_TIME + 7;
+   			}
+    		 
+    		 
+    		 
+    		 for(int i=0; i<DEF.CANDLE_COUNT*3; i = i +3) {
+     			
+                 random = (int)(Math.random() * 200) + 100;
+        			// 0 = up, 1 = down, 2 = bottom
+        			
+                	int posVertical= i* DEF.CANDLES_SPLIT+DEF.CANDLES_START;
+
+                	int posUpH = -(random+DEF.CANDLE_PAIR_DISTANCE); //0 is the difficulty
+                	int posDownH = DEF.SCENE_HEIGHT - (random); 
+                	int posBotH =  DEF.SCENE_HEIGHT - (60);
+                	
+                
+                	double nextX = candles.get((i+3)%(candles.size())).getPositionX() + (24 + DEF.CANDLES_SPLIT)*(DEF.CANDLE_COUNT-1);
+               	
+                	
+                
+                	
+                	
+              // set pumpkins and candles, and move candles
+        			if (candles.get(i).getPositionX() <= - ( DEF.CANDLE_HOLDER_SQUARE+DEF.CANDLES_SPLIT)) {
+       				
+       	        	candles.get(i).setPositionXY(nextX, posUpH);
+       	        	candles.get(i+2).setPositionXY(nextX-16, posBotH);
+       	        	
+       	        	
+       	        	if (random %3 == 0 && random %6 !=0) {
+       	        	
+       	        		System.out.println(candles.get((i+3)%(candles.size())).getPositionX() );
+
+       	        		candles.get(i+1).setPositionXY(nextX, DEF.SCENE_HEIGHT);
+       	        			
+       	        		ghosts2.get(i/3).setPositionXY(nextX-36, 100);
+       	        		
+       	        		pumpkins2.get(i/3).setPositionXY(nextX-36, posBotH-100);
+
+       	 			}
+       	        	else if  (random %6 ==0)	{	
+       	        		
+       	        		System.out.println(candles.get((i+3)%(candles.size())).getPositionX() );
+       	 				
+       	 				candles.get(i+1).setPositionXY(nextX, DEF.SCENE_HEIGHT);
+       	 				
+       	 				ghosts2.get(i/3).setPositionXY(nextX-36, 100);
+       	 				pumpkins2.get(i/3).setPositionXY(nextX-36, posBotH-100);
+       	 				
+       	 				}
+       	        	else {
+       	        		candles.get(i+1).setPositionXY(nextX, posDownH);
+       	        		
+       	 			
+       	        	}
+
+       	        	
+        			}
+
+
+        			candles.get(i).render(gc);
+        			candles.get(i).update(upDateTime);
+        			candles.get(i+1).render(gc);
+ 	       		candles.get(i+1).update(upDateTime);
+        			
+        			candles.get(i+2).render(gc);		
+        			candles.get(i+2).update(upDateTime);
+        			
+        			// move candles
+        			
+        		 if (candles.get(i+1).getPositionY() == DEF.SCENE_HEIGHT) {
+        			 
+ 				 pumpkins2.get(i/3).setVelocity(DEF.SCENE_SHIFT_INCR, 0);
+ 				 pumpkins2.get(i/3).render(gc);
+ 				 pumpkins2.get(i/3).update(upDateTime);
+ 				 
+ 				 // move ghost
+ 				 if (ghosts2.get(i/3).getPositionX()<=0) {
+ 					 
+ 					 ghosts2.get(i/3).setVelocity(DEF.SCENE_SHIFT_INCR, 2);
+ 					 ghosts2.get(i/3).render(gc);
+ 					 ghosts2.get(i/3).update(upDateTime);
+ 				 }
+ 				 else {
+ 					 ghosts2.get(i/3).setVelocity(DEF.SCENE_SHIFT_INCR, 0.07);
+ 					 ghosts2.get(i/3).render(gc);
+ 					 ghosts2.get(i/3).update(upDateTime);
+ 				 }
+ 				
+ 				 
+ 				 
+ 				 
+ 			}
+        		 
+
+        		
+        	 }
+
+     	
+     			 
+     			
+     	 
+      		
       	 }
     	 
     	 
@@ -694,6 +911,10 @@ public class AngryFlappyBird extends Application {
     	  * Specifically made for Survival Mode
     	  */
     	 public void pumpkinOverCandle() {
+    		 
+    		 
+    		 
+    		 
     		 //resize the images for the environment
     		 DEF.resizeImage("normalpumpkin", DEF.PUMPKIN_WIDTH, DEF.PUMPKIN_HEIGHT);
  			 DEF.resizeImage("goldpumpkin", DEF.PUMPKIN_WIDTH, DEF.PUMPKIN_HEIGHT);
@@ -702,7 +923,7 @@ public class AngryFlappyBird extends Application {
     		 int totalPumpkin = 1;
     		 while (totalPumpkin > -1) {
     			 //Pick a random candle
-    			 int randomCandle = rand.nextInt(DEF.CANDLE_COUNT);
+    			 int randomCandle = rand.nextInt(DEF.CANDLE_COUNT_SURVIVIAL);
     			 Sprite pickedCandle = candlesSurvival.get(randomCandle);
     			 //Check if the candle is on bottom
     			 if (pickedCandle.getWidth() == 50) {
@@ -920,10 +1141,10 @@ public class AngryFlappyBird extends Application {
     		
     		 // check if witch collided with floors. If yes, end game
 			for (Sprite floor: floors) {
-				if (blob.intersectsSprite(floor)) {
+				if (blob.intersectsSprite(floor,difficultyLevel)) {
 					floorCollision = true;
 				}
-				GAME_OVER = GAME_OVER || blob.intersectsSprite(floor);
+				GAME_OVER = GAME_OVER || blob.intersectsSprite(floor,difficultyLevel);
 			}
 			// if witch collided with floor, reset score to 0
 			if (floorCollision) {
@@ -933,11 +1154,19 @@ public class AngryFlappyBird extends Application {
 			}
 
 			// check if witch collides with ghosts. If yes, end game
-			for (Sprite ghost: ghosts) {
-				if (blob.intersectsSprite(ghost)) {
+			for (Sprite ghost: ghosts2) {
+				if (blob.intersectsSprite(ghost,difficultyLevel)) {
 					ghostCollision = true;
 				}
-				GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost);
+				CANDLESCOLL = GAME_OVER || blob.intersectsSprite(ghost,difficultyLevel);
+				GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost,difficultyLevel);
+			}
+			for (Ghost ghost: ghosts) {
+				if (blob.intersectsSprite(ghost,difficultyLevel)) {
+					ghostCollision = true;
+				}
+				CANDLESCOLL = GAME_OVER || blob.intersectsSprite(ghost,difficultyLevel);
+				GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost,difficultyLevel);
 			}
 			// if witch collided with a ghost, reset score to 0
 			if (ghostCollision) {
@@ -949,21 +1178,21 @@ public class AngryFlappyBird extends Application {
 			// if in survival mode, use candlesSurvival arraylist
 			if (difficultyLevel == "survival") {
 				for (Sprite candle: candlesSurvival) {
-					if (blob.intersectsSprite(candle)) {
+					if (blob.intersectsSprite(candle,difficultyLevel)) {
 						candleCollision = true;
 					}
-					GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
-					CANDLESCOLL = GAME_OVER || blob.intersectsSprite(candle);
+					GAME_OVER = GAME_OVER || blob.intersectsSprite(candle,difficultyLevel);
+					CANDLESCOLL = GAME_OVER || blob.intersectsSprite(candle,difficultyLevel);
 				}
 			}
 			// if in another mode, use candles arraylist
 			else {
 				for (Sprite candle: candles) {
-					if (blob.intersectsSprite(candle)) {
+					if (blob.intersectsSprite(candle,difficultyLevel)) {
 						candleCollision = true;
 					}
-					GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
-					CANDLESCOLL = GAME_OVER || blob.intersectsSprite(candle);
+					GAME_OVER = GAME_OVER || blob.intersectsSprite(candle,difficultyLevel);
+					CANDLESCOLL = GAME_OVER || blob.intersectsSprite(candle,difficultyLevel);
 				}
 			}
 			
@@ -993,7 +1222,7 @@ public class AngryFlappyBird extends Application {
     		 
     		 // check if pumpkins were collected
     		 for (Pumpkin pumpkin:pumpkins) {
-    			 if (blob.intersectsSprite(pumpkin)) {
+    			 if (blob.intersectsSprite(pumpkin,"survival")) {
     				 PUMPKIN_COLLECTED = true;
     				 // if normal pumpkin was collected, increase score by 5
     				 if (pumpkin.getType().equals("normal")) {
@@ -1027,7 +1256,7 @@ public class AngryFlappyBird extends Application {
     		
     		// check if pumpkins were collected
     		 for (Sprite pumpkin:pumpkins2) {
-    			 if (blob.intersectsSprite(pumpkin)) {
+    			 if (blob.intersectsSprite(pumpkin,"other")) {
     				 PUMPKIN_COLLECTED = true;
     				// if gold pumpkin was collected, record time
     				 if (pumpkin.isGold()) {
@@ -1038,10 +1267,17 @@ public class AngryFlappyBird extends Application {
     				 // if normal pumpkin was collected, increase score by 5
     				 else {
     					 System.out.println("increase points");
+    					 score  = score +5;
     				 }
     				// reset pumpkin to initial position and velocity
     				 pumpkin.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
     				 pumpkin.setVelocity(0, 0);
+    			 }
+    			 for (Sprite ghost:ghosts2) {
+    				 if (ghost.intersectsSprite(pumpkin,"other")) {
+    					 pumpkin.setPositionXY(2000, 2000);
+    					 score --;
+    				 }
     			 }
     		 }
     			 
@@ -1074,7 +1310,7 @@ public class AngryFlappyBird extends Application {
     		 else {
     			 for (Sprite candle:candles) {
     				// if witch passes a candle, increase score by 1
-    				 if (candle.getPositionX() == (blob.getPositionX())) {
+    				 if (candle.getPositionX() == (blob.getPositionX()) && candle.getWidth()==DEF.CANDLE_HOLDER_SQUARE) {
     					 score = score + 1;
     				 }
     			 }
@@ -1117,7 +1353,7 @@ public class AngryFlappyBird extends Application {
     	 private void checkGhostCollectPumpkin(){
     		 for (Pumpkin pumpkin:pumpkins) {
     			 for (Ghost ghost:ghosts) {
-    				 if (ghost.intersectsSprite(pumpkin)) {
+    				 if (ghost.intersectsSprite(pumpkin,"survival")) {
     					 // reset the pumpkin
     					 pumpkin.setPositionXY(DEF.SCENE_WIDTH+2+DEF.GHOST_WIDTH, DEF.SCENE_HEIGHT+1);
     					 pumpkin.setVelocity(0, 0);

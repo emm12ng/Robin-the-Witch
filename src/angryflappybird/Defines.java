@@ -36,7 +36,7 @@ public class Defines {
     final int BLOB_POS_Y = 200;
     final int BLOB_DROP_TIME = 300000000;  	// the elapsed time threshold before the blob starts dropping
     final int BLOB_DROP_VEL = 300;    		// the blob drop velocity
-    final int BLOB_FLY_VEL = -40;			// the blob flying velocity
+    final int BLOB_FLY_VEL = -80;			// the blob flying velocity
     final int BLOB_IMG_LEN = 10;
     final int BLOB_IMG_PERIOD = 5;
     
@@ -69,11 +69,15 @@ public class Defines {
     final int LONG_CANDLE_HEIGHT = 160;
     final int MIDDLE_CANDLE_HEIGHT = 140;
     final int SHORT_CANDLE_HEIGHT = 110;
-    final int CANDLE_COUNT = 30;
+    final int CANDLE_COUNT = 3;
+    final int CANDLE_COUNT_SURVIVIAL = 30;
+    
+    
+    final int CANDLE_PAIR_DISTANCE  =80;
     
     final int CANDLES_SPLIT = 300;
     final int CANDLES_START = 500;
-    final int CANDLE_HOLDER_SQUARE = 130;
+    final int CANDLE_HOLDER_SQUARE = 60;
     
     // coefficients related to time
     final int SCENE_SHIFT_TIME = 5;
@@ -170,11 +174,11 @@ public class Defines {
 				
 			}
 			else if (i == 26 || i == 27) {
-				img = new Image(pathImage(IMAGE_FILES[i]), 40, 500, false, false);
+				img = new Image(pathImage(IMAGE_FILES[i]), 26, 500, false, false);
 				
 			}
 			else if (i == 28) {
-				img = new Image(pathImage(IMAGE_FILES[i]), CANDLE_HOLDER_SQUARE -50 ,CANDLE_HOLDER_SQUARE, false, false);
+				img = new Image(pathImage(IMAGE_FILES[i]), CANDLE_HOLDER_SQUARE ,CANDLE_HOLDER_SQUARE, false, false);
 			}
 			else {
 				img = new Image(pathImage(IMAGE_FILES[i]), SCENE_WIDTH, SCENE_HEIGHT, false, false);
