@@ -541,12 +541,14 @@ public class AngryFlappyBird extends Application {
     	 }
     	 
     	 /**
-    	  * Changes the background 
+    	  * Changes the background for every 20 points earned
     	  */
     	 private void changeBackground() {
+    		 // check if the background should be changed
     		 if (score > 0 && score%20 == 0 && backgroundChangeAvailable) {
     			 changeBackground = true;
     		 }
+    		 // if the background should be changed, change the background
     		 if (changeBackground) {
     			 if (currBackground.equals("backgroundA")) {
     				 background = DEF.IMVIEW.get("background1");
@@ -562,6 +564,7 @@ public class AngryFlappyBird extends Application {
     			 changeBackground = false;
     			 backgroundChangeAvailable = false;
     		 }
+    		 // enable background changing when current 20th score is passed
     		 if (score%20 == 1) {
     			 backgroundChangeAvailable = true;
     		 }
@@ -720,9 +723,15 @@ public class AngryFlappyBird extends Application {
     		 }
     	}
 
-    	 
+    	 /**
+    	  * randomly and separately bring the two ghosts into the screen
+    	  * make ghosts travel across the screen
+    	  */
     	 public void controlGhost() {
+    		 
     		 Random rand = new Random();
+    		 
+    		 // determine whether to make the ghosts (randomly)
     		 int makeGhostInt = rand.nextInt(400);
     		 boolean makeGhost = false;
     		 if (makeGhostInt == 1) {
@@ -733,11 +742,13 @@ public class AngryFlappyBird extends Application {
     		 if (makeGhostInt2 == 1) {
     			 makeGhost2 = true;
     		 }
+    		 // if making ghost, play ghost sound
     		 if (makeGhost || makeGhost2) {
     			 DEF.ghostSoundMP.setVolume(5000);
     			 DEF.ghostSoundMP.stop();
     			 DEF.ghostSoundMP.play();
     		 }
+    		 // if making ghosts, bring ghosts into screen
     		 if (makeGhost) {
 	    		 /**for (Sprite ghost:ghosts) {*/
 	    			 if (ghosts.get(0).getPositionX()>DEF.SCENE_WIDTH && makeGhost) {
@@ -754,31 +765,41 @@ public class AngryFlappyBird extends Application {
 	        			 makeGhost2 = false;
 	        		 }
     		 }
+    		 // if ghosts have moved out of the screen, reset them to initial position outside of screen and set 
+    		 // velocity to 0
+    		 // render the ghosts on scene
     		 for(Sprite ghost :ghosts) {
-    			 if (ghost.getPositionX()<0-ghost.getWidth() || ghost.getPositionY()<0-ghost.getHeight()) {
-        			 ghost.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
-        			 ghost.setVelocity(0, 0);
-    			 }
     			 ghost.update(elapsedTime * DEF.NANOSEC_TO_SEC);
         		 ghost.render(gc);
     		 }
     	 }
     	 
-
+    	 /**
+    	  * randomly and separately bring the two pumpkins into the screen
+    	  * make pumpkins travel across the screen
+    	  */
     	 public void controlPumpkin(double posX, double posY) {
+    		 
     		 Random rand = new Random();
+    		 
+    		// determine whether to make the pumpkins (randomly)
     		 int makePumpkinInt = rand.nextInt(300);
     		 boolean makePumpkin = false;
     		 if (makePumpkinInt == 1) {
     			 makePumpkin = true;
     		 }
+    		 int makePumpkinInt2 = rand.nextInt(300);
+    		 boolean makePumpkin2 = false;
+    		 if (makePumpkinInt2 == 1) {
+    			 makePumpkin2 = true;
+    		 }
+    		// if making pumpkins, bring pumpkins into screen
     		 if (makePumpkin) {
     			 int makeGoldPumpkinInt = rand.nextInt(4);
     			 boolean makeGoldPumpkin = false;
         		 if (makeGoldPumpkinInt == 3) {
         			 makeGoldPumpkin = true;
         		 }
-	    		 //for (Pumpkin pumpkin:pumpkins) {
 	    			 if (pumpkins.get(0).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
 	        			 pumpkins.get(0).setPositionXY(posX, posY);
 	        			 pumpkins.get(0).setVelocity(DEF.PUMPKIN_VEL, 0);
@@ -788,14 +809,7 @@ public class AngryFlappyBird extends Application {
 	        			 }
 	        			 makePumpkin = false;
 	        			 makeGoldPumpkin = false;
-	        			 //break;
 	        		 }
-	    		 //}
-    		 }
-    		 int makePumpkinInt2 = rand.nextInt(300);
-    		 boolean makePumpkin2 = false;
-    		 if (makePumpkinInt2 == 1) {
-    			 makePumpkin2 = true;
     		 }
     		 if (makePumpkin2) {
     			 int makeGoldPumpkinInt2 = rand.nextInt(4);
@@ -803,7 +817,6 @@ public class AngryFlappyBird extends Application {
         		 if (makeGoldPumpkinInt2 == 3) {
         			 makeGoldPumpkin2 = true;
         		 }
-	    		 //for (Pumpkin pumpkin:pumpkins) {
 	    			 if (pumpkins.get(1).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
 	        			 pumpkins.get(1).setPositionXY(posX, posY);
 	        			 pumpkins.get(1).setVelocity(DEF.PUMPKIN_VEL, 0);
@@ -813,12 +826,13 @@ public class AngryFlappyBird extends Application {
 	        			 }
 	        			 makePumpkin2 = false;
 	        			 makeGoldPumpkin2 = false;
-	        			 //break;
 	        		 }
-	    		 //}
     		 }
+    		 // if pumpkins have moved out of the screen, reset them to initial position outside of screen, set 
+    		 // velocity to 0, and make pumpkin normal
+    		 // render the pumpkins on scene
     		 for(Pumpkin pumpkin :pumpkins) {
-    			 if (pumpkin.getPositionX()<0-pumpkin.getWidth() || pumpkin.getPositionY()<0-pumpkin.getHeight()) {
+    			 if (pumpkin.getPositionX()<0-pumpkin.getWidth()) {
         			 pumpkin.setPositionXY(posX, posY);
         			 pumpkin.setVelocity(DEF.PUMPKIN_VEL, 0);
         			 pumpkin.makeNormal();
@@ -912,227 +926,177 @@ public class AngryFlappyBird extends Application {
       		 //System.out.println(auto);
     	 }
 
-
+    	 /**
+    	  * Check witch collision with floors, candles and ghosts. Collision with candles decrease a life. 
+    	  * Collision with floors and ghosts ends game.
+    	  * @param difficultyLevel
+    	  */
     	 public void checkCollision(String difficultyLevel) {
-    		// check collision
-    		// check if either floors were hit
-    		// check collision to floor
+    		
+    		 // check if witch collided with floors. If yes, end game
 			for (Sprite floor: floors) {
 				if (blob.intersectsSprite(floor)) {
-					//lives = 3;
-					//score = 0;
-					//blob.setPositionXY(blob.getPositionX(), blob.getPositionY());
-//					blob.setVelocity(-5, 5);
-//					blob.update(DEF.TRANSITION_TIME);
 					floorCollision = true;
 				}
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(floor);
 			}
+			// if witch collided with floor, reset score to 0
 			if (floorCollision) {
-				//lives = 3;
 				score = 0;
-				
 				floorCollision = false;
 				
 			}
 
-
+			// check if witch collides with ghosts. If yes, end game
 			for (Sprite ghost: ghosts) {
 				if (blob.intersectsSprite(ghost)) {
-					//lives = 3;
-					//score = 0;
-					//blob.setPositionXY(blob.getPositionX() - 10, blob.getPositionY());
-					//showHitEffect();
-					//blob.setPositionXY(blob.getPositionX() + 1, blob.getPositionY());
-					//showHitEffect();
-					//blob.setPositionXY(blob.getPositionX() - 1, blob.getPositionY());
-//					blob.setVelocity(-5, 5);
-//					blob.update(DEF.TRANSITION_TIME);
 					ghostCollision = true;
-					//showCollEffect();
 				}
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost);
 			}
+			// if witch collided with a ghost, reset score to 0
 			if (ghostCollision) {
-				//lives = 3;
 				score = 0;
-				
-				//blob.setVelocity(-5, 0);
-				
 				ghostCollision = false;
 			}
-
+			
+			// check collision with candles depending on mode of game. If yes, reset screen
+			// if in survival mode, use candlesSurvival arraylist
 			if (difficultyLevel == "survival") {
 				for (Sprite candle: candlesSurvival) {
 					if (blob.intersectsSprite(candle)) {
-						//lives = lives - 1;
-//						blob.setVelocity(-5, 5);
-//						blob.setPositionXY(blob.getPositionX() - 10, blob.getPositionY());
-//						blob.update(DEF.TRANSITION_TIME);
 						candleCollision = true;
-						//showCollEffect();
 					}
 					GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
 					CANDLESCOLL = GAME_OVER || blob.intersectsSprite(candle);
-					
 				}
-			}else {
-
-			// check collision to candles
-			for (Sprite candle: candles) {
-				if (blob.intersectsSprite(candle)) {
-					//lives = lives - 1;
-//					blob.setVelocity(-5, 5);
-//					blob.setPositionXY(blob.getPositionX() - 10, blob.getPositionY());
-//					blob.update(DEF.TRANSITION_TIME);
-					candleCollision = true;
-					//showCollEffect();
-				}
-				GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
-				CANDLESCOLL = GAME_OVER || blob.intersectsSprite(candle);
-				
-				
 			}
+			// if in another mode, use candles arraylist
+			else {
+				for (Sprite candle: candles) {
+					if (blob.intersectsSprite(candle)) {
+						candleCollision = true;
+					}
+					GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
+					CANDLESCOLL = GAME_OVER || blob.intersectsSprite(candle);
+				}
 			}
 			
+			// if witch collided with a candle, decrease lives by 1
 			if (candleCollision) {
 				lives = lives - 1;
-				
-				
 				candleCollision = false;
 			}
 
-			// end the game when blob hit stuff
+			// stop the screen when GAME_OVER is true
 			if (GAME_OVER) {
 				survivalModeCandlesEntry = -1;
 				showCollEffect();
-				//showHitEffect();
 				DEF.backgroundMusicMP.pause();
 				blob.setVelocity(0,0);
 				for (Sprite floor: floors) {
 					floor.setVelocity(0, 0);
 				}
-				
-				
 			}
-
     	 }
-    	 
-    	 
 
+    	 /**
+    	  * check witch collection of pumpkins for survival mode
+    	  * plays laughing sounds and increases score accordingly
+    	  */
     	 public void checkPumpkinCollectSurvival() {
     		 DEF.witchLaughMP.setCycleCount(1);
+    		 // check if pumpkins were collected
     		 for (Pumpkin pumpkin:pumpkins) {
     			 if (blob.intersectsSprite(pumpkin)) {
     				 PUMPKIN_COLLECTED = true;
-    				 //System.out.println("pumpkin collected");
+    				 // if normal pumpkin was collected, increase score by 5
     				 if (pumpkin.getType().equals("normal")) {
         				 score = score + 5;
     				 }
+    				 // if gold pumpkin was collected, record time
     				 else {
-    					 //System.out.println("autopilot");
     					 auto = true;
     					 goldPumpkinCollectTime = System.nanoTime();
-    					// System.out.print("goldPumpkinCollectTime");
-    					 //System.out.println(auto);
-    					 //DEF.witchLaughMP.play();
     				 }
-    				 //DEF.witchLaughMP.setCycleCount(DEF.witchLaughMP.getCycleCount() + 1);
-    				 
+    				 // reset pumpkin to initial position and velocity
     				 pumpkin.setPositionXY(DEF.SCENE_WIDTH+2 + DEF.GHOST_WIDTH, DEF.SCENE_HEIGHT+1);
-    				 //pumpkin.makeNormal();
-    				 //pumpkin.setImage(DEF.IMAGE.get("normalpumpkin"));
     				 pumpkin.setVelocity(0, 0);
-    				
     			 }
-    			 
+    		 }
+    		 
+    		 // if pumpkin was collected, play witch laugh
     		 if (PUMPKIN_COLLECTED) {
     			 DEF.witchLaughMP.stop();
     			 DEF.witchLaughMP.play();
     			 PUMPKIN_COLLECTED = false;
-    			 /*
-    			 if (NORMAL_PUMPKIN_COLLECTED) {
-        			 score = score + 5;
-        			 NORMAL_PUMPKIN_COLLECTED = false;
-    			 }
-    			 */
     		 }
-		 }
-    		 //!!! If game stops for any reason stop the laugh!!!
-
     	 }
     	 
+    	 /**
+    	  * check witch collection of pumpkins for modes that aren't survival
+    	  * plays laughing sounds and increases score accordingly
+    	  */
     	 public void checkPumpkinCollect() {
     		 DEF.witchLaughMP.setCycleCount(1);
+    		// check if pumpkins were collected
     		 for (Sprite pumpkin:pumpkins2) {
-			 if (blob.intersectsSprite(pumpkin)) {
-				 PUMPKIN_COLLECTED = true;
-				 System.out.println("pumpkin collected");
-				 System.out.println(pumpkin.isGold());
-				 if (pumpkin.isGold()) {
-					 System.out.println("autopilot");
-					 goldPumpkinCollectTime = System.nanoTime();
-					 auto = true;
+    			 if (blob.intersectsSprite(pumpkin)) {
+    				 PUMPKIN_COLLECTED = true;
+    				// if gold pumpkin was collected, record time
+    				 if (pumpkin.isGold()) {
+    					 goldPumpkinCollectTime = System.nanoTime();
+    					 auto = true;
 					 
-				 }
-				 else {
-					 System.out.println("increase points");
-				 }
-				 pumpkin.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
-				 
-				 pumpkin.setVelocity(0, 0);
-			 }
-			 for (Ghost ghost:ghosts) {
-				 if (ghost.intersectsSprite(pumpkin)) {
-					 ghost.stealPumpkin();
-					 
-				 }
-			 }
+    				 }
+    				 // if normal pumpkin was collected, increase score by 5
+    				 else {
+    					 System.out.println("increase points");
+    				 }
+    				// reset pumpkin to initial position and velocity
+    				 pumpkin.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
+    				 pumpkin.setVelocity(0, 0);
+    			 }
+    		 }
     			 
+    		// if pumpkin was collected, play witch laugh
     		 if (PUMPKIN_COLLECTED) {
     			 DEF.witchLaughMP.stop();
     			 DEF.witchLaughMP.play();
     			 PUMPKIN_COLLECTED = false;
-    			 /*
-    			 if (NORMAL_PUMPKIN_COLLECTED) {
-        			 score = score + 5;
-        			 NORMAL_PUMPKIN_COLLECTED = false;
-    			 }
-    			 */
     		 }
-		 }
-    		 //!!! If game stops for any reason stop the laugh!!!
-
     	 }
     	 
+    	 /**
+    	  * increase score by 1 every time witch passes a candle, depending on game mode
+    	  * @param difficultyLevel
+    	  */
     	 public void candleScore(String difficultyLevel) {
+    		 // if on survival mode, use candlesSurvival arraylist
     		 if (difficultyLevel == "survival") {
     			 for (Sprite candle:candlesSurvival) {
-        			 //System.out.print("for each candle in candlescore");
+    				 // if witch passes top candle, increase score by 1
         			 if (candle.getWidth() == 60) {
         				 if (candle.getPositionX() == (blob.getPositionX())) {
-        					 //System.out.print("candle and witch in the same position increase score");
         					 score = score + 1;
         				 }
-        				 //else if(candle.getPositionX() == 0 || (candle.getPositionX() > 0 &&  ) {
-        					 
-        				 //}
         			 }
         		 }
-    			 //moveCandle();
     		 }
+    		// if on another mode, use candles arraylist
     		 else {
-    		 for (Sprite candle:candles) {
-    			 //System.out.print("for each candle in candlescore");
-    			 //if (candle.getWidth() == 40) {
+    			 for (Sprite candle:candles) {
+    				// if witch passes a candle, increase score by 1
     				 if (candle.getPositionX() == (blob.getPositionX())) {
     					 score = score + 1;
     				 }
-    			 //}
-    		 }
+    			 }
     		 }
     	 }
     	 
+    	 /**
+    	  * check if lives is decreasing below 0. If yes, end and reset game.
+    	  */
     	 public void checkNoLives() {
     		 if (lives < 0) {
     			gc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
@@ -1147,7 +1111,6 @@ public class AngryFlappyBird extends Application {
            	  		ghost.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
            	  	}
            	  	GAME_OVER = true;
-           	  	//RESTART = true;
     			 lives = 3;
     			 score = 0;
     			 RESTART = false; 
