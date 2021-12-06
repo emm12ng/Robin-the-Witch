@@ -105,7 +105,7 @@ public class AngryFlappyBird extends Application {
     private String currBackground;
 
     // game flags
-    private boolean CLICKED, GAME_START, GAME_OVER, RESTART, CANDLESCOLL,LIVELOSS;
+    private boolean CLICKED, GAME_START, GAME_OVER, RESTART, CANDLESCOLL,GHOSTSCOLL,LIVELOSS;
     
 // scene graphs
     private Group gameScene;	 // the left half of the scene
@@ -395,6 +395,7 @@ public class AngryFlappyBird extends Application {
            	    survivalModeCandlesEntry = -1;
            	    //update CANDLESCOLL
            	    CANDLESCOLL = false;
+           	 GHOSTSCOLL = false;
            	    //stop timer
            	    timer.stop();
            	    //pause background music
@@ -414,6 +415,7 @@ public class AngryFlappyBird extends Application {
             	score = 0;
            	    //update CANDLESCOLL
            	    CANDLESCOLL = false;
+           	    GHOSTSCOLL = false;
            	    //stop timer
             	timer.stop();
             	//update the candle entry for survival mode
@@ -426,7 +428,9 @@ public class AngryFlappyBird extends Application {
             	resetGameScene(false);
             }
             else if (LIVELOSS) {
+            	
             	CANDLESCOLL = false;
+            	GHOSTSCOLL = false;
             	timer.stop();
             	lives -= 1;
             	resetGameScene(false);
@@ -1195,24 +1199,6 @@ public class AngryFlappyBird extends Application {
     		
     		
 
-			// check if witch collides with ghosts. If yes, end game
-			for (Sprite ghost: ghosts2) {
-				
-				if (blob.intersectsSprite(ghost,difficultyLevel)) {
-					ghostCollision = true;
-				}
-				
-				CANDLESCOLL = GAME_OVER || blob.intersectsSprite(ghost,difficultyLevel);
-				GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost,difficultyLevel);
-			}
-			for (Ghost ghost: ghosts) {
-				CANDLESCOLL = GAME_OVER || blob.intersectsSprite(ghost,difficultyLevel);
-				GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost,difficultyLevel);
-				if (blob.intersectsSprite(ghost,difficultyLevel)) {
-					ghostCollision = true;
-				}
-				
-			}
 			// if witch collided with a ghost, reset score to 0
 			if (ghostCollision) {
 				score = 0;
@@ -1222,6 +1208,20 @@ public class AngryFlappyBird extends Application {
 			// check collision with candles depending on mode of game. If yes, reset screen
 			// if in survival mode, use candlesSurvival arraylist
 			if (difficultyLevel == "survival") {
+
+				// check if witch collides with ghosts. If yes, end game
+				
+					
+					
+				
+				for (Ghost ghost: ghosts) {
+					GHOSTSCOLL  = GAME_OVER || blob.intersectsSprite(ghost,difficultyLevel);
+					GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost,difficultyLevel);
+					if (blob.intersectsSprite(ghost,difficultyLevel)) {
+						ghostCollision = true;
+					}
+					
+				}
 				for (Sprite candle: candlesSurvival) {
 					
 					if (blob.intersectsSprite(candle,difficultyLevel)) {
@@ -1237,9 +1237,7 @@ public class AngryFlappyBird extends Application {
 						floorCollision = true;
 						
 					}
-					System.out.println("GAME_OVER");
-			 		System.out.println(GAME_OVER);
-			 		System.out.println(RESTART);
+					
 			 		
 			 		
 				}
@@ -1253,17 +1251,29 @@ public class AngryFlappyBird extends Application {
 			}
 			// if in another mode, use candles arraylist
 			else {
+				for (Sprite ghost: ghosts2) {
+					if(!auto) {
+					
+						GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost,difficultyLevel);
+						GHOSTSCOLL = GAME_OVER;
+						
+					}
+					
+				}
+				
 				for (Sprite candle: candles) {
 					if (!auto) {
 					if (lives != 0) {
 					LIVELOSS = LIVELOSS || blob.intersectsSprite(candle,"others");
 					CANDLESCOLL = LIVELOSS;
 					
+					
 					}
 					else {
 						
 						GAME_OVER = GAME_OVER || blob.intersectsSprite(candle,"others");
 						CANDLESCOLL = GAME_OVER ;
+						
 					}}
 				}
 				for (Sprite floor: floors) {
@@ -1322,18 +1332,14 @@ public class AngryFlappyBird extends Application {
 				if (GAME_OVER && !LIVELOSS ) {
 					
 					showCollEffect();
-						
-					
+
 					lives = 0;
 					
 					for (Sprite floor: floors) {
 						floor.setVelocity(0, 0);
 					}
 					
-				
 				}
-			
-			
 			
 			}
 			
@@ -1504,7 +1510,7 @@ public class AngryFlappyBird extends Application {
     		 double posBlobX = blob.getPositionX();
     		 double posBlobY = blob.getPositionY();
     		 // stop the bounce back when the witch hits the ground
-    		 	if(CANDLESCOLL &&blob.getPositionY() <= ( DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT-40)) {   
+    		 	if((CANDLESCOLL || GHOSTSCOLL)&&blob.getPositionY() <= ( DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT-40)) {   
     		 		// set witch image to appropriate image
 					 blob.setImage(DEF.IMAGE.get("1-f"));
 					 
@@ -1517,6 +1523,7 @@ public class AngryFlappyBird extends Application {
     		 	}
     		 	//show hit effect
     		 	else { 
+    		 		GHOSTSCOLL= false;
     		 		CANDLESCOLL = false;
 	       			 showHitEffect();
 	       			 timer.stop();
