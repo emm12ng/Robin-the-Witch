@@ -49,7 +49,7 @@ public class Defines {
     final int PUMPKIN_VEL = -30; // depend on pipe
     final int PUMPKIN_WIDTH = 100;
     final int PUMPKIN_HEIGHT = 100;
-    final int PUMPKIN_COUNT = 2;
+    final int PUMPKIN_COUNT = 3;
     
     // coefficients related to the floors
     final int FLOOR_WIDTH = 400;
