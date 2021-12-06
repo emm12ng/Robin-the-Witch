@@ -29,4 +29,4 @@ Please select the level in the GUI panel before pressing "Go!" to start the game
 8. Game ends when witch collides with the floor or a ghost.
 
 ## Autopilot
-Autopilot is enabled when a gold pumpkin is collected. When on autopilot, the witch will autopmatically fly without colliding into candles or ghosts. Autopilot lasts six seconds at a time.
+Autopilot is enabled when a gold pumpkin is collected. When on autopilot, the witch will automatically fly without colliding into candles or ghosts. Autopilot lasts six seconds at a time.
