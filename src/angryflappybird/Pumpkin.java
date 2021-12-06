@@ -4,6 +4,11 @@ import javafx.scene.image.Image;
 
 public class Pumpkin extends Sprite {  
 	
+	/**
+	 * Pumpkin class extends Sprite class. Contains the static variable type, which stores whether pumpkin is 
+	 * normal or gold, and methods to change and get the type.
+	 */
+	
 	private Image image;
     private double positionX;
     private double positionY;
@@ -21,19 +26,24 @@ public class Pumpkin extends Sprite {
     	super(pX, pY, image);
     }
     
-    public void isStolen(double ghostVelocity) {
-    	this.positionY = this.positionY - 50;
-    	this.setVelocity(this.velocityX, -ghostVelocity);
-    }
-    
+    /**
+     * make the pumpkin type gold
+     */
     public void makeGold() {
     	this.type = "gold";
     }
     
+    /**
+     * make pumpkin type normal
+     */
     public void makeNormal() {
     	this.type = "normal";
     }
     
+    /**
+     * return the type of the pumpkin
+     * @return type (String)
+     */
     public String getType() {
     	return type;
     }

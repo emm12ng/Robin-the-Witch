@@ -22,12 +22,43 @@ import javafx.util.Duration;
 import java.util.ArrayList;
 import java.util.Random;
 
-//@authors = Emma (Trang) Nguyen, Amy Geng, Adle Akbulut 
+/**
+ * @author Adle Akbulut 
+ * @author Emma Nguyen
+ * @author Amy Geng
+ *
+ */
 
 
 
 //The Application layer
 public class AngryFlappyBird extends Application {
+	
+	/**
+	 * Initializes the angry flappy bird (halloween version) game elements and runs the game.
+	 * 
+	 * The game has four levels: Easy, Intermediate, Hard, and Survival Mode. Easy, Intermediate, and Hard have 
+	 * the same game set up but with different speeds, and Survival Mode has a different game set up with more 
+	 * candles and pumpkins. User selects the level in the GUI panel before pressing "Go!" to start the game.
+	 * 
+	 * Game Objectives:
+	 * Avoid candles and ghosts.
+	 * Collect pumpkins.
+	 * Do not let ghosts steal pumpkins.
+	 * 
+	 * Game Rules:
+	 * Start with 3 lives and 0 score.
+	 * Collection of a normal pumpkin increases score by 5.
+	 * Collection of a gold pumpkin enables autopilot.
+	 * Collection of a pumpkin by a ghost decreases score by 3.
+	 * Passing each candle increases score by 1.
+	 * Collision with a candle decreases lives by 1.
+	 * Game ends when user dies at 0 lives left.
+	 * Game ends when witch collides with the floor or a ghost.
+	 * 
+	 * Autopilot is enabled when a gold pumpkin is collected. When on autopilot, the witch will automatically 
+	 * fly without colliding into candles or ghosts. Autopilot lasts six seconds at a time.
+	 */
 
 	private Defines DEF = new Defines();
 

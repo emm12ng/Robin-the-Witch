@@ -104,25 +104,7 @@ public class Sprite {
     public boolean intersectsSprite(Sprite s, String difficultyLevel) {
         return s.getBoundary(difficultyLevel).intersects(this.getBoundary(difficultyLevel));
     }
-    
-    /*
-    public Rectangle2D getBlobBoundary() {
-        return new Rectangle2D(positionX, positionY, width, height);
-    }
-    public boolean intersectsBlobSprite(Sprite s) {
-        return s.getBoundary().intersects(this.getBoundary());
-    }
-    */
-    
-    /*
-    public Rectangle2D getCandleBoundary() {
-        return new Rectangle2D(20, positionY, 10, height);
-    }
-    
-    public boolean intersectsCandleSprite(Sprite s) {
-        return s.getBoundary().intersects(this.getCandleBoundary());
-    }
-    */
+
 
     public void update(double time) {
         positionX += velocityX * time;
