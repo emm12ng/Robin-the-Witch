@@ -608,8 +608,7 @@ public class AngryFlappyBird extends Application {
     	 		    	//check scores
        	    		 candleScore(pickedDifficulty);
     	    	    	 
-       	    	//check if no lives left
-    	    		 checkNoLives();
+       	    	
 
     	    	    	 
     	 
@@ -617,7 +616,8 @@ public class AngryFlappyBird extends Application {
     		 
     	    	    	 checkPumpkinCollect();
     	    	    	 
-    	    	    	 
+    	    	    	//check if no lives left
+        	    		 checkNoLives();
     	    	    	 displayScoreLives();
     	 		    	/*
     	 			 
@@ -1180,6 +1180,7 @@ public class AngryFlappyBird extends Application {
 			// if witch collided with floor, reset score to 0
 			if (floorCollision) {
 				score = 0;
+				GAME_OVER = true;
 				floorCollision = false;
 				
 			}
@@ -1221,6 +1222,7 @@ public class AngryFlappyBird extends Application {
 				for (Sprite candle: candles) {
 					if (blob.intersectsSprite(candle,difficultyLevel)) {
 						candleCollision = true;
+						
 					}
 					GAME_OVER = GAME_OVER || blob.intersectsSprite(candle,difficultyLevel);
 					CANDLESCOLL = GAME_OVER || blob.intersectsSprite(candle,difficultyLevel);
@@ -1410,7 +1412,7 @@ public class AngryFlappyBird extends Application {
     		 double posBlobX = blob.getPositionX();
     		 double posBlobY = blob.getPositionY();
     		 // stop the bounce back when the witch hits the ground
-    		 	if(CANDLESCOLL &&blob.getPositionY() <= ( DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT-40)) {    	
+    		 	if(CANDLESCOLL &&blob.getPositionY() <= ( DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT-40) && blob.getPositionY() >=(DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT) ) {    	
     		 		
     		 		// set witch image to appropriate image
 					 blob.setImage(DEF.IMAGE.get("1-f"));
@@ -1427,6 +1429,7 @@ public class AngryFlappyBird extends Application {
     		 		CANDLESCOLL = false;
 	       			 showHitEffect();
 	       			 timer.stop();
+	       			 
        			 }
     	 }
     	
