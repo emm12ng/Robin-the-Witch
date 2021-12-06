@@ -96,7 +96,7 @@ public class Sprite {
     	if (difficultyLevel == "survival") {
         return new Rectangle2D(positionX -13, positionY, width-25, height);
     	}else {
-    		return new Rectangle2D(positionX -13, positionY, width-25, height);
+    		return new Rectangle2D(positionX-3 , positionY, width-5, height);
     	}
     	
     }

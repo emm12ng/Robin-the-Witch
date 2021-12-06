@@ -174,7 +174,7 @@ public class Defines {
 				
 			}
 			else if (i == 26 || i == 27) {
-				img = new Image(pathImage(IMAGE_FILES[i]), 26, 500, false, false);
+				img = new Image(pathImage(IMAGE_FILES[i]), 24, 500, false, false);
 				
 			}
 			else if (i == 28) {
