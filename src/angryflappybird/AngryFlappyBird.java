@@ -750,20 +750,18 @@ public class AngryFlappyBird extends Application {
     		 }
     		 // if making ghosts, bring ghosts into screen
     		 if (makeGhost) {
-	    		 /**for (Sprite ghost:ghosts) {*/
-	    			 if (ghosts.get(0).getPositionX()>DEF.SCENE_WIDTH && makeGhost) {
-	        			 ghosts.get(0).setPositionXY(DEF.SCENE_WIDTH,  0-ghosts.get(0).getHeight());
-	        			 ghosts.get(0).setVelocity(-30, DEF.GHOST_VEL1);
-	        			 makeGhost = false;
-	        		 }
+    			 if (ghosts.get(0).getPositionX()>DEF.SCENE_WIDTH && makeGhost) {
+    				 ghosts.get(0).setPositionXY(DEF.SCENE_WIDTH,  0-ghosts.get(0).getHeight());
+    				 ghosts.get(0).setVelocity(-30, DEF.GHOST_VEL1);
+    				 makeGhost = false;
+    			 }
     		 }
     		 if (makeGhost2) {
-	    		 /**for (Sprite ghost:ghosts) {*/
-	    			 if (ghosts.get(1).getPositionX()>DEF.SCENE_WIDTH && makeGhost2) {
-	        			 ghosts.get(1).setPositionXY(DEF.SCENE_WIDTH,  0-ghosts.get(1).getHeight());
-	        			 ghosts.get(1).setVelocity(-30, DEF.GHOST_VEL1);
-	        			 makeGhost2 = false;
-	        		 }
+    			 if (ghosts.get(1).getPositionX()>DEF.SCENE_WIDTH && makeGhost2) {
+    				 ghosts.get(1).setPositionXY(DEF.SCENE_WIDTH,  0-ghosts.get(1).getHeight());
+    				 ghosts.get(1).setVelocity(-30, DEF.GHOST_VEL1);
+    				 makeGhost2 = false;
+    			 }
     		 }
     		 // if ghosts have moved out of the screen, reset them to initial position outside of screen and set 
     		 // velocity to 0
@@ -817,16 +815,16 @@ public class AngryFlappyBird extends Application {
         		 if (makeGoldPumpkinInt2 == 3) {
         			 makeGoldPumpkin2 = true;
         		 }
-	    			 if (pumpkins.get(1).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
-	        			 pumpkins.get(1).setPositionXY(posX, posY);
-	        			 pumpkins.get(1).setVelocity(DEF.PUMPKIN_VEL, 0);
-	        			 if(makeGoldPumpkin2) {
-	        				 pumpkins.get(1).makeGold();
-	        				 pumpkins.get(1).setImage(DEF.IMAGE.get("goldpumpkin"));
-	        			 }
-	        			 makePumpkin2 = false;
-	        			 makeGoldPumpkin2 = false;
-	        		 }
+        		 if (pumpkins.get(1).getPositionX()>DEF.SCENE_WIDTH && makePumpkin) {
+        			 pumpkins.get(1).setPositionXY(posX, posY);
+        			 pumpkins.get(1).setVelocity(DEF.PUMPKIN_VEL, 0);
+        			 if(makeGoldPumpkin2) {
+        				 pumpkins.get(1).makeGold();
+        				 pumpkins.get(1).setImage(DEF.IMAGE.get("goldpumpkin"));
+        			 }
+        			 makePumpkin2 = false;
+        			 makeGoldPumpkin2 = false;
+        		 }
     		 }
     		 // if pumpkins have moved out of the screen, reset them to initial position outside of screen, set 
     		 // velocity to 0, and make pumpkin normal
@@ -841,16 +839,14 @@ public class AngryFlappyBird extends Application {
     			 pumpkin.update(elapsedTime * DEF.NANOSEC_TO_SEC);
         		 pumpkin.render(gc);
     		 }
-
     	 }
 
     	 public void regularFly() {
+    		 
     		 long diffTime = System.nanoTime() - clickTime;
-
-
+    		 
      		// blob flies upward with animation
      		if (CLICKED && diffTime <= DEF.BLOB_DROP_TIME) {
-
      			int imageIndex = Math.floorDiv(counter++, DEF.BLOB_IMG_PERIOD);
      			imageIndex = Math.floorMod(imageIndex, DEF.BLOB_IMG_LEN);
      			blob.setImage(DEF.IMAGE.get("1-"+String.valueOf(imageIndex)));
@@ -1005,7 +1001,7 @@ public class AngryFlappyBird extends Application {
     	  * plays laughing sounds and increases score accordingly
     	  */
     	 public void checkPumpkinCollectSurvival() {
-    		 DEF.witchLaughMP.setCycleCount(1);
+    		 
     		 // check if pumpkins were collected
     		 for (Pumpkin pumpkin:pumpkins) {
     			 if (blob.intersectsSprite(pumpkin)) {
@@ -1026,6 +1022,7 @@ public class AngryFlappyBird extends Application {
     		 }
     		 
     		 // if pumpkin was collected, play witch laugh
+    		 DEF.witchLaughMP.setCycleCount(1);
     		 if (PUMPKIN_COLLECTED) {
     			 DEF.witchLaughMP.stop();
     			 DEF.witchLaughMP.play();
@@ -1038,7 +1035,7 @@ public class AngryFlappyBird extends Application {
     	  * plays laughing sounds and increases score accordingly
     	  */
     	 public void checkPumpkinCollect() {
-    		 DEF.witchLaughMP.setCycleCount(1);
+    		
     		// check if pumpkins were collected
     		 for (Sprite pumpkin:pumpkins2) {
     			 if (blob.intersectsSprite(pumpkin)) {
@@ -1060,6 +1057,7 @@ public class AngryFlappyBird extends Application {
     		 }
     			 
     		// if pumpkin was collected, play witch laugh
+    		 DEF.witchLaughMP.setCycleCount(1);
     		 if (PUMPKIN_COLLECTED) {
     			 DEF.witchLaughMP.stop();
     			 DEF.witchLaughMP.play();
@@ -1098,70 +1096,87 @@ public class AngryFlappyBird extends Application {
     	  * check if lives is decreasing below 0. If yes, end and reset game.
     	  */
     	 public void checkNoLives() {
+    		 
     		 if (lives < 0) {
-    			gc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
-           	    
-           	    gameOverSlogen.setText("GAME OVER");
+    			 
+    			 gc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT);
+    			
+           	    // display game over and restart slogans
+           	  	gameOverSlogen.setText("GAME OVER");
            	  	startSlogen.setText("Press SPACE or the 'Go!'"+"\n"+"     Button to Restart.");
            	  	
+           	  	// reset pumpkins and ghosts
            	  	for (Pumpkin pumpkin:pumpkins) {
            	  		pumpkin.setPositionXY(DEF.SCENE_WIDTH+2 + DEF.GHOST_WIDTH, DEF.SCENE_HEIGHT+1);
            	  	}
            	  	for (Ghost ghost:ghosts) {
            	  		ghost.setPositionXY(DEF.SCENE_WIDTH+1, DEF.SCENE_HEIGHT+1);
            	  	}
+           	  	
+           	  	lives = 3;
+           	  	score = 0;
+ 			
            	  	GAME_OVER = true;
-    			 lives = 3;
-    			 score = 0;
-    			 RESTART = false; 
+    			RESTART = false; 
+    			
     		 }
-    	
-
     	 }
     	 
+    	 /**
+    	  * check if ghosts collected pumpkins and decrease score accordingly
+    	  */
     	 private void checkGhostCollectPumpkin(){
     		 for (Pumpkin pumpkin:pumpkins) {
     			 for (Ghost ghost:ghosts) {
     				 if (ghost.intersectsSprite(pumpkin)) {
+    					 // reset the pumpkin
     					 pumpkin.setPositionXY(DEF.SCENE_WIDTH+2+DEF.GHOST_WIDTH, DEF.SCENE_HEIGHT+1);
     					 pumpkin.setVelocity(0, 0);
         	    		 pumpkin.makeNormal();
         	    		 pumpkin.setImage(DEF.IMAGE.get("normalpumpkin"));
+        	    		 
     					 decreaseScore = true;
-    					 System.out.println("pumpkin stolen");
     				 }
     			 }
     		 }
+    		 // if ghost collected pumpkin, decrease score by 3
     		 if (decreaseScore) {
 				 score = score - 3;
 				 decreaseScore = false;
 			 } 
     	 }
 
+    	 /**
+    	  * when the witch collides with a candle, show bounce back effect
+    	  */
     	 private void showCollEffect() {
+    		 // get the position of the blob
     		 double posBlobX = blob.getPositionX();
     		 double posBlobY = blob.getPositionY();
-    		 
-    		 
+    		 // stop the bounce back when the witch hits the ground
     		 	if(CANDLESCOLL &&blob.getPositionY() <= ( DEF.SCENE_HEIGHT - DEF.FLOOR_HEIGHT-40)) {    	
     		 		
-				 	System.out.println("bounce back");
+    		 		// set witch image to appropriate image
 					 blob.setImage(DEF.IMAGE.get("1-f"));
 					 
+					 // change witch position and velocity for bounce back effect
 					 blob.setPositionXY(posBlobX,posBlobY);
 					 blob.setVelocity(-2, 2);
 		    		 blob.update(DEF.SCENE_SHIFT_TIME);
 		    		 blob.render(gc);
         		 
-    		 	}else { 
+    		 	}
+    		 	//show hit effect
+    		 	else { 
     		 		CANDLESCOLL = false;
 	       			 showHitEffect();
 	       			 timer.stop();
        			 }
-    		 	
     	 }
-    	 
-	 
+    	
+    	 /**
+    	  * show flashing hit effect
+    	  */
 	     private void showHitEffect() {
 	        ParallelTransition parallelTransition = new ParallelTransition();
 	        FadeTransition fadeTransition = new FadeTransition(Duration.seconds(DEF.TRANSITION_TIME), gameScene);
