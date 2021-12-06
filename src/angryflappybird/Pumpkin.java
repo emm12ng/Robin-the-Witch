@@ -17,6 +17,10 @@ public class Pumpkin extends Sprite {
     	this.type = t;
     }
     
+    public Pumpkin(double pX, double pY, Image image) {
+    	super(pX, pY, image);
+    }
+    
     public void isStolen(double ghostVelocity) {
     	this.positionY = this.positionY - 50;
     	this.setVelocity(this.velocityX, -ghostVelocity);
