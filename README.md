@@ -1,8 +1,17 @@
 # Robin the Witch
 Robin the Witch is a game inspired by Flappy Bird and Angry Birds where the user uses the SPACE bar or "Go!" button to control the flight of the witch.
 
+## Backstory
+The witch was an outcast in the village she grew up in. Ever since she was little she had been told by family and neighbors alike to keep her powers and possessions to herself. She, however, was a generous witch, and believed that her capabilities were meant to be used to serve other people. 
+
+Eventually, she decided to leave the people she knew and traveled to another village, whose people welcomed her immediately with open arms and took good care of her. She had never known such love, and has since then dedicated herself to protecting the people of these community. 
+
+One day, pumpkins from all over the village started to go missing, and subsequently, many of her neighbors struggled to put food on the table. They found out that the perpetrators of these unforunate events were ghosts that have snuck into their town. They saw more and more ghosts flock past their gates and begin to terrorize their streets, stealing their pumpkins. The witch knew she needed to help them, so she set out to collect all the pumpkins in the village, preventing them from falling into the ghosts' possession, to give them back to her people.
+
 ## Levels
-The game has four levels: Easy, Intermediate, Hard, and Survival Mode. Easy, Intermediate, and Hard have the same game set up but with different speeds, and Survival Mode has a different game set up. Please select the level in the GUI panel before pressing "Go!" to start the game.
+The game has four levels: Easy, Intermediate, Hard, and Survival Mode. 
+Easy, Intermediate, and Hard have the same game set up but with different speeds, and Survival Mode has a different game set up with more candles and pumpkins (try Survival Mode to test if you can survive the witch's relentless laughter :D).
+Please select the level in the GUI panel before pressing "Go!" to start the game.
 
 ## Game Objectives
 1. Avoid candles and ghosts.
