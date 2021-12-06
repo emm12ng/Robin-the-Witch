@@ -1253,11 +1253,15 @@ public class AngryFlappyBird extends Application {
 			else {
 				for (Sprite ghost: ghosts2) {
 					if(!auto) {
-					
+						
 						GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost,difficultyLevel);
 						GHOSTSCOLL = GAME_OVER;
-						
+						if (blob.intersectsSprite(ghost,difficultyLevel)) {
+							lives = 0;
+							
+						}
 					}
+					
 					
 				}
 				
@@ -1279,7 +1283,14 @@ public class AngryFlappyBird extends Application {
 				for (Sprite floor: floors) {
 					if (!LIVELOSS ) {
 						
-					GAME_OVER = GAME_OVER || blob.intersectsSprite(floor,"others");}
+					GAME_OVER = GAME_OVER || blob.intersectsSprite(floor,"others");
+					
+					if (blob.intersectsSprite(floor,difficultyLevel)) {
+						lives = 0;
+						
+					}
+					}
+					
 				}
 					
 				}
@@ -1527,6 +1538,10 @@ public class AngryFlappyBird extends Application {
     		 		CANDLESCOLL = false;
 	       			 showHitEffect();
 	       			 timer.stop();
+	       			 if (lives ==0) {
+	       			gc.clearRect(0, 0, DEF.SCENE_WIDTH, DEF.SCENE_HEIGHT); 
+	       			gameOverSlogen.setText("GAME OVER");
+	           	  	startSlogen.setText("Press SPACE or the 'Go!'"+"\n"+"     Button to Restart.");}
        			 }
     	 }
     	
