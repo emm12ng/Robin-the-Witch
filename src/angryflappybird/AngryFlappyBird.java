@@ -841,18 +841,19 @@ public class AngryFlappyBird extends Application {
     		 }
     	 }
 
+    	 /**
+    	  * controls the blob's regular fly
+    	  */
     	 public void regularFly() {
-    		 
+    		 //the time difference between the current moment and the clciktime
     		 long diffTime = System.nanoTime() - clickTime;
-    		 
      		// blob flies upward with animation
      		if (CLICKED && diffTime <= DEF.BLOB_DROP_TIME) {
      			int imageIndex = Math.floorDiv(counter++, DEF.BLOB_IMG_PERIOD);
      			imageIndex = Math.floorMod(imageIndex, DEF.BLOB_IMG_LEN);
+     			//update images
      			blob.setImage(DEF.IMAGE.get("1-"+String.valueOf(imageIndex)));
-
-     			//blob.setImage(DEF.IMAGE.get("blob"+String.valueOf(ranNum)));
-
+     			//set velocity
      			blob.setVelocity(0, DEF.BLOB_FLY_VEL);
      		}
 
@@ -863,63 +864,51 @@ public class AngryFlappyBird extends Application {
      		    blob.setImage(DEF.IMAGE.get("1-f"));}
      		    CLICKED = false;
      		}
-
      		// render blob on GUI
      		blob.update(elapsedTime * DEF.NANOSEC_TO_SEC);
      		blob.render(gc);
      		checkCollision(pickedDifficulty);
      		checkGhostCollectPumpkin();
-
     	 }
-    	 
+
+    	 /**
+    	  * Controls the autoPilot mode which is activated by the golden pumpkin
+    	  */
     	 public void autoPilot() {
-    		 //long diffTime = System.nanoTime() - clickTime;
-    		 
-    		 //CLICKED = true;
     		 double ongoingTime = System.nanoTime() * DEF.NANOSEC_TO_SEC;
+    		 //makes the autopilot mode to continue for six seconds
     		 if (ongoingTime < (goldPumpkinCollectTime * DEF.NANOSEC_TO_SEC + 6)) {
+    			 //update the ongoing time
     			 ongoingTime = System.nanoTime() * DEF.NANOSEC_TO_SEC;
-    			 System.out.println("This is autopilot loop");
-    			 //clickTime = System.nanoTime();
-    			 //CLICKED = true;
-    			 //DEF.startButton.fire();
-    			 
+    			 //fix the blob image
         		 blob.setImage(DEF.IMAGE.get("1-2"));
+        		 //set velocity
         		 blob.setVelocity(0, 0);
+        		 //for survival mode
         		 if (survivalMode) {
         			 blob.setPositionXY(DEF.BLOB_POS_X, DEF.BLOB_POS_Y + 105);
-        		 }
+        		 } //for other modes
         		 else {
         			 blob.setPositionXY(DEF.BLOB_POS_X, DEF.BLOB_POS_Y + 200);
         		 }
-        		 
-        		 //moveFloor();
-        		 //moveCandle();
-        		 //blob.render(gc);
-        		 /*
-        		 long passedTime = System.nanoTime() - goldPumpkinCollectTime;
-        		 if (passedTime *  DEF.NANOSEC_TO_SEC > 6) {
-        			 CLICKED = false;
-        		 }
-        		 */
-    		 }
+    		 } //when autopilot mode ends
     		 else {
-    			 System.out.println("This is outside of autopilot loop");
+    			 //for survival mode
     			 if (survivalMode) {
+    			 //update blob's position
     			 blob.setPositionXY(DEF.BLOB_POS_X, DEF.BLOB_POS_Y + 15);
-    			 }
+    			 } //for other modes
     			 else {
+        			 //update blob's position
     				 blob.setPositionXY(DEF.BLOB_POS_X, DEF.BLOB_POS_Y);
     			 }
+    			 //set autopilot mode to false
           		 auto = false;
-          		 //regularFly();
     		 }
-    		 //CLICKED = false;
-    		 //blob.update(elapsedTime * DEF.NANOSEC_TO_SEC);
-    		 //System.out.println("This is outside of autopilot loop");
+    		 //display the blob
     		 blob.render(gc);
+    		 //update the blob
     		 blob.update(elapsedTime * DEF.NANOSEC_TO_SEC);
-      		 //System.out.println(auto);
     	 }
 
     	 /**
