@@ -344,7 +344,7 @@ public class AngryFlappyBird extends Application {
     		//autoHeight.add(random);
 	    		
 	    	posA =i* DEF.CANDLES_SPLIT+DEF.CANDLES_START;
-			posB = -(random+80); //70 is the difficulty
+			posB = -(random+DEF.CANDLE_PAIR_DISTANCE); //70 is the difficulty
 			Sprite candleDown = new Sprite(posA, posB,DEF.IMAGE.get("CandlesLong"));
 			
 			Sprite candleUp = new Sprite(posA, posB, DEF.IMAGE.get("CandlesLongUp"));
@@ -377,6 +377,7 @@ public class AngryFlappyBird extends Application {
 				pumpkins2.add(normalPumpkin);
 				candles.add(candleDown);
 			}
+			
 			else if  (random %6 ==0)
 			{	goldPumpkin.setVelocity(DEF.SCENE_SHIFT_INCR, 0);
 				goldPumpkin.render(cgc);
@@ -389,14 +390,11 @@ public class AngryFlappyBird extends Application {
 				candles.add(candleDown);
 			}
 			
-			if  (true) {
+			if  (random %5 ==0) {
 				ghost.setVelocity(DEF.SCENE_SHIFT_INCR, -0.2);
 				ghost.render(cgc);
 				ghosts2.add(ghost);
 			}
-			//else if (random %5 ==0 && random % 12 !=0) {
-			//	ghost.setVelocity(DEF.SCENE_SHIFT_INCR, -0.2);
-			//}
 			
 			candleUp.render(cgc);
 			candleBot.render(cgc);
@@ -404,6 +402,7 @@ public class AngryFlappyBird extends Application {
 			
 			
 			candles.add(candleBot);
+			
 			
 			
 			
@@ -520,7 +519,7 @@ public class AngryFlappyBird extends Application {
        			
                	int posVertical= i* DEF.CANDLES_SPLIT+DEF.CANDLES_START;
 
-               	int posUpH = -(random+80); //0 is the difficulty
+               	int posUpH = -(random+DEF.CANDLE_PAIR_DISTANCE); //0 is the difficulty
                	int posDownH = DEF.SCENE_HEIGHT - (random); 
                	int posBotH =  DEF.SCENE_HEIGHT - (60);
                	
@@ -627,7 +626,7 @@ public class AngryFlappyBird extends Application {
              	random = (int)(Math.random() * 200) + 100; //100~300
              	//int posVertical= i* DEF.CANDLES_SPLIT+DEF.CANDLES_START;
      			
-             	int posUpH = -(random+80); //0 is the difficulty
+             	int posUpH = -(random+DEF.CANDLE_PAIR_DISTANCE); //0 is the difficulty
              	int posDownH = DEF.SCENE_HEIGHT - (random); 
              	int posBotH =  DEF.SCENE_HEIGHT - (60);
              	
@@ -797,20 +796,21 @@ public class AngryFlappyBird extends Application {
     		// check if either floors were hit
     		// check collision to floor
 			for (Sprite floor: floors) {
-				if (!LIVELOSS) {
+				if (!LIVELOSS ) {
 					
 				GAME_OVER = GAME_OVER || blob.intersectsSprite(floor);}
 			}
 			
 
-			for (Sprite ghost: ghosts) {
-				
-				GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost);
+			for (Sprite ghost: ghosts2) {
+				if (!auto){
+				GAME_OVER = GAME_OVER || blob.intersectsSprite(ghost);}
 				
 			}
 			
 			// check collision to candles
 			for (Sprite candle: candles) {
+				if(!auto) {
 				if (lives != 0) {
 				LIVELOSS = LIVELOSS || blob.intersectsSprite(candle);
 				CANDLESCOLL = LIVELOSS|| blob.intersectsSprite(candle);
@@ -820,7 +820,7 @@ public class AngryFlappyBird extends Application {
 					
 					GAME_OVER = GAME_OVER || blob.intersectsSprite(candle);
 					CANDLESCOLL = GAME_OVER || blob.intersectsSprite(candle);
-				}
+				}}
 			}
 
 			if (LIVELOSS) {
@@ -835,7 +835,7 @@ public class AngryFlappyBird extends Application {
 				for (Sprite candle: candles) {
 					candle.setVelocity(0, 0);
 				}
-				for (Ghost ghost: ghosts) {
+				for (Sprite ghost: ghosts2) {
 					ghost.setVelocity(0, 0);
 				}
 				for (Sprite pumpkin:pumpkins2) {
@@ -891,10 +891,10 @@ public class AngryFlappyBird extends Application {
     				 
     				 pumpkin.setVelocity(0, 0);
     			 }
-    			 for (Ghost ghost:ghosts) {
+    			 for (Sprite ghost:ghosts2) {
     				 if (ghost.intersectsSprite(pumpkin)) {
-    					 ghost.stealPumpkin();
-    					 
+    					 pumpkin.setPositionXY(2000, 2000);
+    					 score --;
     				 }
     			 }
     		 }

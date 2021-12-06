@@ -67,6 +67,7 @@ public class Defines {
     final int CANDLES_SPLIT = 300;
     final int CANDLES_START = 500;
     final int CANDLE_HOLDER_SQUARE = 60;
+    final int CANDLE_PAIR_DISTANCE = 80;
     
    // coefficient related to text and score
     final int LIFE_NO = 3;
